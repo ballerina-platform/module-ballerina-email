@@ -14,7 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
 import ballerina/java;
 import ballerina/mime;
 import ballerina/test;
@@ -102,13 +101,11 @@ function testSendComplexEmail() {
 
     Error? response = smtpClient->send(email);
     if (response is Error) {
-        io:println(response);
         test:assertFail(msg = "Error while sending an email.");
     }
     Error? emailValidation = validateComplexEmails();
 
     if (emailValidation is Error) {
-        io:println(response);
         test:assertFail(msg = "Error while validating the received email.");
     }
     serverStatus = stopComplexSmtpServer();

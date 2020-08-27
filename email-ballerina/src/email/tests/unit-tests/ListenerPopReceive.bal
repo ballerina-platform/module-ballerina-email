@@ -87,13 +87,11 @@ function testListenEmailPop() {
         resource function onMessage(Email emailMessage) {
             receivedMessagePop = <@untainted>emailMessage.subject;
             onMessageInvokedPop = true;
-            //error? res = self.emailServer.__stop();
         }
 
         resource function onError(Error emailError) {
             receivedErrorPop = <@untainted>emailError.message();
             onErrorInvokedPop = true;
-            //error? res = self.emailServer.__stop();
         }
     };
 

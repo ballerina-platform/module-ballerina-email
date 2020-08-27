@@ -14,7 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
 import ballerina/java;
 import ballerina/stringutils;
 import ballerina/test;
@@ -45,21 +44,18 @@ function testSendSimpleEmail() {
     };
     Error? response = smtpClient->send(email);
     if (response is Error) {
-        io:println(response);
         test:assertFail(msg = "Error while sending an email.");
     }
 
     error? emailValidation = validateSimpleSecureEmail();
 
     if (emailValidation is error) {
-        io:println(response);
         test:assertFail(msg = "Error while validating the received email.");
     }
 
     smtpClient = new (host, username,  "wrongPassword", smtpConfig);
     response = smtpClient->send(email);
     if (response is Error) {
-        //io:println(response);
         test:assertTrue(stringutils:contains(response.message(), "Authentication credentials invalid"),
             msg = "Error while authentication failure.");
     } else {
