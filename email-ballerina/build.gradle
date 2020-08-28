@@ -84,6 +84,9 @@ task ballerinaBuild {
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         ballerinaConfigFile.text = newConfig
+        if (project.hasProperty("skipBallerinaTests")) {
+            additionalBuildParams = "--skip-tests"
+        }
 
         def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
 
