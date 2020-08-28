@@ -15,11 +15,7 @@
 // under the License.
 
 function getNonNilString(string? nilableString) returns string {
-    if nilableString is string {
-        return nilableString;
-    } else {
-        return "";
-    }
+    return nilableString ?: "";
 }
 
 function concatStrings(string[]? addresses) returns string {

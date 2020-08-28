@@ -17,8 +17,7 @@
 import ballerina/java;
 import ballerina/test;
 
-@test:Config {
-}
+@test:Config {}
 function testReceiveSimpleEmailImap() {
     string host = "127.0.0.1";
     string username = "hascode";

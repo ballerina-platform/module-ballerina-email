@@ -20,8 +20,7 @@ import ballerina/lang.'string as strings;
 import ballerina/stringutils;
 import ballerina/test;
 
-@test:Config {
-}
+@test:Config {}
 function testReceiveComplexEmailImap() {
 
     string host = "127.0.0.1";
