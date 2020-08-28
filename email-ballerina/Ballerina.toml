@@ -1,0 +1,39 @@
+[project]
+org-name = "ballerina"
+version = "@toml.version@"
+
+[platform]
+target = "java8"
+
+    [[platform.libraries]]
+    artifactId = "java.mail"
+    version = "1.6.2"
+    path = "./lib/javax.mail-1.6.2.jar"
+    groupId = "javax.mail"
+
+    [[platform.libraries]]
+    artifactId = "greenmail"
+    version = "1.5.11"
+    path = "./lib/greenmail-1.5.11.jar"
+    groupId = "com.sun.mail"
+
+    [[platform.libraries]]
+    artifactId = "testng"
+    version = "6.13.1"
+    path = "./lib/testng-6.13.1.jar"
+    groupId = "org.testng"
+
+    [[platform.libraries]]
+    artifactId = "email"
+    version = "0.7.0-SNAPSHOT"
+    path = "../email-native/build/libs/email-native-@project.version@.jar"
+    groupId = "ballerina"
+    modules = ["email"]
+
+    [[platform.libraries]]
+    artifactId = "email"
+    version = "0.7.0-SNAPSHOT"
+    path = "../email-test-utils/build/libs/email-test-utils-@project.version@.jar"
+    groupId = "org.ballerinalang.stdlib.email"
+    modules = ["email"]
+    scope = "testOnly"
