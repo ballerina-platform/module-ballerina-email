@@ -32,7 +32,7 @@ dependencies {
     }
     compile project(':email-native')
     packingJars (group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
-        transitive = true
+        transitive = false
     }
     packingJars (group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
         transitive = false
