@@ -35,7 +35,7 @@ public class EmailConstants {
     // Common constants
     public static final String CONNECTOR_NAME = "email";
     public static final String MODULE_NAME = "email";
-    public static final String MODULE_VERSION = "0.7.0";
+    public static final String MODULE_VERSION = "1.0.0";
     public static final BPackage EMAIL_PACKAGE_ID = new BPackage(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
                                                                  MODULE_VERSION);
     public static final BString PROPS_PORT = StringUtils.fromString("port");
