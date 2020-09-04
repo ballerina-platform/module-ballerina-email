@@ -222,7 +222,10 @@ public class EmailAccessUtil {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
             if (mimeMultipart != null && mimeMultipart.getCount() > 0 && mimeMultipart.getBodyPart(0) != null
                     && mimeMultipart.getBodyPart(0).getContent() != null) {
-                messageBody = (String) mimeMultipart.getBodyPart(0).getContent();
+                Object messageObject = mimeMultipart.getBodyPart(0).getContent();
+                if (messageObject instanceof String) {
+                    messageBody = (String) messageObject;
+                }
             }
         }
         return messageBody;

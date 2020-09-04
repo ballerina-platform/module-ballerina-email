@@ -38,6 +38,9 @@ dependencies {
     packingJars (group: 'org.testng', name: 'testng', version: "${testngVersion}") {
         transitive = false
     }
+    packingJars (group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
+        transitive = false
+    }
 }
 
 clean {

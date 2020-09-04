@@ -127,10 +127,10 @@ public class EmailAccessClient {
                 emailFolder.open(Folder.READ_WRITE);
                 Message[] messages = emailFolder.search(UNSEEN_FLAG);
                 if (messages.length > 0) {
+                    mapValue = EmailAccessUtil.getMapValue(messages[0]);
                     Flags flags = new Flags();
                     flags.add(Flags.Flag.SEEN);
                     emailFolder.setFlags(new int[] {messages[0].getMessageNumber()}, flags, true);
-                    mapValue = EmailAccessUtil.getMapValue(messages[0]);
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("Got the messages. Email count = " + messages.length);
