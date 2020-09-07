@@ -38,6 +38,7 @@ ext.testngVersion = "6.14.3"
 ext.slf4jVersion = "1.7.30"
 ext.javaMailVersion = "1.6.2"
 ext.greenmailVersion = "1.5.11"
+ext.mimepullVersion= "1.9.11"
 
 allprojects {
     group = 'org.ballerinalang'
