@@ -39,7 +39,7 @@ import javax.mail.internet.MimeMessage;
 public class ListenerImapReceiveTest {
 
     private static GreenMailUser user;
-    private static final int PORT_NUMBER = 3995;
+    private static final int PORT_NUMBER = 3993;
     private static final String USER_PASSWORD = "abcdef123";
     private static final String USER_NAME = "hascode";
     private static final String EMAIL_USER_ADDRESS = "hascode@localhost";

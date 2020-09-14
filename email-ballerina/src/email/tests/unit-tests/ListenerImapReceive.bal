@@ -71,7 +71,7 @@ function testListenEmailImap() {
     }
 
     ImapConfig imapConfig = {
-         port: 3995,
+         port: 3993,
          enableSsl: true
     };
     Listener emailServer = new ({
