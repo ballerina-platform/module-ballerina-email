@@ -115,13 +115,13 @@ function testSendComplexEmail() {
 }
 
 public function startComplexSmtpServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpComplexEmailSendTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpComplexEmailSendTest"
 } external;
 
 public function stopComplexSmtpServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpComplexEmailSendTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpComplexEmailSendTest"
 } external;
 
 public function validateComplexEmails() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpComplexEmailSendTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpComplexEmailSendTest"
 } external;

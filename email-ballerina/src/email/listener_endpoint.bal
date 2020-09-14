@@ -20,7 +20,7 @@ import ballerina/log;
 import ballerina/task;
 
 # Represents a service listener that monitors the email server location.
-public type Listener object {
+public class Listener {
 
     *lang:Listener;
 
@@ -137,7 +137,7 @@ public type Listener object {
     public function register(service emailService, string? name) {
         register(self, emailService);
     }
-};
+}
 
 service appointmentService = service {
     resource function onTrigger(Listener l) {
@@ -169,15 +169,15 @@ public type ListenerConfig record {|
 
 function poll(Listener listenerEndpoint) returns error? = @java:Method{
     name: "poll",
-    class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
+    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
 function externalInit(Listener listenerEndpoint, ListenerConfig config) returns error? = @java:Method{
     name: "init",
-    class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
+    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
 function register(Listener listenerEndpoint, service emailService) = @java:Method{
     name: "register",
-    class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
+    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;

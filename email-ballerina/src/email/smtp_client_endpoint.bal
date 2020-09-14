@@ -17,7 +17,7 @@
 import ballerina/java;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
-public type SmtpClient client object {
+public client class SmtpClient {
 
     # Gets invoked during the `email:SmtpClient` initialization.
     #
@@ -72,17 +72,17 @@ public type SmtpClient client object {
         return false;
     }
 
-};
+}
 
 function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
         SmtpConfig config) = @java:Method {
     name : "initClientEndpoint",
-    class : "org.ballerinalang.stdlib.email.client.SmtpClient"
+    'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
 
 function send(SmtpClient clientEndpoint, Email email) returns Error? = @java:Method {
     name : "sendMessage",
-    class : "org.ballerinalang.stdlib.email.client.SmtpClient"
+    'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
 
 # Configuration of the SMTP Endpoint.
