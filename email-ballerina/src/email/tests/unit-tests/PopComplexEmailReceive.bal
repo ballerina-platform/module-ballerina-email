@@ -125,13 +125,13 @@ function testReceiveComplexEmailPop() {
 }
 
 public function startComplexPopServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/PopComplexEmailReceiveTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/PopComplexEmailReceiveTest"
 } external;
 
 public function stopComplexPopServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/PopComplexEmailReceiveTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/PopComplexEmailReceiveTest"
 } external;
 
 public function sendEmailComplexPopServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/PopComplexEmailReceiveTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/PopComplexEmailReceiveTest"
 } external;

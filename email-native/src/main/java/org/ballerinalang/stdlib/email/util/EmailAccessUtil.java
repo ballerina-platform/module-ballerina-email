@@ -311,7 +311,7 @@ public class EmailAccessUtil {
         XMLValue xmlNode = XMLFactory.parse(xmlContent);
         ObjectValue entity = createEntityObject();
         EntityBodyChannel byteChannel = new EntityBodyChannel(new ByteArrayInputStream(
-                xmlNode.stringValue().getBytes(StandardCharsets.UTF_8)));
+                xmlNode.stringValue(null).getBytes(StandardCharsets.UTF_8)));
         entity.addNativeData(ENTITY_BYTE_CHANNEL, new EntityWrapper(byteChannel));
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_XML);
         setEntityHeaders(entity, bodyPart);

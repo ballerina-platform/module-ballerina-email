@@ -17,7 +17,7 @@
 import ballerina/java;
 
 # Represents an IMAP Client, which interacts with an IMAP Server.
-public type ImapClient client object {
+public client class ImapClient {
 
     # Gets invoked during the `email:ImapClient` initialization.
     #
@@ -43,17 +43,17 @@ public type ImapClient client object {
         return imapRead(self, folder);
     }
 
-};
+}
 
 function initImapClientEndpoint(ImapClient clientEndpoint, string host, string username, string password,
         ImapConfig config) returns Error? = @java:Method {
     name : "initImapClientEndpoint",
-    class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
+    'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
 function imapRead(ImapClient clientEndpoint, string folder) returns Email|Error? = @java:Method {
     name : "readMessage",
-    class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
+    'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
 # Configuration of the IMAP Endpoint.

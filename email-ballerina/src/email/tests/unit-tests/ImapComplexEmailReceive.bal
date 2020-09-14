@@ -124,13 +124,13 @@ function testReceiveComplexEmailImap() {
 }
 
 public function startComplexImapServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapComplexEmailReceiveTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapComplexEmailReceiveTest"
 } external;
 
 public function stopComplexImapServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapComplexEmailReceiveTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapComplexEmailReceiveTest"
 } external;
 
 public function sendEmailComplexImapServer() returns Error? = @java:Method {
-    class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapComplexEmailReceiveTest"
+    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapComplexEmailReceiveTest"
 } external;
