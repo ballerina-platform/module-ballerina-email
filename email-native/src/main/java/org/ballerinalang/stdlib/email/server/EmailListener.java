@@ -19,8 +19,10 @@
 package org.ballerinalang.stdlib.email.server;
 
 import org.ballerinalang.jvm.BRuntime;
+import org.ballerinalang.jvm.scheduling.StrandMetadata;
 import org.ballerinalang.jvm.values.ErrorValue;
 import org.ballerinalang.jvm.values.ObjectValue;
+import org.ballerinalang.jvm.values.connector.CallableUnitCallback;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR_METADATA;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
@@ -64,7 +67,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, ObjectValue>> services = registeredServices.entrySet();
             for (Map.Entry<String, ObjectValue> service : services) {
-                runtime.invokeMethodSync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA, email, true);
+                invokeMethodSync(service.getValue(), ON_MESSAGE, ON_MESSAGE_METADATA, email, true);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -72,8 +75,34 @@ public class EmailListener {
         return true;
     }
 
+    private void invokeMethodSync(ObjectValue object, String methodName, StrandMetadata metadata, Object... args) {
+        Semaphore semaphore = new Semaphore(0);
+        final ErrorValue[] errorValue = new ErrorValue[1];
+        runtime.invokeMethodAsync(object, methodName, null, metadata, new CallableUnitCallback() {
+            @Override
+            public void notifySuccess() {
+                semaphore.release();
+            }
+
+            @Override
+            public void notifyFailure(ErrorValue error) {
+                errorValue[0] = error;
+                semaphore.release();
+            }
+        }, args);
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            // Ignore
+        }
+        if (errorValue[0] != null) {
+            throw errorValue[0];
+        }
+    }
+
     /**
      * Place an error in Ballerina when received.
+     *
      * @param error Email object to be received
      */
     public void onError(Object error) {
@@ -81,8 +110,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, ObjectValue>> services = registeredServices.entrySet();
             for (Map.Entry<String, ObjectValue> service : services) {
-                runtime.invokeMethodSync(service.getValue(), EmailConstants.ON_ERROR, null,
-                                         ON_ERROR_METADATA, error, true);
+                invokeMethodSync(service.getValue(), EmailConstants.ON_ERROR, ON_ERROR_METADATA, error, true);
             }
         } else {
             log.error("Runtime should not be null.");
