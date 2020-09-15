@@ -21,6 +21,7 @@ package org.ballerinalang.stdlib.email.server;
 import org.ballerinalang.jvm.BRuntime;
 import org.ballerinalang.jvm.values.ErrorValue;
 import org.ballerinalang.jvm.values.ObjectValue;
+import org.ballerinalang.jvm.values.connector.CallableUnitCallback;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,16 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, ObjectValue>> services = registeredServices.entrySet();
             for (Map.Entry<String, ObjectValue> service : services) {
-                runtime.invokeMethodSync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA, email, true);
+                runtime.invokeMethodAsync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA, new CallableUnitCallback() {
+                    @Override
+                    public void notifySuccess() {
+                    }
+
+                    @Override
+                    public void notifyFailure(ErrorValue error) {
+                        log.error("Error while invoking email onMessage method.");
+                    }
+                }, email, true);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -81,8 +91,17 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, ObjectValue>> services = registeredServices.entrySet();
             for (Map.Entry<String, ObjectValue> service : services) {
-                runtime.invokeMethodSync(service.getValue(), EmailConstants.ON_ERROR, null,
-                                         ON_ERROR_METADATA, error, true);
+                runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_ERROR, null, ON_ERROR_METADATA,
+                        new CallableUnitCallback() {
+                    @Override
+                    public void notifySuccess() {
+                    }
+
+                    @Override
+                    public void notifyFailure(ErrorValue error) {
+                        log.error("Error while invoking email onMessage method.");
+                    }
+                }, error, true);
             }
         } else {
             log.error("Runtime should not be null.");
