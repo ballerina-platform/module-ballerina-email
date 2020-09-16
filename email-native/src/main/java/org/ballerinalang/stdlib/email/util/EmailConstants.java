@@ -18,10 +18,10 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import org.ballerinalang.jvm.StringUtils;
+import org.ballerinalang.jvm.api.BStringUtils;
+import org.ballerinalang.jvm.api.values.BString;
 import org.ballerinalang.jvm.scheduling.StrandMetadata;
 import org.ballerinalang.jvm.types.BPackage;
-import org.ballerinalang.jvm.values.api.BString;
 
 import static org.ballerinalang.jvm.util.BLangConstants.BALLERINA_BUILTIN_PKG_PREFIX;
 
@@ -38,40 +38,40 @@ public class EmailConstants {
     public static final String MODULE_VERSION = "1.0.0";
     public static final BPackage EMAIL_PACKAGE_ID = new BPackage(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
                                                                  MODULE_VERSION);
-    public static final BString PROPS_PORT = StringUtils.fromString("port");
-    public static final BString PROPS_USERNAME = StringUtils.fromString("username");
-    public static final BString MESSAGE_TO = StringUtils.fromString("to");
-    public static final BString MESSAGE_CC = StringUtils.fromString("cc");
-    public static final BString MESSAGE_BCC = StringUtils.fromString("bcc");
-    public static final BString MESSAGE_SUBJECT = StringUtils.fromString("subject");
-    public static final BString MESSAGE_MESSAGE_BODY = StringUtils.fromString("body");
-    public static final BString MESSAGE_BODY_CONTENT_TYPE = StringUtils.fromString("contentType");
-    public static final BString MESSAGE_FROM = StringUtils.fromString("from");
-    public static final BString MESSAGE_SENDER = StringUtils.fromString("sender");
-    public static final BString MESSAGE_REPLY_TO = StringUtils.fromString("replyTo");
-    public static final BString MESSAGE_ATTACHMENTS = StringUtils.fromString("attachments");
-    public static final BString MESSAGE_HEADERS = StringUtils.fromString("headers");
+    public static final BString PROPS_PORT = BStringUtils.fromString("port");
+    public static final BString PROPS_USERNAME = BStringUtils.fromString("username");
+    public static final BString MESSAGE_TO = BStringUtils.fromString("to");
+    public static final BString MESSAGE_CC = BStringUtils.fromString("cc");
+    public static final BString MESSAGE_BCC = BStringUtils.fromString("bcc");
+    public static final BString MESSAGE_SUBJECT = BStringUtils.fromString("subject");
+    public static final BString MESSAGE_MESSAGE_BODY = BStringUtils.fromString("body");
+    public static final BString MESSAGE_BODY_CONTENT_TYPE = BStringUtils.fromString("contentType");
+    public static final BString MESSAGE_FROM = BStringUtils.fromString("from");
+    public static final BString MESSAGE_SENDER = BStringUtils.fromString("sender");
+    public static final BString MESSAGE_REPLY_TO = BStringUtils.fromString("replyTo");
+    public static final BString MESSAGE_ATTACHMENTS = BStringUtils.fromString("attachments");
+    public static final BString MESSAGE_HEADERS = BStringUtils.fromString("headers");
 
     // Common constants to POP and IMAP
-    public static final BString PROPS_PROPERTIES = StringUtils.fromString("properties");
-    public static final BString PROPS_SSL = StringUtils.fromString("enableSsl");
-    public static final BString PROPS_HOST = StringUtils.fromString("host");
-    public static final BString PROPS_PASSWORD = StringUtils.fromString("password");
-    public static final BString PROPS_PROTOCOL = StringUtils.fromString("protocol");
+    public static final BString PROPS_PROPERTIES = BStringUtils.fromString("properties");
+    public static final BString PROPS_SSL = BStringUtils.fromString("enableSsl");
+    public static final BString PROPS_HOST = BStringUtils.fromString("host");
+    public static final BString PROPS_PASSWORD = BStringUtils.fromString("password");
+    public static final BString PROPS_PROTOCOL = BStringUtils.fromString("protocol");
     public static final String PROPS_STORE = "store";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
     public static final String MIME_CONTENT_TYPE_PATTERN = "multipart/*";
     public static final String READ_CLIENT_INIT_ERROR = "ReadClientInitError";
     public static final String READ_ERROR = "ReadError";
-    public static final BString ENDPOINT_CONFIG_SECURE_SOCKET = StringUtils.fromString("secureSocket");
-    public static final BString ENDPOINT_CONFIG_PRIVATE_KEY = StringUtils.fromString("privateKey");
-    public static final BString ENDPOINT_CONFIG_PATH = StringUtils.fromString("path");
-    public static final BString ENDPOINT_CONFIG_PASS_KEY = StringUtils.fromString("password");
+    public static final BString ENDPOINT_CONFIG_SECURE_SOCKET = BStringUtils.fromString("secureSocket");
+    public static final BString ENDPOINT_CONFIG_PRIVATE_KEY = BStringUtils.fromString("privateKey");
+    public static final BString ENDPOINT_CONFIG_PATH = BStringUtils.fromString("path");
+    public static final BString ENDPOINT_CONFIG_PASS_KEY = BStringUtils.fromString("password");
     public static final String IDENTITY = "IDENTITY";
     public static final String IDENTITY_PASS_PHRASE = "IDENTITY_PASS_PHRASE";
     public static final String URI = "uri";
     public static final String EMAIL_SERVER_CONNECTOR = "serverConnector";
-    public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocolConfig");
+    public static final BString PROTOCOL_CONFIG = BStringUtils.fromString("protocolConfig");
     public static final String DEFAULT_STORE_LOCATION = "INBOX";
     public static final String ON_MESSAGE = "onMessage";
     public static final String ON_ERROR = "onError";

@@ -18,9 +18,9 @@
 
 package org.ballerinalang.stdlib.email.client;
 
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.ObjectValue;
-import org.ballerinalang.jvm.values.api.BString;
+import org.ballerinalang.jvm.api.values.BMap;
+import org.ballerinalang.jvm.api.values.BObject;
+import org.ballerinalang.jvm.api.values.BString;
 import org.ballerinalang.stdlib.email.util.EmailAccessUtil;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.ballerinalang.stdlib.email.util.SmtpUtil;
@@ -54,7 +54,7 @@ public class EmailAccessClient {
     }
 
     /**
-     * Initializes the ObjectValue object with the POP properties.
+     * Initializes the BObject object with the POP properties.
      * @param clientEndpoint Represents the POP Client class
      * @param host Represents the host address of POP server
      * @param username Represents the username of the POP server
@@ -62,8 +62,8 @@ public class EmailAccessClient {
      * @param config Properties required to configure the POP session
      * @return If an error occurs in the POP client, returns an error
      */
-    public static Object initPopClientEndpoint(ObjectValue clientEndpoint, BString host, BString username,
-                                               BString password, MapValue<BString, Object> config) {
+    public static Object initPopClientEndpoint(BObject clientEndpoint, BString host, BString username,
+                                               BString password, BMap<BString, Object> config) {
         Properties properties = EmailAccessUtil.getPopProperties(config, host.getValue());
         Session session = Session.getInstance(properties, null);
         try {
@@ -80,7 +80,7 @@ public class EmailAccessClient {
     }
 
     /**
-     * Initializes the ObjectValue object with the IMAP properties.
+     * Initializes the BObject object with the IMAP properties.
      * @param clientEndpoint Represents the IMAP Client class
      * @param host Represents the host address of IMAP server
      * @param username Represents the username of the IMAP server
@@ -88,8 +88,8 @@ public class EmailAccessClient {
      * @param config Properties required to configure the IMAP session
      * @return If an error occurs in the IMAP client, returns an error
      */
-    public static Object initImapClientEndpoint(ObjectValue clientEndpoint, BString host, BString username,
-                                                BString password, MapValue<BString, Object> config) {
+    public static Object initImapClientEndpoint(BObject clientEndpoint, BString host, BString username,
+                                                BString password, BMap<BString, Object> config) {
         Properties properties = EmailAccessUtil.getImapProperties(config, host.getValue());
         Session session = Session.getInstance(properties, null);
         try {
@@ -111,7 +111,7 @@ public class EmailAccessClient {
      * @param folder Name of the folder to read emails
      * @return If successful return the received email, otherwise an error
      */
-    public static Object readMessage(ObjectValue clientConnector, BString folder) {
+    public static Object readMessage(BObject clientConnector, BString folder) {
         String host = (String) clientConnector.getNativeData(EmailConstants.PROPS_HOST.getValue());
         String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
         String password = (String) clientConnector.getNativeData(EmailConstants.PROPS_PASSWORD.getValue());
@@ -120,7 +120,7 @@ public class EmailAccessClient {
                     + " folder: " + folder.getValue());
             store.connect(host, username, password);
             Folder emailFolder = store.getFolder(folder.getValue());
-            MapValue<BString, Object> mapValue = null;
+            BMap<BString, Object> mapValue = null;
             if (emailFolder == null) {
                 log.error("Email store folder, " + folder.getValue() + " is not found.");
             } else {
