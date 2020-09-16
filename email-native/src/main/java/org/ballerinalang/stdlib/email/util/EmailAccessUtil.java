@@ -20,23 +20,21 @@ package org.ballerinalang.stdlib.email.util;
 
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Message;
-import org.ballerinalang.jvm.BallerinaValues;
 import org.ballerinalang.jvm.JSONParser;
-import org.ballerinalang.jvm.StringUtils;
 import org.ballerinalang.jvm.XMLFactory;
+import org.ballerinalang.jvm.api.BStringUtils;
+import org.ballerinalang.jvm.api.BValueCreator;
+import org.ballerinalang.jvm.api.values.BArray;
+import org.ballerinalang.jvm.api.values.BMap;
+import org.ballerinalang.jvm.api.values.BObject;
+import org.ballerinalang.jvm.api.values.BString;
 import org.ballerinalang.jvm.types.BArrayType;
 import org.ballerinalang.jvm.types.BType;
 import org.ballerinalang.jvm.types.BTypes;
 import org.ballerinalang.jvm.values.ArrayValue;
 import org.ballerinalang.jvm.values.ArrayValueImpl;
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.MapValueImpl;
-import org.ballerinalang.jvm.values.ObjectValue;
 import org.ballerinalang.jvm.values.XMLSequence;
 import org.ballerinalang.jvm.values.XMLValue;
-import org.ballerinalang.jvm.values.api.BArray;
-import org.ballerinalang.jvm.values.api.BString;
-import org.ballerinalang.jvm.values.api.BValueCreator;
 import org.ballerinalang.mime.util.EntityBodyChannel;
 import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityWrapper;
@@ -81,13 +79,13 @@ public class EmailAccessUtil {
     private static final BArrayType stringArrayType = new BArrayType(BTypes.typeString);
 
     /**
-     * Generates Properties object using the passed MapValue.
+     * Generates Properties object using the passed BMap.
      *
-     * @param emailAccessConfig MapValue with the configuration values
+     * @param emailAccessConfig BMap with the configuration values
      * @param host Host address of email server
      * @return Properties Email server access properties
      */
-    public static Properties getPopProperties(MapValue<BString, Object> emailAccessConfig, String host) {
+    public static Properties getPopProperties(BMap<BString, Object> emailAccessConfig, String host) {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_POP_HOST, host);
         properties.put(EmailConstants.PROPS_POP_PORT,
@@ -98,7 +96,7 @@ public class EmailAccessUtil {
                 emailAccessConfig.getBooleanValue(EmailConstants.PROPS_SSL));
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.POP_PROTOCOL);
         CommonUtil.addCustomProperties(
-                (MapValue<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
+                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("POP3 Properties set are as follows.");
@@ -111,13 +109,13 @@ public class EmailAccessUtil {
     }
 
     /**
-     * Generates Properties object using the passed MapValue.
+     * Generates Properties object using the passed BMap.
      *
-     * @param emailAccessConfig MapValue with the configuration values
+     * @param emailAccessConfig BMap with the configuration values
      * @param host Host address of email server
      * @return Properties Email server access properties
      */
-    public static Properties getImapProperties(MapValue<BString, Object> emailAccessConfig, String host) {
+    public static Properties getImapProperties(BMap<BString, Object> emailAccessConfig, String host) {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_IMAP_HOST, host);
         properties.put(EmailConstants.PROPS_IMAP_PORT,
@@ -128,7 +126,7 @@ public class EmailAccessUtil {
                 emailAccessConfig.getBooleanValue(EmailConstants.PROPS_SSL));
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
         CommonUtil.addCustomProperties(
-                (MapValue<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
+                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("IMAP4 Properties set are as follows.");
@@ -141,14 +139,14 @@ public class EmailAccessUtil {
     }
 
     /**
-     * Generates MapValue object using the passed message.
+     * Generates BMap object using the passed message.
      *
      * @param message Email message received
-     * @return MapValue Ballerina compatible map object
+     * @return BMap Ballerina compatible map object
      * @throws MessagingException If an error occurs related to messaging
      * @throws IOException If an error occurs related to I/O
      */
-    public static MapValue<BString, Object> getMapValue(Message message) throws MessagingException, IOException {
+    public static BMap<BString, Object> getMapValue(Message message) throws MessagingException, IOException {
         Map<String, Object> valueMap = new HashMap<>();
         BArray toAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.TO));
         BArray ccAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.CC));
@@ -156,7 +154,7 @@ public class EmailAccessUtil {
         BArray replyToAddressArrayValue = getAddressBArrayList(message.getReplyTo());
         String subject = getStringNullChecked(message.getSubject());
         String messageBody = extractBodyFromMessage(message);
-        MapValue<BString, BString> headers = extractHeadersFromMessage(message);
+        BMap<BString, Object> headers = extractHeadersFromMessage(message);
         String messageContentType = message.getContentType();
         String fromAddress = extractFromAddressFromMessage(message);
         String senderAddress = getSenderAddress(message);
@@ -184,16 +182,16 @@ public class EmailAccessUtil {
         if (attachments != null && attachments.size() > 0) {
             valueMap.put(EmailConstants.MESSAGE_ATTACHMENTS.getValue(), attachments);
         }
-        return BallerinaValues.createRecordValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.EMAIL, valueMap);
+        return BValueCreator.createRecordValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.EMAIL, valueMap);
     }
 
-    private static MapValue<BString, BString> extractHeadersFromMessage(Message message) throws MessagingException {
-        MapValue<BString, BString> headerMap = new MapValueImpl<>();
+    private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {
+        BMap<BString, Object> headerMap = BValueCreator.createMapValue();
         Enumeration<Header> headers = message.getAllHeaders();
         if (headers.hasMoreElements()) {
             while (headers.hasMoreElements()) {
                 Header header = headers.nextElement();
-                headerMap.put(StringUtils.fromString(header.getName()), StringUtils.fromString(header.getValue()));
+                headerMap.put(BStringUtils.fromString(header.getName()), BStringUtils.fromString(header.getValue()));
             }
             return headerMap;
         }
@@ -207,7 +205,7 @@ public class EmailAccessUtil {
     private static Object getJsonContent(String messageContent) {
         Object json = JSONParser.parse(messageContent);
         if (json instanceof String) {
-            return StringUtils.fromString((String) json);
+            return BStringUtils.fromString((String) json);
         }
         return json;
     }
@@ -232,7 +230,7 @@ public class EmailAccessUtil {
     }
 
     private static BArray extractAttachmentsFromMessage(Message message) throws MessagingException, IOException {
-        ArrayList<ObjectValue> attachmentArray = new ArrayList<>();
+        ArrayList<BObject> attachmentArray = new ArrayList<>();
         if (!message.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
             return null;
         } else {
@@ -250,7 +248,7 @@ public class EmailAccessUtil {
         }
     }
 
-    private static void attachMultipart(BodyPart bodyPart, ArrayList<ObjectValue> entityArray)
+    private static void attachMultipart(BodyPart bodyPart, ArrayList<BObject> entityArray)
             throws MessagingException, IOException {
         if (bodyPart.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
             entityArray.add(getMultipartEntity(bodyPart));
@@ -270,9 +268,9 @@ public class EmailAccessUtil {
         }
     }
 
-    private static ObjectValue getMultipartEntity(BodyPart bodyPart) throws MessagingException, IOException {
-        ObjectValue multipartEntity = createEntityObject();
-        ArrayList<ObjectValue> entities = getMultipleEntities(bodyPart);
+    private static BObject getMultipartEntity(BodyPart bodyPart) throws MessagingException, IOException {
+        BObject multipartEntity = createEntityObject();
+        ArrayList<BObject> entities = getMultipleEntities(bodyPart);
         if (entities != null && bodyPart.getContentType() != null) {
             multipartEntity.addNativeData(BODY_PARTS, getArrayOfEntities(entities));
             MimeUtil.setContentType(createMediaTypeObject(), multipartEntity, bodyPart.getContentType());
@@ -281,9 +279,9 @@ public class EmailAccessUtil {
         return multipartEntity;
     }
 
-    private static ArrayList<ObjectValue> getMultipleEntities(BodyPart bodyPart)
+    private static ArrayList<BObject> getMultipleEntities(BodyPart bodyPart)
             throws IOException, MessagingException {
-        ArrayList<ObjectValue> entityArray = new ArrayList<>();
+        ArrayList<BObject> entityArray = new ArrayList<>();
         MimeMultipart mimeMultipart = (MimeMultipart) bodyPart.getContent();
         int numberOfBodyParts = mimeMultipart.getCount();
         if (numberOfBodyParts > 0) {
@@ -296,9 +294,9 @@ public class EmailAccessUtil {
         }
     }
 
-    private static ObjectValue getJsonEntity(BodyPart bodyPart) throws IOException, MessagingException {
+    private static BObject getJsonEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String jsonContent = (String) bodyPart.getContent();
-        ObjectValue entity = createEntityObject();
+        BObject entity = createEntityObject();
         EntityWrapper byteChannel = EntityBodyHandler.getEntityWrapper(jsonContent);
         entity.addNativeData(MimeConstants.ENTITY_BYTE_CHANNEL, byteChannel);
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_JSON);
@@ -306,10 +304,10 @@ public class EmailAccessUtil {
         return entity;
     }
 
-    private static ObjectValue getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
+    private static BObject getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String xmlContent = (String) bodyPart.getContent();
         XMLValue xmlNode = XMLFactory.parse(xmlContent);
-        ObjectValue entity = createEntityObject();
+        BObject entity = createEntityObject();
         EntityBodyChannel byteChannel = new EntityBodyChannel(new ByteArrayInputStream(
                 xmlNode.stringValue(null).getBytes(StandardCharsets.UTF_8)));
         entity.addNativeData(ENTITY_BYTE_CHANNEL, new EntityWrapper(byteChannel));
@@ -318,26 +316,26 @@ public class EmailAccessUtil {
         return entity;
     }
 
-    private static ObjectValue getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
+    private static BObject getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String textPayload = (String) bodyPart.getContent();
-        ObjectValue entity = BallerinaValues.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+        BObject entity = BValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
         entity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getEntityWrapper(textPayload));
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.TEXT_PLAIN);
         setEntityHeaders(entity, bodyPart);
         return entity;
     }
 
-    private static ObjectValue getBinaryEntity(BodyPart bodyPart) throws IOException, MessagingException {
+    private static BObject getBinaryEntity(BodyPart bodyPart) throws IOException, MessagingException {
         byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
         EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
-        ObjectValue entity = createEntityObject();
+        BObject entity = createEntityObject();
         entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
         MimeUtil.setContentType(createMediaTypeObject(), entity, OCTET_STREAM);
         setEntityHeaders(entity, bodyPart);
         return entity;
     }
 
-    private static void setEntityHeaders(ObjectValue entity, BodyPart bodyPart) throws MessagingException {
+    private static void setEntityHeaders(BObject entity, BodyPart bodyPart) throws MessagingException {
         Enumeration<Header> headers = bodyPart.getAllHeaders();
         while (headers.hasMoreElements()) {
             Header header = headers.nextElement();
@@ -345,18 +343,18 @@ public class EmailAccessUtil {
         }
     }
 
-    private static ArrayValue getArrayOfEntities(ArrayList<ObjectValue> entities) {
+    private static ArrayValue getArrayOfEntities(ArrayList<BObject> entities) {
         BType typeOfEntity = entities.get(0).getType();
-        ObjectValue[] result = entities.toArray(new ObjectValue[entities.size()]);
+        BObject[] result = entities.toArray(new BObject[entities.size()]);
         return new ArrayValueImpl(result, new BArrayType(typeOfEntity));
     }
 
-    private static ObjectValue createMediaTypeObject() {
-        return BallerinaValues.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE);
+    private static BObject createMediaTypeObject() {
+        return BValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE);
     }
 
-    private static ObjectValue createEntityObject() {
-        return BallerinaValues.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+    private static BObject createEntityObject() {
+        return BValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
     }
 
     private static String extractFromAddressFromMessage(Message message) throws MessagingException {
@@ -385,7 +383,7 @@ public class EmailAccessUtil {
         BArray addressArrayValue = BValueCreator.createArrayValue(stringArrayType);
         if (addresses != null) {
             for (Address address: addresses) {
-                addressArrayValue.append(StringUtils.fromString(address.toString()));
+                addressArrayValue.append(BStringUtils.fromString(address.toString()));
             }
         }
         return addressArrayValue;
