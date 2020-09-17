@@ -26,7 +26,7 @@ public client class PopClient {
     # + password - Password of the POP Client
     # + clientConfig - Configurations for the POP Client
     # + return - An `email:Error` if creating the client failed or else `()`
-    public function init(@untainted string host, @untainted string username, @untainted string password,
+    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
             PopConfig clientConfig = {}) {
         return checkpanic initPopClientEndpoint(self, host, username, password, clientConfig);
     }
@@ -39,19 +39,19 @@ public client class PopClient {
     # + folder - Folder to read emails. The default value is `INBOX`
     # + return - An`email:Email` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    public remote function read(string folder = DEFAULT_FOLDER) returns Email|Error? {
+    public remote isolated function read(string folder = DEFAULT_FOLDER) returns Email|Error? {
         return popRead(self, folder);
     }
 
 }
 
-function initPopClientEndpoint(PopClient clientEndpoint, string host, string username, string password,
+isolated function initPopClientEndpoint(PopClient clientEndpoint, string host, string username, string password,
         PopConfig config) returns Error? = @java:Method {
     name : "initPopClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
-function popRead(PopClient clientEndpoint, string folder) returns Email|Error? = @java:Method {
+isolated function popRead(PopClient clientEndpoint, string folder) returns Email|Error? = @java:Method {
     name : "readMessage",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;

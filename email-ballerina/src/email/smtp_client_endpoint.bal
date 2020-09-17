@@ -25,7 +25,7 @@ public client class SmtpClient {
     # + username - Username of the SMTP Client
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
-    public function init(@untainted string host, @untainted string username, @untainted string password,
+    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
             SmtpConfig clientConfig = {}) {
         initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
@@ -37,7 +37,7 @@ public client class SmtpClient {
     #
     # + email - An `email:Email` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    public remote function send(Email email) returns Error? {
+    public remote isolated function send(Email email) returns Error? {
         var body = email.body;
         if (body is xml) {
             if (email?.contentType == ()) {
@@ -63,7 +63,7 @@ public client class SmtpClient {
         return send(self, email);
     }
 
-    private function containsType(string? contentType, string typeString) returns boolean {
+    private isolated function containsType(string? contentType, string typeString) returns boolean {
         if (contentType is string) {
             string canonicalizedCtype = contentType.toLowerAscii();
             int? stringIndex = canonicalizedCtype.indexOf(typeString);
@@ -74,13 +74,13 @@ public client class SmtpClient {
 
 }
 
-function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
+isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
         SmtpConfig config) = @java:Method {
     name : "initClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
 
-function send(SmtpClient clientEndpoint, Email email) returns Error? = @java:Method {
+isolated function send(SmtpClient clientEndpoint, Email email) returns Error? = @java:Method {
     name : "sendMessage",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
