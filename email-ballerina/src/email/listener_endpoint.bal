@@ -30,7 +30,7 @@ public class Listener {
     # Gets invoked during the `email:Listener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
-    public function init(ListenerConfig listenerConfig) {
+    public isolated function init(ListenerConfig listenerConfig) {
         self.config = listenerConfig;
         checkpanic externalInit(self, self.config);
     }
@@ -41,7 +41,7 @@ public class Listener {
     # ```
     #
     # + return - () or else error upon failure to start the listener
-    public function __start() returns error? {
+    public isolated function __start() returns error? {
         return self.start();
     }
 
@@ -51,7 +51,7 @@ public class Listener {
     # ```
     #
     # + return - () or else error upon failure to stop the listener
-    public function __stop() returns error? {
+    public isolated function __stop() returns error? {
         check self.stop();
     }
 
@@ -63,7 +63,7 @@ public class Listener {
     # + s - Type descriptor of the service
     # + name - Name of the service
     # + return - `()` or else a `email:Error` upon failure to register the listener
-    public function __attach(service s, string? name) returns error? {
+    public isolated function __attach(service s, string? name) returns error? {
         return self.register(s, name);
     }
 
@@ -74,7 +74,7 @@ public class Listener {
     #
     # + s - Type descriptor of the service
     # + return - `()` or else a `email:Error` upon failure to detach the service
-    public function __detach(service s) returns error? {
+    public isolated function __detach(service s) returns error? {
 
     }
 
@@ -84,7 +84,7 @@ public class Listener {
     # ```
     #
     # + return - `()` or else a `email:Error` upon failure to stop the listener
-    public function __immediateStop() returns error? {
+    public isolated function __immediateStop() returns error? {
         check self.stop();
     }
 
@@ -94,11 +94,11 @@ public class Listener {
     # ```
     #
     # + return - () or else error upon failure to stop the listener
-    public function __gracefulStop() returns error? {
+    public isolated function __gracefulStop() returns error? {
         check self.stop();
     }
 
-    function 'start() returns error? {
+    isolated function 'start() returns error? {
         var scheduler = self.config.cronExpression;
         if (scheduler is string) {
             task:AppointmentConfiguration config = {appointmentDetails: scheduler};
@@ -115,7 +115,7 @@ public class Listener {
         log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
-    function stop() returns error? {
+    isolated function stop() returns error? {
         var appointment = self.appointment;
         if (appointment is task:Scheduler) {
             check appointment.stop();
@@ -123,7 +123,7 @@ public class Listener {
         log:printInfo("Stopped listening to remote server at " + self.config.host);
     }
 
-    function poll() returns error? {
+    isolated function poll() returns error? {
         return poll(self);
     }
 
@@ -134,13 +134,13 @@ public class Listener {
     #
     # + emailService - Type descriptor of the service
     # + name - Service name
-    public function register(service emailService, string? name) {
+    public isolated function register(service emailService, string? name) {
         register(self, emailService);
     }
 }
 
-service appointmentService = service {
-    resource function onTrigger(Listener l) {
+final service appointmentService = service {
+    resource isolated function onTrigger(Listener l) {
         var result = l.poll();
         if (result is error) {
             log:printError("Error while executing poll function", result);
@@ -167,17 +167,17 @@ public type ListenerConfig record {|
     string? cronExpression = ();
 |};
 
-function poll(Listener listenerEndpoint) returns error? = @java:Method{
+isolated function poll(Listener listenerEndpoint) returns error? = @java:Method{
     name: "poll",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
-function externalInit(Listener listenerEndpoint, ListenerConfig config) returns error? = @java:Method{
+isolated function externalInit(Listener listenerEndpoint, ListenerConfig config) returns error? = @java:Method{
     name: "init",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
-function register(Listener listenerEndpoint, service emailService) = @java:Method{
+isolated function register(Listener listenerEndpoint, service emailService) = @java:Method{
     name: "register",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
