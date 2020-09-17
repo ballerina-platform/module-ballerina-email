@@ -22,7 +22,6 @@ import org.ballerinalang.jvm.api.BRuntime;
 import org.ballerinalang.jvm.api.values.BMap;
 import org.ballerinalang.jvm.api.values.BObject;
 import org.ballerinalang.jvm.api.values.BString;
-import org.ballerinalang.jvm.values.MapValue;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 
 import java.util.HashMap;
