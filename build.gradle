@@ -19,7 +19,7 @@ plugins {
     id "com.github.spotbugs" version "4.0.5"
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "de.undercouch.download" version "4.0.4"
-    id "net.researchgate.release" version "2.6.0"
+    id "net.researchgate.release" version "2.8.0"
 }
 
 ext.ballerinaLangVersion = project.ballerinaLangVersion
@@ -167,9 +167,18 @@ subprojects {
     apply plugin: 'java'
 
     configurations {
+        externalJars
         ballerinaStdLibs
     }
     dependencies {
+        compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
+        compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+
+        compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
+        compile group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
+        compile group: 'org.testng', name: 'testng', version: "${testngVersion}"
+        compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
+
         /* Standard libraries */
         ballerinaStdLibs "org.ballerinalang:task-ballerina:${stdlibTaskVersion}"
         ballerinaStdLibs "org.ballerinalang:runtime-ballerina:${stdlibRuntimeVersion}"
@@ -182,19 +191,38 @@ subprojects {
         ballerinaStdLibs "org.ballerinalang:config-ballerina:${stdlibConfigVersion}"
         ballerinaStdLibs "org.ballerinalang:io-ballerina:${stdlibIoVersion}"
 
+        externalJars(group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
+            transitive = false
+        }
+        externalJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
+            transitive = false
+        }
+        externalJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
+            transitive = false
+        }
+        externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
+            transitive = false
+        }
+
     }
 
-    release {
-        // Disable check snapshots temporarily
-        buildTasks = []
-        failOnSnapshotDependencies = false
-        failOnCommitNeeded = false
-        versionPropertyFile = 'gradle.properties'
-        tagTemplate = 'v${version}'
-        git {
-            // To release from any branch
-            requireBranch = null
-        }
+}
+
+def moduleVersion = project.version
+if (moduleVersion.indexOf('-') != -1) {
+    moduleVersion = moduleVersion.substring(0, moduleVersion.indexOf('-'))
+}
+
+release {
+    failOnPublishNeeded = false
+
+    buildTasks = []
+    versionPropertyFile = 'gradle.properties'
+    tagTemplate = 'v$version'
+
+    git {
+        requireBranch = "release-${moduleVersion}"
+        pushToRemote = 'origin'
     }
 }
 
