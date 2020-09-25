@@ -70,6 +70,10 @@ allprojects {
         }
 
         maven {
+            url = 'https://maven.pkg.github.com/ballerina-platform/ballerina-lang'
+        }
+
+        maven {
             url = 'https://mvnrepository.com/artifact/com.icegreen/greenmail'
         }
 
