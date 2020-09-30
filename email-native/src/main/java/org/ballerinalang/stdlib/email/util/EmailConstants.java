@@ -33,7 +33,6 @@ import static org.ballerinalang.jvm.util.BLangConstants.BALLERINA_BUILTIN_PKG_PR
 public class EmailConstants {
 
     // Common constants
-    public static final String CONNECTOR_NAME = "email";
     public static final String MODULE_NAME = "email";
     public static final String MODULE_VERSION = "1.0.1";
     public static final BPackage EMAIL_PACKAGE_ID = new BPackage(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
@@ -108,7 +107,6 @@ public class EmailConstants {
 
     public static final String EMAIL = "Email";
     public static final String ERROR = "Error";
-    public static final String HEADER = "Header";
 
     // Strand meta data
     public static final StrandMetadata ON_MESSAGE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
