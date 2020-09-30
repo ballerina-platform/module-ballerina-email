@@ -62,27 +62,19 @@ allprojects {
         }
 
         maven {
-            url = 'https://maven.wso2.org/nexus/content/repositories/orgballerinalang-1614'
-        }
-
-        maven {
             url = 'https://repo.maven.apache.org/maven2'
         }
 
         maven {
             url = 'https://maven.pkg.github.com/ballerina-platform/ballerina-lang'
-        }
-
-        maven {
-            url = 'https://mvnrepository.com/artifact/com.icegreen/greenmail'
-        }
-
-        maven {
-            url = 'https://maven.pkg.github.com/ballerina-platform/module-ballerina-email'
             credentials {
                 username System.getenv("packageUser")
                 password System.getenv("packagePAT")
             }
+        }
+
+        maven {
+            url = 'https://mvnrepository.com/artifact/com.icegreen/greenmail'
         }
 
         maven {
