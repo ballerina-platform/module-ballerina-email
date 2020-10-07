@@ -64,15 +64,15 @@ public class EmailConsumer {
                                                        BStringUtils.fromString(host), BStringUtils.fromString(username),
                                                        BStringUtils.fromString(password), protocolConfig);
             EmailAccessClient.initImapClientEndpoint(client, BStringUtils.fromString(host),
-                                                     BStringUtils.fromString(username), BStringUtils.fromString(password),
-                                                     protocolConfig);
+                                                     BStringUtils.fromString(username),
+                                                     BStringUtils.fromString(password), protocolConfig);
         } else if (protocol.equals(EmailConstants.POP)) {
             client = BValueCreator.createObjectValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.POP_CLIENT,
                                                        BStringUtils.fromString(host), BStringUtils.fromString(username),
                                                        BStringUtils.fromString(password), protocolConfig);
             EmailAccessClient.initPopClientEndpoint(client, BStringUtils.fromString(host),
-                                                    BStringUtils.fromString(username), BStringUtils.fromString(password),
-                                                    protocolConfig);
+                                                    BStringUtils.fromString(username),
+                                                    BStringUtils.fromString(password), protocolConfig);
         } else {
             String errorMsg = "Protocol should either be 'IMAP' or 'POP'.";
             throw new EmailConnectorException(errorMsg);
