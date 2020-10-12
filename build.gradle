@@ -38,6 +38,7 @@ ext.testngVersion = "6.14.3"
 ext.slf4jVersion = "1.7.30"
 ext.javaMailVersion = "1.6.2"
 ext.greenmailVersion = "1.5.11"
+//ext.jakartaActivationVersion = "1.2.2"
 ext.mimepullVersion= "1.9.11"
 
 allprojects {
@@ -69,9 +70,13 @@ allprojects {
             }
         }
 
-        maven {
-            url = 'https://mvnrepository.com/artifact/com.icegreen/greenmail'
-        }
+//        maven {
+//            url = 'https://mvnrepository.com/artifact/com.icegreen/greenmail'
+//        }
+
+//        maven {
+//            url = 'https://mvnrepository.com/artifact/com.sun.activation/javax.activation'
+//        }
 
         maven {
             url = 'https://maven.pkg.github.com/ballerina-platform/module-ballerina-task'
@@ -163,13 +168,14 @@ subprojects {
         ballerinaStdLibs
     }
     dependencies {
-        compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
-        compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
-
-        compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
-        compile group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
-        compile group: 'org.testng', name: 'testng', version: "${testngVersion}"
-        compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
+//        compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
+//        compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+//
+//        compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
+//        compile group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
+//        compile group: 'com.sun.activation', name: 'jakarta.activation', version: "${jakartaActivationVersion}"
+//        compile group: 'org.testng', name: 'testng', version: "${testngVersion}"
+//        compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
 
         /* Standard libraries */
         ballerinaStdLibs "org.ballerinalang:task-ballerina:${stdlibTaskVersion}"
@@ -183,18 +189,21 @@ subprojects {
         ballerinaStdLibs "org.ballerinalang:config-ballerina:${stdlibConfigVersion}"
         ballerinaStdLibs "org.ballerinalang:io-ballerina:${stdlibIoVersion}"
 
-        externalJars(group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
-            transitive = false
-        }
-        externalJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
-            transitive = false
-        }
-        externalJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
-            transitive = false
-        }
-        externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
-            transitive = false
-        }
+//        externalJars(group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
+//            transitive = false
+//        }
+//        externalJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
+//            transitive = false
+//        }
+//        externalJars(group: 'com.sun.activation', name: 'jakarta.activation', version: "${jakartaActivationVersion}") {
+//            transitive = false
+//        }
+//        externalJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
+//            transitive = false
+//        }
+//        externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
+//            transitive = false
+//        }
 
     }
 

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.ballerinalang.stdlib.email.testutils.mockServerUtils;
+package org.ballerinalang.stdlib.email.testutils;
 
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
@@ -35,11 +35,11 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 /**
- * Test class for email receive using IMAP with all the parameters.
+ * Test class for email receive using POP3 with all the parameters.
  *
  * @since slp4
  */
-public class ImapComplexEmailReceiveTest {
+public class PopComplexEmailReceiveTest {
 
     private static GreenMailUser user;
     private static final String USER_PASSWORD = "abcdef123";
@@ -63,23 +63,23 @@ public class ImapComplexEmailReceiveTest {
     private static final String[] EMAIL_REPLY_TO_ADDRESSES = {"reply1@abc.com", "reply2@abc.com"};
     private static GreenMail mailServer;
 
-    public static Object startComplexImapServer() {
+    public static Object startComplexPopServer() throws MessagingException {
         startServer();
         return null;
     }
 
-    public static Object stopComplexImapServer() {
+    public static Object stopComplexPopServer() {
         mailServer.stop();
         return null;
     }
 
-    public static Object sendEmailComplexImapServer() throws MessagingException {
+    public static Object sendEmailComplexPopServer() throws MessagingException {
         sendEmail();
         return null;
     }
 
     private static void startServer() {
-        mailServer = new GreenMail(ServerSetupTest.IMAP);
+        mailServer = new GreenMail(ServerSetupTest.POP3);
         mailServer.start();
         user = mailServer.setUser(EMAIL_USER_ADDRESS, USER_NAME, USER_PASSWORD);
         mailServer.setUser(EMAIL_USER_ADDRESS, USER_NAME, USER_PASSWORD);

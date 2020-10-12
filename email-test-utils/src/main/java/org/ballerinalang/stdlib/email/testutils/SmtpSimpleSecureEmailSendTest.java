@@ -16,17 +16,16 @@
  * under the License.
  */
 
-package org.ballerinalang.stdlib.email.testutils.mockServerUtils;
+package org.ballerinalang.stdlib.email.testutils;
 
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 
-import java.io.IOException;
-import java.security.Security;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.security.Security;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;

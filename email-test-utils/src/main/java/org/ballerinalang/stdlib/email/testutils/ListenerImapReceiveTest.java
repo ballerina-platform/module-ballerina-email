@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.ballerinalang.stdlib.email.testutils.mockServerUtils;
+package org.ballerinalang.stdlib.email.testutils;
 
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.DummySSLSocketFactory;

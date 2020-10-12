@@ -118,13 +118,13 @@ function testListenEmailPop() {
 }
 
 public function startPopListener() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ListenerPopReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ListenerPopReceiveTest"
 } external;
 
 public function stopPopListener() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ListenerPopReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ListenerPopReceiveTest"
 } external;
 
 public function sendEmailPopListener() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ListenerPopReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ListenerPopReceiveTest"
 } external;

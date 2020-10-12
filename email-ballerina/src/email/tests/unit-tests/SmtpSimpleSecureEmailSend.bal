@@ -68,13 +68,13 @@ function testSendSimpleEmail() {
 }
 
 public function startSimpleSecureSmtpServer() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpSimpleSecureEmailSendTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.SmtpSimpleSecureEmailSendTest"
 } external;
 
 public function stopSimpleSecureSmtpServer() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpSimpleSecureEmailSendTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.SmtpSimpleSecureEmailSendTest"
 } external;
 
 public function validateSimpleSecureEmail() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/SmtpSimpleSecureEmailSendTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.SmtpSimpleSecureEmailSendTest"
 } external;
