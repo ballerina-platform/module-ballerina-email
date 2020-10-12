@@ -70,10 +70,6 @@ allprojects {
         }
 
         maven {
-            url = 'https://mvnrepository.com/artifact/com.icegreen/greenmail'
-        }
-
-        maven {
             url = 'https://maven.pkg.github.com/ballerina-platform/module-ballerina-task'
             credentials {
                 username System.getenv("packageUser")
@@ -163,13 +159,6 @@ subprojects {
         ballerinaStdLibs
     }
     dependencies {
-        compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
-        compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
-
-        compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
-        compile group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
-        compile group: 'org.testng', name: 'testng', version: "${testngVersion}"
-        compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
 
         /* Standard libraries */
         ballerinaStdLibs "org.ballerinalang:task-ballerina:${stdlibTaskVersion}"
@@ -182,19 +171,6 @@ subprojects {
         ballerinaStdLibs "org.ballerinalang:system-ballerina:${stdlibSystemVersion}"
         ballerinaStdLibs "org.ballerinalang:config-ballerina:${stdlibConfigVersion}"
         ballerinaStdLibs "org.ballerinalang:io-ballerina:${stdlibIoVersion}"
-
-        externalJars(group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
-            transitive = false
-        }
-        externalJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
-            transitive = false
-        }
-        externalJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
-            transitive = false
-        }
-        externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
-            transitive = false
-        }
 
     }
 

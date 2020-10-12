@@ -119,13 +119,13 @@ function testListenEmailImap() {
 }
 
 public function startImapListener() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ListenerImapReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ListenerImapReceiveTest"
 } external;
 
 public function stopImapListener() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ListenerImapReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ListenerImapReceiveTest"
 } external;
 
 public function sendEmailImapListener() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ListenerImapReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ListenerImapReceiveTest"
 } external;

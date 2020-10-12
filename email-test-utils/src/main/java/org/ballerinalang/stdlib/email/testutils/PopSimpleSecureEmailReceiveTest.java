@@ -16,27 +16,26 @@
  * under the License.
  */
 
-package org.ballerinalang.stdlib.email.testutils.mockServerUtils;
+package org.ballerinalang.stdlib.email.testutils;
 
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 
-import java.security.Security;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.security.Security;
 
 /**
- * Test class for email receipt using the listener.
+ * Test class for email receive using POP3S with least number of parameters.
  *
  * @since slp4
  */
-public class ListenerPopReceiveTest {
+public class PopSimpleSecureEmailReceiveTest {
 
     private static GreenMailUser user;
     private static final int PORT_NUMBER = 3995;
@@ -50,20 +49,18 @@ public class ListenerPopReceiveTest {
     private static final int SERVER_TIMEOUT = 5000;
     private static GreenMail mailServer;
 
-    public static Object startPopListener() {
+    public static Object startSimpleSecurePopServer() {
         startServer();
         return null;
     }
 
-    public static Object stopPopListener() throws InterruptedException {
+    public static Object stopSimpleSecurePopServer() {
         mailServer.stop();
-        Thread.sleep(10000);
         return null;
     }
 
-    public static Object sendEmailPopListener() throws MessagingException, InterruptedException {
+    public static Object sendEmailSimpleSecurePopServer() throws MessagingException {
         sendEmail();
-        Thread.sleep(10000);
         return null;
     }
 

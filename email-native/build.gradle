@@ -32,16 +32,10 @@ dependencies {
 
     compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
     compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-mime', version: "${ballerinaLangVersion}"
 
-    compile group: 'org.ballerinalang', name: 'ballerina-io', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-system', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-file', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-runtime-api', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-task', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-time', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-log-api', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-java', version: "${ballerinaLangVersion}"
+    compile group: 'org.ballerinalang', name: 'ballerina-core', version: "${ballerinaLangVersion}"
+    compile group: 'org.ballerinalang', name: 'io-native', version: "${stdlibIoVersion}"
+    compile group: 'org.ballerinalang', name: 'mime-native', version: "${stdlibMimeVersion}"
 
 }
 
@@ -52,3 +46,17 @@ checkstyle {
 }
 
 checkstyleMain.dependsOn(":build-config:checkstyle:downloadMultipleFiles")
+
+def excludePattern = '**/module-info.java'
+tasks.withType(Checkstyle) {
+    exclude excludePattern
+}
+
+compileJava {
+    doFirst {
+        options.compilerArgs = [
+                '--module-path', classpath.asPath,
+        ]
+        classpath = files()
+    }
+}

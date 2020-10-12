@@ -61,13 +61,13 @@ function testReceiveSimpleEmailImap() {
 }
 
 public function startSimpleSecureImapServer() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapSimpleSecureEmailReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleSecureEmailReceiveTest"
 } external;
 
 public function stopSimpleSecureImapServer() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapSimpleSecureEmailReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleSecureEmailReceiveTest"
 } external;
 
 public function sendEmailSimpleSecureImapServer() returns Error? = @java:Method {
-    'class: "org/ballerinalang/stdlib/email/testutils/mockServerUtils/ImapSimpleSecureEmailReceiveTest"
+    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleSecureEmailReceiveTest"
 } external;
