@@ -18,10 +18,10 @@
 
 package org.ballerinalang.stdlib.email.server;
 
-import org.ballerinalang.jvm.api.BRuntime;
-import org.ballerinalang.jvm.api.values.BMap;
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.api.values.BString;
+import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class EmailListenerHelper {
      */
     public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig)
             throws EmailConnectorException {
-        final EmailListener listener = new EmailListener(BRuntime.getCurrentRuntime());
+        final EmailListener listener = new EmailListener(Runtime.getCurrentRuntime());
         Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig);
         EmailConnector emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
         emailListener.addNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR, emailConnector);

@@ -18,10 +18,10 @@
 
 package org.ballerinalang.stdlib.email.server;
 
-import org.ballerinalang.jvm.api.BRuntime;
-import org.ballerinalang.jvm.api.connector.CallableUnitCallback;
-import org.ballerinalang.jvm.api.values.BError;
-import org.ballerinalang.jvm.api.values.BObject;
+import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.async.Callback;
+import io.ballerina.runtime.api.values.BError;
+import io.ballerina.runtime.api.values.BObject;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class EmailListener {
 
     private static final Logger log = LoggerFactory.getLogger(EmailListener.class);
 
-    private final BRuntime runtime;
+    private final Runtime runtime;
 
     private Map<String, BObject> registeredServices = new HashMap<>();
 
@@ -51,7 +51,7 @@ public class EmailListener {
      * Constructor for listener class for email.
      * @param runtime Current Ballerina runtime
      */
-    public EmailListener(BRuntime runtime) {
+    public EmailListener(Runtime runtime) {
         this.runtime = runtime;
     }
 
@@ -66,7 +66,7 @@ public class EmailListener {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
                 runtime.invokeMethodAsync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA,
-                                          new CallableUnitCallback() {
+                                          new Callback() {
                     @Override
                     public void notifySuccess() {
                     }
@@ -93,7 +93,7 @@ public class EmailListener {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
                 runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_ERROR, null, ON_ERROR_METADATA,
-                        new CallableUnitCallback() {
+                        new Callback() {
                     @Override
                     public void notifySuccess() {
                     }

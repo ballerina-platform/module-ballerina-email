@@ -18,8 +18,8 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import org.ballerinalang.jvm.api.values.BMap;
-import org.ballerinalang.jvm.api.values.BString;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.mime.util.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

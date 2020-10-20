@@ -18,14 +18,14 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import org.ballerinalang.jvm.api.BErrorCreator;
-import org.ballerinalang.jvm.api.BStringUtils;
-import org.ballerinalang.jvm.api.values.BError;
-import org.ballerinalang.jvm.api.values.BMap;
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.api.values.BString;
-import org.ballerinalang.jvm.values.ArrayValue;
-import org.ballerinalang.jvm.values.ArrayValueImpl;
+import io.ballerina.runtime.api.ErrorCreator;
+import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.values.BError;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.values.ArrayValue;
+import io.ballerina.runtime.values.ArrayValueImpl;
 import org.ballerinalang.mime.nativeimpl.MimeDataSourceBuilder;
 import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityHeaderHandler;
@@ -132,7 +132,7 @@ public class SmtpUtil {
         if (!senderAddress.isEmpty()) {
             emailMessage.setSender(new InternetAddress(senderAddress));
         }
-        ArrayValue attachments = message.getArrayValue(EmailConstants.MESSAGE_ATTACHMENTS);
+        ArrayValue attachments = (ArrayValue) message.getArrayValue(EmailConstants.MESSAGE_ATTACHMENTS);
         if (attachments == null) {
             emailMessage.setContent(messageBody, bodyContentType);
         } else {
@@ -244,7 +244,7 @@ public class SmtpUtil {
 
     private static String[] getNullCheckedStringArray(BMap<BString, Object> mapValue, BString parameter) {
         if (mapValue != null) {
-            ArrayValue arrayValue = mapValue.getArrayValue(parameter);
+            ArrayValue arrayValue = (ArrayValue) mapValue.getArrayValue(parameter);
             if (arrayValue != null) {
                 return arrayValue.getStringArray();
             } else {
@@ -264,7 +264,7 @@ public class SmtpUtil {
     }
 
     public static BError getBallerinaError(String typeId, String message) {
-        return BErrorCreator.createDistinctError(typeId, EmailConstants.EMAIL_PACKAGE_ID,
-                                                 BStringUtils.fromString(message));
+        return ErrorCreator.createDistinctError(typeId, EmailConstants.EMAIL_PACKAGE_ID,
+                                                 StringUtils.fromString(message));
     }
 }

@@ -18,9 +18,9 @@
 
 package org.ballerinalang.stdlib.email.client;
 
-import org.ballerinalang.jvm.api.values.BMap;
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.api.values.BString;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.ballerinalang.stdlib.email.util.SmtpUtil;
 import org.slf4j.Logger;
