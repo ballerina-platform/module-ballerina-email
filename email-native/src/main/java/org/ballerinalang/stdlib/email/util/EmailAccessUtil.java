@@ -20,21 +20,21 @@ package org.ballerinalang.stdlib.email.util;
 
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Message;
-import org.ballerinalang.jvm.JSONParser;
-import org.ballerinalang.jvm.XMLFactory;
-import org.ballerinalang.jvm.api.BStringUtils;
-import org.ballerinalang.jvm.api.BValueCreator;
-import org.ballerinalang.jvm.api.values.BArray;
-import org.ballerinalang.jvm.api.values.BMap;
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.api.values.BString;
-import org.ballerinalang.jvm.types.BArrayType;
-import org.ballerinalang.jvm.types.BType;
-import org.ballerinalang.jvm.types.BTypes;
-import org.ballerinalang.jvm.values.ArrayValue;
-import org.ballerinalang.jvm.values.ArrayValueImpl;
-import org.ballerinalang.jvm.values.XMLSequence;
-import org.ballerinalang.jvm.values.XMLValue;
+import io.ballerina.runtime.JSONParser;
+import io.ballerina.runtime.XMLFactory;
+import io.ballerina.runtime.api.PredefinedTypes;
+import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.types.BArrayType;
+import io.ballerina.runtime.values.ArrayValue;
+import io.ballerina.runtime.values.ArrayValueImpl;
+import io.ballerina.runtime.values.XMLSequence;
+import io.ballerina.runtime.values.XMLValue;
 import org.ballerinalang.mime.util.EntityBodyChannel;
 import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityWrapper;
@@ -76,7 +76,7 @@ import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 public class EmailAccessUtil {
 
     private static final Logger log = LoggerFactory.getLogger(EmailAccessUtil.class);
-    private static final BArrayType stringArrayType = new BArrayType(BTypes.typeString);
+    private static final BArrayType stringArrayType = new BArrayType(PredefinedTypes.TYPE_STRING);
 
     /**
      * Generates Properties object using the passed BMap.
@@ -182,16 +182,16 @@ public class EmailAccessUtil {
         if (attachments != null && attachments.size() > 0) {
             valueMap.put(EmailConstants.MESSAGE_ATTACHMENTS.getValue(), attachments);
         }
-        return BValueCreator.createRecordValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.EMAIL, valueMap);
+        return ValueCreator.createRecordValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.EMAIL, valueMap);
     }
 
     private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {
-        BMap<BString, Object> headerMap = BValueCreator.createMapValue();
+        BMap<BString, Object> headerMap = ValueCreator.createMapValue();
         Enumeration<Header> headers = message.getAllHeaders();
         if (headers.hasMoreElements()) {
             while (headers.hasMoreElements()) {
                 Header header = headers.nextElement();
-                headerMap.put(BStringUtils.fromString(header.getName()), BStringUtils.fromString(header.getValue()));
+                headerMap.put(StringUtils.fromString(header.getName()), StringUtils.fromString(header.getValue()));
             }
             return headerMap;
         }
@@ -205,7 +205,7 @@ public class EmailAccessUtil {
     private static Object getJsonContent(String messageContent) {
         Object json = JSONParser.parse(messageContent);
         if (json instanceof String) {
-            return BStringUtils.fromString((String) json);
+            return StringUtils.fromString((String) json);
         }
         return json;
     }
@@ -306,7 +306,7 @@ public class EmailAccessUtil {
 
     private static BObject getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String xmlContent = (String) bodyPart.getContent();
-        XMLValue xmlNode = XMLFactory.parse(xmlContent);
+        XMLValue xmlNode = (XMLValue) XMLFactory.parse(xmlContent);
         BObject entity = createEntityObject();
         EntityBodyChannel byteChannel = new EntityBodyChannel(new ByteArrayInputStream(
                 xmlNode.stringValue(null).getBytes(StandardCharsets.UTF_8)));
@@ -318,7 +318,7 @@ public class EmailAccessUtil {
 
     private static BObject getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String textPayload = (String) bodyPart.getContent();
-        BObject entity = BValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+        BObject entity = ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
         entity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getEntityWrapper(textPayload));
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.TEXT_PLAIN);
         setEntityHeaders(entity, bodyPart);
@@ -344,17 +344,17 @@ public class EmailAccessUtil {
     }
 
     private static ArrayValue getArrayOfEntities(ArrayList<BObject> entities) {
-        BType typeOfEntity = entities.get(0).getType();
+        Type typeOfEntity = entities.get(0).getType();
         BObject[] result = entities.toArray(new BObject[entities.size()]);
         return new ArrayValueImpl(result, new BArrayType(typeOfEntity));
     }
 
     private static BObject createMediaTypeObject() {
-        return BValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE);
+        return ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE);
     }
 
     private static BObject createEntityObject() {
-        return BValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+        return ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
     }
 
     private static String extractFromAddressFromMessage(Message message) throws MessagingException {
@@ -380,10 +380,10 @@ public class EmailAccessUtil {
     }
 
     private static BArray getAddressBArrayList(Address[] addresses) {
-        BArray addressArrayValue = BValueCreator.createArrayValue(stringArrayType);
+        BArray addressArrayValue = ValueCreator.createArrayValue(stringArrayType);
         if (addresses != null) {
             for (Address address: addresses) {
-                addressArrayValue.append(BStringUtils.fromString(address.toString()));
+                addressArrayValue.append(StringUtils.fromString(address.toString()));
             }
         }
         return addressArrayValue;
