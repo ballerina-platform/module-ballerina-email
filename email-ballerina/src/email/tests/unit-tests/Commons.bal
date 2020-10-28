@@ -14,11 +14,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-function getNonNilString(string? nilableString) returns string {
+isolated function getNonNilString(string? nilableString) returns string {
     return nilableString ?: "";
 }
 
-function concatStrings(string[]? addresses) returns string {
+isolated function concatStrings(string[]? addresses) returns string {
     string result = "";
     int i = 0;
     if addresses is string[] {
