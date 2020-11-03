@@ -18,6 +18,7 @@
 
 package org.ballerinalang.stdlib.email.service.compiler;
 
+import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 import org.ballerinalang.compiler.plugins.AbstractCompilerPlugin;
 import org.ballerinalang.compiler.plugins.SupportedResourceParamTypes;
 import org.ballerinalang.model.tree.AnnotationAttachmentNode;
@@ -34,7 +35,6 @@ import java.util.List;
 
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
-import static org.ballerinalang.util.diagnostic.Diagnostic.Kind.ERROR;
 
 /**
  * Compiler plugin for validating Email Listener.
@@ -76,7 +76,7 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                 onMessageErrorMessage = String.format(onMessageErrorMessage, resource.getName().getValue(),
                         serviceName);
                 if (parameters.size() != 1) {
-                    dlog.logDiagnostic(ERROR, resource.getPosition(), onMessageErrorMessage);
+                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onMessageErrorMessage);
                     return;
                 }
                 BType emailEvent = parameters.get(0).getTypeNode().type;
@@ -85,7 +85,7 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                         BStructureType event = (BStructureType) emailEvent;
                         if (!EmailConstants.MODULE_NAME.equals(event.tsymbol.pkgID.name.value) ||
                                 !EmailConstants.EMAIL.equals(event.tsymbol.name.value)) {
-                            dlog.logDiagnostic(ERROR, resource.getPosition(), onMessageErrorMessage);
+                            dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onMessageErrorMessage);
                             return;
                         }
                     }
@@ -97,7 +97,7 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                         " with no returns.";
                 onErrorErrorMessage = String.format(onErrorErrorMessage, resource.getName().getValue(), serviceName);
                 if (parameters.size() != 1) {
-                    dlog.logDiagnostic(ERROR, resource.getPosition(), onErrorErrorMessage);
+                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onErrorErrorMessage);
                     return;
                 }
                 BType errorEvent = parameters.get(0).getTypeNode().type;
@@ -106,15 +106,16 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                         BStructureType event = (BStructureType) errorEvent;
                         if (!EmailConstants.MODULE_NAME.equals(event.tsymbol.pkgID.name.value) ||
                                 !EmailConstants.EMAIL.equals(event.tsymbol.name.value)) {
-                            dlog.logDiagnostic(ERROR, resource.getPosition(), onErrorErrorMessage);
+                            dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onErrorErrorMessage);
                             return;
                         }
                     }
                 }
                 break;
             default:
-                dlog.logDiagnostic(ERROR, resource.getPosition(), "Invalid resource name " +
-                        resource.getName().getValue() + " in service " + serviceName);
+                dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(),
+                        "Invalid resource name " + resource.getName().getValue() + " in service "
+                                + serviceName);
         }
     }
 }
