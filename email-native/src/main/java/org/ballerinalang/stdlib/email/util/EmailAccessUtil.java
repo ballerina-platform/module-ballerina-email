@@ -20,21 +20,20 @@ package org.ballerinalang.stdlib.email.util;
 
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Message;
-import io.ballerina.runtime.JSONParser;
-import io.ballerina.runtime.XMLFactory;
 import io.ballerina.runtime.api.PredefinedTypes;
-import io.ballerina.runtime.api.StringUtils;
-import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.creators.TypeCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.utils.JsonUtils;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.XmlUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.runtime.types.BArrayType;
-import io.ballerina.runtime.values.ArrayValue;
-import io.ballerina.runtime.values.ArrayValueImpl;
-import io.ballerina.runtime.values.XMLSequence;
-import io.ballerina.runtime.values.XMLValue;
+import io.ballerina.runtime.api.values.BXml;
+import io.ballerina.runtime.api.values.BXmlSequence;
 import org.ballerinalang.mime.util.EntityBodyChannel;
 import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityWrapper;
@@ -76,7 +75,7 @@ import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 public class EmailAccessUtil {
 
     private static final Logger log = LoggerFactory.getLogger(EmailAccessUtil.class);
-    private static final BArrayType stringArrayType = new BArrayType(PredefinedTypes.TYPE_STRING);
+    private static final ArrayType stringArrayType = TypeCreator.createArrayType(PredefinedTypes.TYPE_STRING);
 
     /**
      * Generates Properties object using the passed BMap.
@@ -198,12 +197,12 @@ public class EmailAccessUtil {
         return null;
     }
 
-    private static XMLSequence parseToXml(String xmlStr) {
-        return (XMLSequence) XMLFactory.parse(xmlStr);
+    private static BXmlSequence parseToXml(String xmlStr) {
+        return (BXmlSequence) XmlUtils.parse(xmlStr);
     }
 
     private static Object getJsonContent(String messageContent) {
-        Object json = JSONParser.parse(messageContent);
+        Object json = JsonUtils.parse(messageContent);
         if (json instanceof String) {
             return StringUtils.fromString((String) json);
         }
@@ -306,7 +305,7 @@ public class EmailAccessUtil {
 
     private static BObject getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String xmlContent = (String) bodyPart.getContent();
-        XMLValue xmlNode = (XMLValue) XMLFactory.parse(xmlContent);
+        BXml xmlNode = (BXml) XmlUtils.parse(xmlContent);
         BObject entity = createEntityObject();
         EntityBodyChannel byteChannel = new EntityBodyChannel(new ByteArrayInputStream(
                 xmlNode.stringValue(null).getBytes(StandardCharsets.UTF_8)));
@@ -343,10 +342,10 @@ public class EmailAccessUtil {
         }
     }
 
-    private static ArrayValue getArrayOfEntities(ArrayList<BObject> entities) {
+    private static BArray getArrayOfEntities(ArrayList<BObject> entities) {
         Type typeOfEntity = entities.get(0).getType();
         BObject[] result = entities.toArray(new BObject[entities.size()]);
-        return new ArrayValueImpl(result, new BArrayType(typeOfEntity));
+        return ValueCreator.createArrayValue(result, TypeCreator.createArrayType(typeOfEntity));
     }
 
     private static BObject createMediaTypeObject() {

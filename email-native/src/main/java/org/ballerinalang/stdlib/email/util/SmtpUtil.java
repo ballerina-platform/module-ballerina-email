@@ -18,14 +18,13 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import io.ballerina.runtime.api.ErrorCreator;
-import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.creators.ErrorCreator;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.runtime.values.ArrayValue;
-import io.ballerina.runtime.values.ArrayValueImpl;
 import org.ballerinalang.mime.nativeimpl.MimeDataSourceBuilder;
 import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityHeaderHandler;
@@ -132,7 +131,7 @@ public class SmtpUtil {
         if (!senderAddress.isEmpty()) {
             emailMessage.setSender(new InternetAddress(senderAddress));
         }
-        ArrayValue attachments = (ArrayValue) message.getArrayValue(EmailConstants.MESSAGE_ATTACHMENTS);
+        BArray attachments = (BArray) message.getArrayValue(EmailConstants.MESSAGE_ATTACHMENTS);
         if (attachments == null) {
             emailMessage.setContent(messageBody, bodyContentType);
         } else {
@@ -155,7 +154,7 @@ public class SmtpUtil {
     }
 
     private static void addBodyAndAttachments(MimeMessage emailMessage, String messageBody, String bodyContentType,
-                                              ArrayValue attachments)
+                                              BArray attachments)
             throws MessagingException, IOException {
         BodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setContent(messageBody, bodyContentType);
@@ -177,7 +176,7 @@ public class SmtpUtil {
 
     private static MimeBodyPart populateMultipart(BObject mimeEntity) throws IOException, MessagingException {
         Multipart multipart = new MimeMultipart();
-        ArrayValue multipartMimeEntityArrayValue = EntityBodyHandler.getBodyPartArray(mimeEntity);
+        BArray multipartMimeEntityArrayValue = EntityBodyHandler.getBodyPartArray(mimeEntity);
         int entityCount = multipartMimeEntityArrayValue.size();
         for (int i = 0; i < entityCount; i++) {
             BObject childMimeEntity = (BObject) multipartMimeEntityArrayValue.get(i);
@@ -205,7 +204,7 @@ public class SmtpUtil {
             if (CommonUtil.isTextBased(contentType)) {
                 attachmentBodyPart.setText(((BString) MimeDataSourceBuilder.getText(mimeEntity)).getValue());
             } else {
-                ArrayValue binaryContent = (ArrayValue) MimeDataSourceBuilder.getByteArray(mimeEntity);
+                BArray binaryContent = (BArray) MimeDataSourceBuilder.getByteArray(mimeEntity);
                 attachmentBodyPart.setContent(binaryContent.getBytes(), MimeConstants.OCTET_STREAM);
             }
         }
@@ -219,7 +218,7 @@ public class SmtpUtil {
         BMap<BString, Object> entityHeaders = EntityHeaderHandler.getEntityHeaderMap(mimeEntity);
 
         for (BString entryKey : entityHeaders.getKeys()) {
-            ArrayValueImpl entryValues = (ArrayValueImpl) entityHeaders.get(entryKey);
+            BArray entryValues = (BArray) entityHeaders.get(entryKey);
             if (entryValues.size() > 0) {
                 String headerName = entryKey.getValue();
                 String headerValue = entryValues.getBString(0).getValue();
@@ -244,7 +243,7 @@ public class SmtpUtil {
 
     private static String[] getNullCheckedStringArray(BMap<BString, Object> mapValue, BString parameter) {
         if (mapValue != null) {
-            ArrayValue arrayValue = (ArrayValue) mapValue.getArrayValue(parameter);
+            BArray arrayValue = (BArray) mapValue.getArrayValue(parameter);
             if (arrayValue != null) {
                 return arrayValue.getStringArray();
             } else {

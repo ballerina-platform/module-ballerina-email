@@ -18,6 +18,7 @@
 
 package org.ballerinalang.stdlib.email.service.compiler;
 
+import io.ballerina.runtime.api.types.StructureType;
 import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 import org.ballerinalang.compiler.plugins.AbstractCompilerPlugin;
 import org.ballerinalang.compiler.plugins.SupportedResourceParamTypes;
@@ -82,9 +83,9 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                 BType emailEvent = parameters.get(0).getTypeNode().type;
                 if (emailEvent.getKind().equals(TypeKind.OBJECT)) {
                     if (emailEvent instanceof BStructureType) {
-                        BStructureType event = (BStructureType) emailEvent;
-                        if (!EmailConstants.MODULE_NAME.equals(event.tsymbol.pkgID.name.value) ||
-                                !EmailConstants.EMAIL.equals(event.tsymbol.name.value)) {
+                        StructureType event = (StructureType) emailEvent;
+                        if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
+                                !EmailConstants.EMAIL.equals(event.getName())) {
                             dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onMessageErrorMessage);
                             return;
                         }
@@ -103,9 +104,9 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                 BType errorEvent = parameters.get(0).getTypeNode().type;
                 if (errorEvent.getKind().equals(TypeKind.OBJECT)) {
                     if (errorEvent instanceof BStructureType) {
-                        BStructureType event = (BStructureType) errorEvent;
-                        if (!EmailConstants.MODULE_NAME.equals(event.tsymbol.pkgID.name.value) ||
-                                !EmailConstants.EMAIL.equals(event.tsymbol.name.value)) {
+                        StructureType event = (StructureType) errorEvent;
+                        if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
+                                !EmailConstants.EMAIL.equals(event.getName())) {
                             dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onErrorErrorMessage);
                             return;
                         }
