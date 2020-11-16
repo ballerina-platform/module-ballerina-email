@@ -19,11 +19,11 @@
 package org.ballerinalang.stdlib.email.util;
 
 import io.ballerina.runtime.api.Module;
-import io.ballerina.runtime.api.StringUtils;
 import io.ballerina.runtime.api.async.StrandMetadata;
+import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
 
-import static io.ballerina.runtime.util.BLangConstants.BALLERINA_BUILTIN_PKG_PREFIX;
+import static io.ballerina.runtime.api.constants.RuntimeConstants.BALLERINA_BUILTIN_PKG_PREFIX;
 
 /**
  * Constants of the Email module.
