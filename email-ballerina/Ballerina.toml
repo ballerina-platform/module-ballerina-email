@@ -1,57 +1,95 @@
-[project]
-org-name = "ballerina"
+[package]
+org = "ballerina"
+name = "email"
 version = "@toml.version@"
+[[dependency]]
+org = "ballerina"
+name = "io"
+version = "@stdlib.io.version@"
 
-[dependencies]
-"ballerina/task" = "@stdlib.task.version@"
-"ballerina/runtime" = "@stdlib.runtime.version@"
-"ballerina/mime" = "@stdlib.mime.version@"
-"ballerina/file" = "@stdlib.file.version@"
-"ballerina/time" = "@stdlib.time.version@"
-"ballerina/stringutils" = "@stdlib.stringutils.version@"
-"ballerina/log" = "@stdlib.log.version@"
-"ballerina/system" = "@stdlib.system.version@"
-"ballerina/config" = "@stdlib.config.version@"
-"ballerina/io" = "@stdlib.io.version@"
+[[dependency]]
+org = "ballerina"
+name = "time"
+version = "@stdlib.time.version@"
 
-[platform]
-target = "java11"
+[[dependency]]
+org = "ballerina"
+name = "config"
+version = "@stdlib.config.version@"
 
-    [[platform.libraries]]
-    artifactId = "java.mail"
-    version = "1.6.2"
-    path = "./lib/javax.mail-1.6.2.jar"
-    groupId = "javax.mail"
+[[dependency]]
+org = "ballerina"
+name = "runtime"
+version = "@stdlib.runtime.version@"
 
-    [[platform.libraries]]
-    artifactId = "greenmail"
-    version = "1.5.11"
-    path = "./lib/greenmail-1.5.11.jar"
-    groupId = "com.sun.mail"
+[[dependency]]
+org = "ballerina"
+name = "file"
+version = "@stdlib.file.version@"
 
-    [[platform.libraries]]
-    artifactId = "mimepull"
-    version = "1.9.11"
-    path = "./lib/mimepull-1.9.11.jar"
-    groupId = "org.jvnet.mimepull"
+[[dependency]]
+org = "ballerina"
+name = "log"
+version = "@stdlib.log.version@"
 
-    [[platform.libraries]]
-    artifactId = "testng"
-    version = "6.14.3"
-    path = "./lib/testng-6.14.3.jar"
-    groupId = "org.testng"
+[[dependency]]
+org = "ballerina"
+name = "system"
+version = "@stdlib.system.version@"
 
-    [[platform.libraries]]
-    artifactId = "email"
-    version = "@project.version@"
-    path = "../email-native/build/libs/email-native-@project.version@.jar"
-    groupId = "ballerina"
-    modules = ["email"]
+[[dependency]]
+org = "ballerina"
+name = "task"
+version = "@stdlib.task.version@"
 
-    [[platform.libraries]]
-    artifactId = "email"
-    version = "@project.version@"
-    path = "../email-test-utils/build/libs/email-test-utils-@project.version@.jar"
-    groupId = "org.ballerinalang.stdlib.email"
-    modules = ["email"]
-    scope = "testOnly"
+[[dependency]]
+org = "ballerina"
+name = "mime"
+version = "@stdlib.mime.version@"
+
+[[dependency]]
+org = "ballerina"
+name = "stringutils"
+version = "@stdlib.stringutils.version@"
+
+[[platform.java11.dependency]]
+path = "./lib/javax.mail-1.6.2.jar"
+groupId = "javax.mail"
+artifactId = "java.mail"
+version = "1.6.2"
+
+
+[[platform.java11.dependency]]
+path = "./lib/greenmail-1.5.11.jar"
+groupId = "com.sun.mail"
+artifactId = "greenmail"
+version = "1.5.11"
+
+
+[[platform.java11.dependency]]
+path = "./lib/mimepull-1.9.11.jar"
+groupId = "org.jvnet.mimepull"
+artifactId = "mimepull"
+version = "1.9.11"
+
+
+[[platform.java11.dependency]]
+path = "./lib/testng-6.14.3.jar"
+groupId = "org.testng"
+artifactId = "testng"
+version = "6.14.3"
+
+
+[[platform.java11.dependency]]
+path = "../email-native/build/libs/email-native-@project.version@.jar"
+groupId = "ballerina"
+artifactId = "email"
+version = "@project.version@"
+
+
+[[platform.java11.dependency]]
+path = "../email-test-utils/build/libs/email-test-utils-@project.version@.jar"
+groupId = "org.ballerinalang.stdlib.email"
+scope = "testOnly"
+artifactId = "email"
+version = "@project.version@"

@@ -160,7 +160,7 @@ public class SmtpComplexEmailSendTest {
         assertEquals("inline", bodyPart.getDisposition());
         assertEquals("image/jpeg", bodyPart.getContentType());
         assertEquals("base64", bodyPart.getEncoding());
-        compareInputStreams(new FileInputStream("src/email/tests/resources/datafiles/corona_virus.jpg"),
+        compareInputStreams(new FileInputStream("tests/resources/datafiles/corona_virus.jpg"),
                 (InputStream) bodyPart.getContent());
     }
 
