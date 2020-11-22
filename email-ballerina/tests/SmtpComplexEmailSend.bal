@@ -55,7 +55,7 @@ function testSendComplexEmail() {
 
     //Create another body part with a xml file.
     mime:Entity bodyPart3 = new;
-    bodyPart3.setFileAsEntityBody("src/email/tests/resources/datafiles/file.xml", mime:TEXT_XML);
+    bodyPart3.setFileAsEntityBody("tests/resources/datafiles/file.xml", mime:TEXT_XML);
 
     //Create another body part with a text file.
     mime:Entity bodyPart4 = new;
@@ -66,7 +66,7 @@ function testSendComplexEmail() {
     bodyPart4.setContentDisposition(disposition4);
     bodyPart4.setContentId("bodyPart4");
     bodyPart4.setHeader("H1", "V1");
-    bodyPart4.setFileAsEntityBody("src/email/tests/resources/datafiles/test.tmp");
+    bodyPart4.setFileAsEntityBody("tests/resources/datafiles/test.tmp");
 
     //Create another body part with an image file.
     mime:Entity bodyPart5 = new;
@@ -74,7 +74,7 @@ function testSendComplexEmail() {
     disposition5.fileName = "corona_virus.jpg";
     disposition5.disposition = "inline";
     bodyPart5.setContentDisposition(disposition5);
-    bodyPart5.setFileAsEntityBody("src/email/tests/resources/datafiles/corona_virus.jpg", mime:IMAGE_JPEG);
+    bodyPart5.setFileAsEntityBody("tests/resources/datafiles/corona_virus.jpg", mime:IMAGE_JPEG);
 
     //Create another body part with binary content.
     string binaryString = "Test content";
