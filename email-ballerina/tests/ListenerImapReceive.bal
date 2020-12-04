@@ -83,20 +83,20 @@ function testListenEmailImap() {
                                pollingInterval: 2000
                            });
 
-    service emailObserver = service {
-        resource function onMessage(Email emailMessage) {
+    service object {} emailObserver = service object {
+        remote function onMessage(Email emailMessage) {
             receivedMessageImap = <@untainted>emailMessage.subject;
             onMessageInvokedImap = true;
         }
 
-        resource function onError(Error emailError) {
+        remote function onError(Error emailError) {
             receivedErrorImap = <@untainted>emailError.message();
             onErrorInvokedImap = true;
         }
     };
 
-    error? attachStatus = emailServer.__attach(emailObserver, "");
-    error? startStatus = emailServer.__start();
+    error? attachStatus = emailServer.attach(emailObserver, "");
+    error? startStatus = emailServer.start();
 
     Error? emailSentStatus = sendEmailImapListener();
     if (emailSentStatus is Error) {

@@ -83,20 +83,20 @@ function testListenEmailPop() {
                                pollingInterval: 2000
                            });
 
-    service emailObserver = service {
-        resource function onMessage(Email emailMessage) {
+    service object {} emailObserver = service object {
+        remote function onMessage(Email emailMessage) {
             receivedMessagePop = <@untainted>emailMessage.subject;
             onMessageInvokedPop = true;
         }
 
-        resource function onError(Error emailError) {
+        remote function onError(Error emailError) {
             receivedErrorPop = <@untainted>emailError.message();
             onErrorInvokedPop = true;
         }
     };
 
-    error? attachStatus = emailServer.__attach(emailObserver, "");
-    error? startStatus = emailServer.__start();
+    error? attachStatus = emailServer.attach(emailObserver, "");
+    error? startStatus = emailServer.start();
 
     Error? emailSentStatus = sendEmailPopListener();
     if (emailSentStatus is Error) {
