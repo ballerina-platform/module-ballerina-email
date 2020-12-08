@@ -37,7 +37,7 @@ public client class SmtpClient {
     #
     # + email - An `email:Email` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    public remote isolated function send(Email email) returns Error? {
+    remote isolated function send(Email email) returns Error? {
         var body = email.body;
         if (body is xml) {
             if (email?.contentType == ()) {

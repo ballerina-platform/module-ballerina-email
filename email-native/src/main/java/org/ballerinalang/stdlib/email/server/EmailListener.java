@@ -68,7 +68,7 @@ public class EmailListener {
                 runtime.invokeMethodAsync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA,
                                           new Callback() {
                     @Override
-                    public void notifySuccess() {
+                    public void notifySuccess(Object o) {
                     }
 
                     @Override
@@ -95,7 +95,7 @@ public class EmailListener {
                 runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_ERROR, null, ON_ERROR_METADATA,
                         new Callback() {
                     @Override
-                    public void notifySuccess() {
+                    public void notifySuccess(Object o) {
                     }
 
                     @Override

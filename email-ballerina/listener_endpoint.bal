@@ -15,14 +15,11 @@
 // under the License.
 
 import ballerina/java;
-import ballerina/lang.'object as lang;
 import ballerina/log;
 import ballerina/task;
 
 # Represents a service listener that monitors the email server location.
 public class Listener {
-
-    *lang:Listener;
 
     private ListenerConfig config;
     private task:Scheduler? appointment = ();
@@ -37,12 +34,12 @@ public class Listener {
 
     # Starts the `email:Listener`.
     # ```ballerina
-    # email:Error? result = emailListener.__start();
+    # email:Error? result = emailListener.start();
     # ```
     #
     # + return - () or else error upon failure to start the listener
-    public isolated function __start() returns error? {
-        return self.start();
+    public isolated function 'start() returns error? {
+        return self.internalStart();
     }
 
     # Stops the `email:Listener`.
@@ -57,48 +54,50 @@ public class Listener {
 
     # Binds a service to the `email:Listener`.
     # ```ballerina
-    # email:Error? result = emailListener.__attach(helloService, hello);
+    # email:Error? result = emailListener.attach(helloService, hello);
     # ```
     #
     # + s - Type descriptor of the service
     # + name - Name of the service
     # + return - `()` or else a `email:Error` upon failure to register the listener
-    public isolated function __attach(service s, string? name) returns error? {
-        return self.register(s, name);
+    public isolated function attach(service object {} s, string[]|string? name = ()) returns error? {
+        if(name is string?) {
+            return self.register(s, name);
+        }
     }
 
     # Stops consuming messages and detaches the service from the `email:Listener`.
     # ```ballerina
-    # email:Error? result = emailListener.__detach(helloService);
+    # email:Error? result = emailListener.detach(helloService);
     # ```
     #
     # + s - Type descriptor of the service
     # + return - `()` or else a `email:Error` upon failure to detach the service
-    public isolated function __detach(service s) returns error? {
+    public isolated function detach(service object {} s) returns error? {
 
     }
 
     # Stops the `email:Listener` forcefully.
     # ```ballerina
-    # email:Error? result = emailListener.__immediateStop();
+    # email:Error? result = emailListener.immediateStop();
     # ```
     #
     # + return - `()` or else a `email:Error` upon failure to stop the listener
-    public isolated function __immediateStop() returns error? {
+    public isolated function immediateStop() returns error? {
         check self.stop();
     }
 
     # Stops the `email:Listener` gracefully.
     # ```ballerina
-    # email:Error? result = emailListener.__gracefulStop();
+    # email:Error? result = emailListener.gracefulStop();
     # ```
     #
     # + return - () or else error upon failure to stop the listener
-    public isolated function __gracefulStop() returns error? {
+    public isolated function gracefulStop() returns error? {
         check self.stop();
     }
 
-    isolated function 'start() returns error? {
+    isolated function internalStart() returns error? {
         var scheduler = self.config.cronExpression;
         if (scheduler is string) {
             task:AppointmentConfiguration config = {cronExpression: scheduler};
@@ -134,13 +133,13 @@ public class Listener {
     #
     # + emailService - Type descriptor of the service
     # + name - Service name
-    public isolated function register(service emailService, string? name) {
+    public isolated function register(service object {} emailService, string? name) {
         register(self, emailService);
     }
 }
 
-final service appointmentService = service {
-    resource isolated function onTrigger(Listener l) {
+final service isolated object{} appointmentService = service object {
+    remote isolated function onTrigger(Listener l) {
         var result = l.poll();
         if (result is error) {
             log:printError("Error while executing poll function", result);
@@ -177,7 +176,7 @@ isolated function externalInit(Listener listenerEndpoint, ListenerConfig config)
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
-isolated function register(Listener listenerEndpoint, service emailService) = @java:Method{
+isolated function register(Listener listenerEndpoint, service object {} emailService) = @java:Method{
     name: "register",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
