@@ -70,16 +70,14 @@ function testListenEmailImap() {
         test:assertFail(msg = "Error while starting IMAP listener.");
     }
 
-    ImapConfig imapConfig = {
-         port: 3993,
-         enableSsl: true
-    };
     ImapListener emailServer = new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               protocolConfig: imapConfig,
-                               pollingInterval: 2000
+                               pollingIntervalInMillis: 2000,
+                               port: 3993,
+                               enableSsl: true,
+                               properties: ()
                            });
 
     service object {} emailObserver = service object {

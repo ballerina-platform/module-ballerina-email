@@ -70,16 +70,14 @@ function testListenEmailPop() {
         test:assertFail(msg = "Error while starting POP listener.");
     }
 
-    PopConfig popConfig = {
-         port: 3995,
-         enableSsl: true
-    };
     PopListener emailServer = new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               protocolConfig: popConfig,
-                               pollingInterval: 2000
+                               pollingIntervalInMillis: 2000,
+                               port: 3995,
+                               enableSsl: true,
+                               properties: ()
                            });
 
     service object {} emailObserver = service object {

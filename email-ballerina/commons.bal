@@ -33,7 +33,7 @@ public type Message record {|
     string[] to;
     string subject;
     string 'from;
-    string|xml|json body;
+    string body;
     string[] cc?;
     string[] bcc?;
     string[] replyTo?;

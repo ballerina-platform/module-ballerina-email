@@ -39,26 +39,10 @@ public client class SmtpClient {
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
     remote isolated function sendEmailMessage(Message email) returns Error? {
         var body = email.body;
-        if (body is xml) {
-            if (email?.contentType == ()) {
-                email.contentType = "application/xml";
-            } else if (!self.containsType(email?.contentType, "xml")) {
-                return SendError("Content type of the email should be XML.");
-            }
-            body = body.toString();
-        } else if (body is string) {
-            if (email?.contentType == ()) {
-                email.contentType = "text/plain";
-            } else if (!self.containsType(email?.contentType, "text")) {
-                return SendError("Content type of the email should be text.");
-            }
-        } else {
-            if (email?.contentType == ()) {
-                email.contentType = "application/json";
-            } else if (!self.containsType(email?.contentType, "json")) {
-                return SendError("Content type of the email should be json.");
-            }
-            body = body.toJsonString();
+        if (email?.contentType == ()) {
+            email.contentType = "text/plain";
+        } else if (!self.containsType(email?.contentType, "text")) {
+            return SendError("Content type of the email should be text.");
         }
         return send(self, email);
     }

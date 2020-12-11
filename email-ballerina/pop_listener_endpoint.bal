@@ -29,7 +29,12 @@ public class PopListener {
     # + ListenerConfig - Configurations for Email endpoint
     public isolated function init(PopListenerConfig listenerConfig) {
         self.config = listenerConfig;
-        checkpanic externalInit(self, self.config, "POP");
+        PopConfig popConfig = {
+             port: listenerConfig.port,
+             enableSsl: listenerConfig.enableSsl,
+             properties: listenerConfig.properties
+        };
+        checkpanic externalInit(self, self.config, popConfig, "POP");
     }
 
     # Starts the `email:PopListener`.
@@ -103,7 +108,7 @@ public class PopListener {
             task:AppointmentConfiguration config = {cronExpression: scheduler};
             self.appointment = new(config);
         } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingInterval, initialDelayInMillis: 100};
+            task:TimerConfiguration config = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
             self.appointment = new (config);
         }
         var appointment = self.appointment;
@@ -111,7 +116,7 @@ public class PopListener {
             check appointment.attach(popAppointmentService, self);
             check appointment.start();
         }
-        log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
+        //log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
@@ -142,7 +147,7 @@ final service isolated object{} popAppointmentService = service object {
     remote isolated function onTrigger(PopListener l) {
         var result = l.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", result);
+            log:printError("Error while executing poll function", err = result);
         }
     }
 };
@@ -152,15 +157,20 @@ final service isolated object{} popAppointmentService = service object {
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + protocolConfig - POP3 protocol configuration
-# + pollingInterval - Periodic time interval to check new update
+# + pollingIntervalInMillis - Periodic time interval to check new update
+# + port - Port number of the POP server
+# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
+#               The default value is true for the "pops" protocol and false for the "pop" protocol
+# + properties - POP3 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
 public type PopListenerConfig record {|
     string host;
     string username;
     string password;
-    PopConfig? protocolConfig = ();
-    int pollingInterval = 60000;
+    int pollingIntervalInMillis = 60000;
+    int port = 995;
+    boolean enableSsl = true;
+    map<string>? properties = ();
     string? cronExpression = ();
 |};
 
@@ -170,7 +180,7 @@ isolated function poll(PopListener|ImapListener listenerEndpoint) returns error?
 } external;
 
 isolated function externalInit(PopListener|ImapListener listenerEndpoint, PopListenerConfig|ImapListenerConfig config,
-        string protocol) returns error? = @java:Method{
+        PopConfig|ImapConfig protocolConfig, string protocol) returns error? = @java:Method{
     name: "init",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;

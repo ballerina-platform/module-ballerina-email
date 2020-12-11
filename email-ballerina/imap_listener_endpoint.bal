@@ -28,7 +28,12 @@ public class ImapListener {
     # + ListenerConfig - Configurations for Email endpoint
     public isolated function init(ImapListenerConfig listenerConfig) {
         self.config = listenerConfig;
-        checkpanic externalInit(self, self.config, "IMAP");
+        ImapConfig imapConfig = {
+             port: listenerConfig.port,
+             enableSsl: listenerConfig.enableSsl,
+             properties: listenerConfig.properties
+        };
+        checkpanic externalInit(self, self.config, imapConfig, "IMAP");
     }
 
     # Starts the `email:ImapListener`.
@@ -102,7 +107,7 @@ public class ImapListener {
             task:AppointmentConfiguration config = {cronExpression: scheduler};
             self.appointment = new(config);
         } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingInterval, initialDelayInMillis: 100};
+            task:TimerConfiguration config = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
             self.appointment = new (config);
         }
         var appointment = self.appointment;
@@ -110,7 +115,7 @@ public class ImapListener {
             check appointment.attach(imapAppointmentService, self);
             check appointment.start();
         }
-        log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
+        //log:print("User " + self.config.username.to + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
@@ -141,7 +146,7 @@ final service isolated object{} imapAppointmentService = service object {
     remote isolated function onTrigger(ImapListener l) {
         var result = l.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", result);
+            log:printError("Error while executing poll function", err = result);
         }
     }
 };
@@ -151,14 +156,19 @@ final service isolated object{} imapAppointmentService = service object {
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + protocolConfig - IMAP4 protocol configuration
-# + pollingInterval - Periodic time interval to check new update
+# + pollingIntervalInMillis - Periodic time interval to check new update
+# + port - Port number of the IMAP server
+# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
+#               The default value is true for the "imaps" protocol and false for the "imap" protocol
+# + properties - IMAP4 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
 public type ImapListenerConfig record {|
     string host;
     string username;
     string password;
-    ImapConfig? protocolConfig = ();
-    int pollingInterval = 60000;
+    int pollingIntervalInMillis = 60000;
+    int port = 993;
+    boolean enableSsl = true;
+    map<string>? properties = ();
     string? cronExpression = ();
 |};

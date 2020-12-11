@@ -44,10 +44,12 @@ public class EmailListenerHelper {
      * @param serviceEndpointConfig Email server endpoint configuration
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig, BString protocol)
+    public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig,
+                            BMap<BString, Object> protocolConfig, BString protocol)
             throws EmailConnectorException {
         final EmailListener listener = new EmailListener(Runtime.getCurrentRuntime());
-        Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig, protocol.getValue());
+        Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig, protocolConfig,
+                protocol.getValue());
         EmailConnector emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
         emailListener.addNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR, emailConnector);
     }
@@ -65,6 +67,7 @@ public class EmailListenerHelper {
     }
 
     private static Map<String, Object> getServerConnectorParamMap(BMap<BString, Object> serviceEndpointConfig,
+                                                                  BMap<BString, Object> protocolConfig,
                                                                   String protocol) {
         Map<String, Object> params = new HashMap<>(7);
         BMap<BString, BString> secureSocket = (BMap<BString, BString>) serviceEndpointConfig.getMapValue(
@@ -83,8 +86,6 @@ public class EmailListenerHelper {
                 }
             }
         }
-        BMap<BString, Object> protocolConfig = (BMap<BString, Object>) serviceEndpointConfig.getMapValue(
-                EmailConstants.PROTOCOL_CONFIG);
         if (protocolConfig != null) {
             params.put(EmailConstants.PROTOCOL_CONFIG.getValue(), protocolConfig);
         }
