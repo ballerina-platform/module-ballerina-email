@@ -34,10 +34,10 @@ function testReceiveSimpleEmailPop() {
          enableSsl: true
     };
     PopClient popClient = new (host, username, password, popConfig);
-    Email|Error? email = popClient->read();
+    Message|Error? email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");
-    } else if (email is Email) {
+    } else if (email is Message) {
         test:assertFail(msg = "Non zero emails received in zero read POP test.");
     }
     Error? emailSendStatus = sendEmailSimpleSecurePopServer();
@@ -45,7 +45,7 @@ function testReceiveSimpleEmailPop() {
         test:assertFail(msg = "Error while sending email to secure POP server.");
     }
 
-    email = popClient->read();
+    email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple POP test.");
     } else if (email is ()) {

@@ -19,27 +19,27 @@ import ballerina/mime;
 # Email message properties.
 #
 # + to - TO address list
+# + subject - Subject of email
+# + from - From address
+# + body - Body of the email message
 # + cc - CC address list
 # + bcc - BCC address list
-# + subject - Subject of email
-# + body - Body of the email message
+# + replyTo - Reply To addresses
 # + contentType - Content Type of the Body
 # + headers - Header list
-# + from - From address
 # + sender - Sender's address
-# + replyTo - Reply To addresses
 # + attachments - Email attachements
-public type Email record {|
+public type Message record {|
     string[] to;
+    string subject;
+    string 'from;
+    string|xml|json body;
     string[] cc?;
     string[] bcc?;
-    string subject;
-    string|xml|json body;
+    string[] replyTo?;
     string contentType?;
     map<string> headers?;
-    string 'from;
     string sender?;
-    string[] replyTo?;
     mime:Entity[] attachments?;
 |};
 

@@ -19,18 +19,18 @@ import ballerina/runtime;
 import ballerina/stringutils;
 import ballerina/test;
 
-boolean onMessageInvokedPop = false;
+boolean onEmailMessageInvokedPop = false;
 boolean onErrorInvokedPop = false;
 string receivedMessagePop = "";
 string receivedErrorPop = "";
 
-function isonMessageInvokedPop() returns boolean {
+function isOnEmailInvokedPop() returns boolean {
     int i = 0;
-    while ((!onMessageInvokedPop) && (i < 10)) {
+    while ((!onEmailMessageInvokedPop) && (i < 10)) {
     	 runtime:sleep(1000);
     	 i += 1;
     }
-    return onMessageInvokedPop;
+    return onEmailMessageInvokedPop;
 }
 
 function isonErrorInvokedPop() returns boolean {
@@ -44,7 +44,7 @@ function isonErrorInvokedPop() returns boolean {
 
 function getreceivedMessagePop() returns string {
     int i = 0;
-    while ((!onMessageInvokedPop) && (i < 10)) {
+    while ((!onEmailMessageInvokedPop) && (i < 10)) {
          runtime:sleep(1000);
          i += 1;
     }
@@ -74,19 +74,18 @@ function testListenEmailPop() {
          port: 3995,
          enableSsl: true
     };
-    Listener emailServer = new ({
+    PopListener emailServer = new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               protocol: "POP",
                                protocolConfig: popConfig,
                                pollingInterval: 2000
                            });
 
     service object {} emailObserver = service object {
-        remote function onMessage(Email emailMessage) {
+        remote function onEmailMessage(Message emailMessage) {
             receivedMessagePop = <@untainted>emailMessage.subject;
-            onMessageInvokedPop = true;
+            onEmailMessageInvokedPop = true;
         }
 
         remote function onError(Error emailError) {
@@ -102,7 +101,7 @@ function testListenEmailPop() {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for POP listener.");
     }
-    test:assertTrue(onMessageInvokedPop, msg = "Email is not received with method, onMessage with POP.");
+    test:assertTrue(onEmailMessageInvokedPop, msg = "Email is not received with method, onEmailMessage with POP.");
     test:assertFalse(onErrorInvokedPop, msg = "An error occurred while listening and invoked method, onError with POP.");
     test:assertEquals(receivedMessagePop, "Test E-Mail", msg = "Listened email subject is not matched with POP.");
 

@@ -32,12 +32,12 @@ public client class SmtpClient {
 
     # Sends a message.
     # ```ballerina
-    # email:Error? response = smtpClient->send(email);
+    # email:Error? response = smtpClient->sendEmailMessage(email);
     # ```
     #
-    # + email - An `email:Email` message, which needs to be sent to the recipient
+    # + email - An `email:Message` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function send(Email email) returns Error? {
+    remote isolated function sendEmailMessage(Message email) returns Error? {
         var body = email.body;
         if (body is xml) {
             if (email?.contentType == ()) {
@@ -80,7 +80,7 @@ isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host,
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
 
-isolated function send(SmtpClient clientEndpoint, Email email) returns Error? = @java:Method {
+isolated function send(SmtpClient clientEndpoint, Message email) returns Error? = @java:Method {
     name : "sendMessage",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;

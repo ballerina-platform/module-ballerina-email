@@ -44,10 +44,10 @@ public class EmailListenerHelper {
      * @param serviceEndpointConfig Email server endpoint configuration
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig)
+    public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig, BString protocol)
             throws EmailConnectorException {
         final EmailListener listener = new EmailListener(Runtime.getCurrentRuntime());
-        Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig);
+        Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig, protocol.getValue());
         EmailConnector emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
         emailListener.addNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR, emailConnector);
     }
@@ -64,7 +64,8 @@ public class EmailListenerHelper {
         listener.addService(service);
     }
 
-    private static Map<String, Object> getServerConnectorParamMap(BMap<BString, Object> serviceEndpointConfig) {
+    private static Map<String, Object> getServerConnectorParamMap(BMap<BString, Object> serviceEndpointConfig,
+                                                                  String protocol) {
         Map<String, Object> params = new HashMap<>(7);
         BMap<BString, BString> secureSocket = (BMap<BString, BString>) serviceEndpointConfig.getMapValue(
                 EmailConstants.ENDPOINT_CONFIG_SECURE_SOCKET);
@@ -93,8 +94,7 @@ public class EmailListenerHelper {
                    serviceEndpointConfig.getStringValue(EmailConstants.PROPS_USERNAME).getValue());
         params.put(EmailConstants.PROPS_PASSWORD.getValue(),
                    serviceEndpointConfig.getStringValue(EmailConstants.PROPS_PASSWORD).getValue());
-        params.put(EmailConstants.PROPS_PROTOCOL.getValue(),
-                   serviceEndpointConfig.getStringValue(EmailConstants.PROPS_PROTOCOL).getValue());
+        params.put(EmailConstants.PROPS_PROTOCOL.getValue(), protocol);
         return params;
     }
 

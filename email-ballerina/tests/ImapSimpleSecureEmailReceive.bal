@@ -33,10 +33,10 @@ function testReceiveSimpleEmailImap() {
          enableSsl: true
     };
     ImapClient imapClient = new (host, username, password, imapConfig);
-    Email|Error? email = imapClient->read();
+    Message|Error? email = imapClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");
-    } else if (email is Email) {
+    } else if (email is Message) {
         test:assertFail(msg = "Non zero emails received in zero read IMAP test.");
     }
     Error? emailSendStatus = sendEmailSimpleSecureImapServer();
@@ -44,7 +44,7 @@ function testReceiveSimpleEmailImap() {
         test:assertFail(msg = "Error while sending email to secure IMAP server.");
     }
 
-    email = imapClient->read();
+    email = imapClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple IMAP test.");
     } else if (email is ()) {

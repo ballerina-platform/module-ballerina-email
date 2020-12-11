@@ -45,8 +45,8 @@ function testReceiveComplexEmailPop() {
     };
     string[] returnArray = [];
     PopClient popClient = new (host, username, password, popConfig);
-    Email|Error? emailResponse = popClient->read();
-    if (emailResponse is Email) {
+    Message|Error? emailResponse = popClient->receiveEmailMessage();
+    if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
         returnArray[1] = <string>emailResponse.body;
         returnArray[2] = emailResponse.'from;

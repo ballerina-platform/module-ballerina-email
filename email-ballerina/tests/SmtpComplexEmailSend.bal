@@ -85,7 +85,7 @@ function testSendComplexEmail() {
     //Create an array to hold all the body parts.
     mime:Entity[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6];
 
-    Email email = {
+    Message email = {
         to: toAddresses,
         cc: ccAddresses,
         bcc: bccAddresses,
@@ -99,7 +99,7 @@ function testSendComplexEmail() {
         attachments: bodyParts
     };
 
-    Error? response = smtpClient->send(email);
+    Error? response = smtpClient->sendEmailMessage(email);
     if (response is Error) {
         test:assertFail(msg = "Error while sending an email.");
     }
