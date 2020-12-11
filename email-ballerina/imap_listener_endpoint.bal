@@ -110,7 +110,7 @@ public class ImapListener {
             check appointment.attach(imapAppointmentService, self);
             check appointment.start();
         }
-        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
+        log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
@@ -118,7 +118,7 @@ public class ImapListener {
         if (appointment is task:Scheduler) {
             check appointment.stop();
         }
-        log:printInfo("Stopped listening to remote server at " + self.config.host);
+        log:print("Stopped listening to remote server at " + self.config.host);
     }
 
     isolated function poll() returns error? {
