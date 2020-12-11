@@ -43,7 +43,7 @@ Once the `email:SmtpClient` is created, an email can be sent using the SMTP prot
 Samples for this operation can be found below.
 
 ```ballerina
-email:Email email = {
+email:Message email = {
     to: ["receiver1@email.com", "receiver2@email.com"],
     cc: ["receiver3@email.com", "receiver4@email.com"],
     bcc: ["receiver5@email.com"],
@@ -54,7 +54,7 @@ email:Email email = {
     replyTo: ["replyTo1@email.com", "replyTo2@email.com"]
 };
 
-email:Error? response = smtpClient->send(email);
+email:Error? response = smtpClient->sendEmailMessage(email);
 ```
 
 #### POP3 Client
@@ -89,7 +89,7 @@ Once the `email:PopClient` is created, emails can be received using the POP3 pro
 Samples for this operation can be found below.
 
 ```ballerina
-email:Email|email:Error? emailResponse = popClient->read();
+email:Message|email:Error? emailResponse = popClient->receiveEmailMessage();
 ```
 
 #### IMAP4 Client
@@ -124,7 +124,7 @@ Once the `email:ImapClient` is created, emails can be received using the IMAP4 p
 Samples for this operation can be found below.
 
 ```ballerina
-email:Email|email:Error emailResponse = imapClient->read();
+email:Message|email:Error emailResponse = imapClient->receiveEmailMessage();
 ```
 
 For information on the operations, which you can perform with this module, see the below **Functions**. For examples on the usage of the operation, see the [Send and Receive Emails Example](https://ballerina.io/swan-lake/learn/by-example/send-and-receive-emails.html).

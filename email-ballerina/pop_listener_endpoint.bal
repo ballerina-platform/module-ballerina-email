@@ -19,20 +19,25 @@ import ballerina/log;
 import ballerina/task;
 
 # Represents a service listener that monitors the email server location.
-public class Listener {
+public class PopListener {
 
-    private ListenerConfig config;
+    private PopListenerConfig config;
     private task:Scheduler? appointment = ();
 
-    # Gets invoked during the `email:Listener` initialization.
+    # Gets invoked during the `email:PopListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
-    public isolated function init(ListenerConfig listenerConfig) {
+    public isolated function init(PopListenerConfig listenerConfig) {
         self.config = listenerConfig;
-        checkpanic externalInit(self, self.config);
+        PopConfig popConfig = {
+             port: listenerConfig.port,
+             enableSsl: listenerConfig.enableSsl,
+             properties: listenerConfig.properties
+        };
+        checkpanic externalInit(self, self.config, popConfig, "POP");
     }
 
-    # Starts the `email:Listener`.
+    # Starts the `email:PopListener`.
     # ```ballerina
     # email:Error? result = emailListener.start();
     # ```
@@ -42,7 +47,7 @@ public class Listener {
         return self.internalStart();
     }
 
-    # Stops the `email:Listener`.
+    # Stops the `email:PopListener`.
     # ```ballerina
     # email:Error? result = emailListener.__stop();
     # ```
@@ -52,7 +57,7 @@ public class Listener {
         check self.stop();
     }
 
-    # Binds a service to the `email:Listener`.
+    # Binds a service to the `email:PopListener`.
     # ```ballerina
     # email:Error? result = emailListener.attach(helloService, hello);
     # ```
@@ -66,7 +71,7 @@ public class Listener {
         }
     }
 
-    # Stops consuming messages and detaches the service from the `email:Listener`.
+    # Stops consuming messages and detaches the service from the `email:PopListener`.
     # ```ballerina
     # email:Error? result = emailListener.detach(helloService);
     # ```
@@ -77,7 +82,7 @@ public class Listener {
 
     }
 
-    # Stops the `email:Listener` forcefully.
+    # Stops the `email:PopListener` forcefully.
     # ```ballerina
     # email:Error? result = emailListener.immediateStop();
     # ```
@@ -87,7 +92,7 @@ public class Listener {
         check self.stop();
     }
 
-    # Stops the `email:Listener` gracefully.
+    # Stops the `email:PopListener` gracefully.
     # ```ballerina
     # email:Error? result = emailListener.gracefulStop();
     # ```
@@ -103,15 +108,15 @@ public class Listener {
             task:AppointmentConfiguration config = {cronExpression: scheduler};
             self.appointment = new(config);
         } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingInterval, initialDelayInMillis: 100};
+            task:TimerConfiguration config = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
             self.appointment = new (config);
         }
         var appointment = self.appointment;
         if (appointment is task:Scheduler) {
-            check appointment.attach(appointmentService, self);
+            check appointment.attach(popAppointmentService, self);
             check appointment.start();
         }
-        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
+        //log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
@@ -119,7 +124,7 @@ public class Listener {
         if (appointment is task:Scheduler) {
             check appointment.stop();
         }
-        log:printInfo("Stopped listening to remote server at " + self.config.host);
+        log:print("Stopped listening to remote server at " + self.config.host);
     }
 
     isolated function poll() returns error? {
@@ -138,11 +143,11 @@ public class Listener {
     }
 }
 
-final service isolated object{} appointmentService = service object {
-    remote isolated function onTrigger(Listener l) {
+final service isolated object{} popAppointmentService = service object {
+    remote isolated function onTrigger(PopListener l) {
         var result = l.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", result);
+            log:printError("Error while executing poll function", err = result);
         }
     }
 };
@@ -152,31 +157,35 @@ final service isolated object{} appointmentService = service object {
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + protocol - Email server access protocol, "IMAP" or "POP"
-# + protocolConfig - POP3 or IMAP4 protocol configuration
-# + pollingInterval - Periodic time interval to check new update
+# + pollingIntervalInMillis - Periodic time interval to check new update
+# + port - Port number of the POP server
+# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
+#               The default value is true for the "pops" protocol and false for the "pop" protocol
+# + properties - POP3 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
-public type ListenerConfig record {|
+public type PopListenerConfig record {|
     string host;
     string username;
     string password;
-    string protocol = "IMAP";
-    PopConfig|ImapConfig? protocolConfig = ();
-    int pollingInterval = 60000;
+    int pollingIntervalInMillis = 60000;
+    int port = 995;
+    boolean enableSsl = true;
+    map<string>? properties = ();
     string? cronExpression = ();
 |};
 
-isolated function poll(Listener listenerEndpoint) returns error? = @java:Method{
+isolated function poll(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{
     name: "poll",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
-isolated function externalInit(Listener listenerEndpoint, ListenerConfig config) returns error? = @java:Method{
+isolated function externalInit(PopListener|ImapListener listenerEndpoint, PopListenerConfig|ImapListenerConfig config,
+        PopConfig|ImapConfig protocolConfig, string protocol) returns error? = @java:Method{
     name: "init",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
-isolated function register(Listener listenerEndpoint, service object {} emailService) = @java:Method{
+isolated function register(PopListener|ImapListener listenerEndpoint, service object {} emailService) = @java:Method{
     name: "register",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;

@@ -72,7 +72,7 @@ public class EmailConstants {
     public static final String EMAIL_SERVER_CONNECTOR = "serverConnector";
     public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocolConfig");
     public static final String DEFAULT_STORE_LOCATION = "INBOX";
-    public static final String ON_MESSAGE = "onMessage";
+    public static final String ON_EMAIL_MESSAGE = "onEmailMessage";
     public static final String ON_ERROR = "onError";
     public static final String LISTENER = "Listener";
 
@@ -105,13 +105,13 @@ public class EmailConstants {
     public static final String PROPS_SMTP_STARTTLS = "mail.smtp.starttls.enable";
     public static final String SEND_ERROR = "SendError";
 
-    public static final String EMAIL = "Email";
+    public static final String EMAIL_MESSAGE = "Message";
     public static final String ERROR = "Error";
 
     // Strand meta data
     public static final StrandMetadata ON_MESSAGE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
                                                                                 MODULE_NAME, MODULE_VERSION,
-                                                                                ON_MESSAGE);
+            ON_EMAIL_MESSAGE);
 
     public static final StrandMetadata ON_ERROR_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
                                                                               MODULE_NAME, MODULE_VERSION, ON_ERROR);

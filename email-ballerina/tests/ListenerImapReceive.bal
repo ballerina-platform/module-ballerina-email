@@ -19,18 +19,18 @@ import ballerina/runtime;
 import ballerina/stringutils;
 import ballerina/test;
 
-boolean onMessageInvokedImap = false;
+boolean onEmailMessageInvokedImap = false;
 boolean onErrorInvokedImap = false;
 string receivedMessageImap = "";
 string receivedErrorImap = "";
 
-function isonMessageInvokedImap() returns boolean {
+function isOnEmailInvokedImap() returns boolean {
     int i = 0;
-    while ((!onMessageInvokedImap) && (i < 10)) {
+    while ((!onEmailMessageInvokedImap) && (i < 10)) {
     	 runtime:sleep(1000);
     	 i += 1;
     }
-    return onMessageInvokedImap;
+    return onEmailMessageInvokedImap;
 }
 
 function isonErrorInvokedImap() returns boolean {
@@ -44,7 +44,7 @@ function isonErrorInvokedImap() returns boolean {
 
 function getreceivedMessageImap() returns string {
     int i = 0;
-    while ((!onMessageInvokedImap) && (i < 10)) {
+    while ((!onEmailMessageInvokedImap) && (i < 10)) {
          runtime:sleep(1000);
          i += 1;
     }
@@ -70,23 +70,20 @@ function testListenEmailImap() {
         test:assertFail(msg = "Error while starting IMAP listener.");
     }
 
-    ImapConfig imapConfig = {
-         port: 3993,
-         enableSsl: true
-    };
-    Listener emailServer = new ({
+    ImapListener emailServer = new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               protocol: "IMAP",
-                               protocolConfig: imapConfig,
-                               pollingInterval: 2000
+                               pollingIntervalInMillis: 2000,
+                               port: 3993,
+                               enableSsl: true,
+                               properties: ()
                            });
 
     service object {} emailObserver = service object {
-        remote function onMessage(Email emailMessage) {
+        remote function onEmailMessage(Message emailMessage) {
             receivedMessageImap = <@untainted>emailMessage.subject;
-            onMessageInvokedImap = true;
+            onEmailMessageInvokedImap = true;
         }
 
         remote function onError(Error emailError) {
@@ -102,7 +99,7 @@ function testListenEmailImap() {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for IMAP listener.");
     }
-    test:assertTrue(onMessageInvokedImap, msg = "Email is not received with method, onMessage with IMAP.");
+    test:assertTrue(onEmailMessageInvokedImap, msg = "Email is not received with method, onEmailMessage with IMAP.");
     test:assertFalse(onErrorInvokedImap,
         msg = "An error occurred while listening and invoked method, onError with IMAP.");
     test:assertEquals(receivedMessageImap, "Test E-Mail", msg = "Listened email subject is not matched with IMAP.");

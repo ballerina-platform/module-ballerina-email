@@ -92,7 +92,7 @@ public class EmailConsumer {
                 StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION));
         if (message != null) {
             if (message instanceof BMap) {
-                emailListener.onMessage(new EmailEvent(message));
+                emailListener.onEmailMessage(new EmailEvent(message));
             } else if (message instanceof BError) {
                 emailListener.onError(message);
             } else {

@@ -34,8 +34,8 @@ import org.wso2.ballerinalang.compiler.tree.BLangSimpleVariable;
 
 import java.util.List;
 
+import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_EMAIL_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR;
-import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
 
 /**
  * Compiler plugin for validating Email Listener.
@@ -47,7 +47,7 @@ import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
                 name = EmailConstants.LISTENER),
         paramTypes = {
                 @SupportedResourceParamTypes.Type(packageName = EmailConstants.MODULE_NAME,
-                        name = EmailConstants.EMAIL),
+                        name = EmailConstants.EMAIL_MESSAGE),
                 @SupportedResourceParamTypes.Type(packageName = EmailConstants.MODULE_NAME,
                         name = EmailConstants.ERROR)
         }
@@ -70,14 +70,14 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
     public void validate(String serviceName, BLangFunction resource, DiagnosticLog dlog) {
         final List<BLangSimpleVariable> parameters = resource.getParameters();
         switch (resource.getName().getValue()) {
-            case ON_MESSAGE:
-                String onMessageErrorMessage = "Invalid resource signature for %s in service %s. "
-                        + "The parameter should be a " + EmailConstants.MODULE_NAME + ":" + EmailConstants.EMAIL +
-                        " with no returns.";
-                onMessageErrorMessage = String.format(onMessageErrorMessage, resource.getName().getValue(),
+            case ON_EMAIL_MESSAGE:
+                String onEmailMessageErrorMessage = "Invalid resource signature for %s in service %s. "
+                        + "The parameter should be a " + EmailConstants.MODULE_NAME + ":"
+                        + EmailConstants.EMAIL_MESSAGE + " with no returns.";
+                onEmailMessageErrorMessage = String.format(onEmailMessageErrorMessage, resource.getName().getValue(),
                         serviceName);
                 if (parameters.size() != 1) {
-                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onMessageErrorMessage);
+                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onEmailMessageErrorMessage);
                     return;
                 }
                 BType emailEvent = parameters.get(0).getTypeNode().type;
@@ -85,8 +85,9 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                     if (emailEvent instanceof BStructureType) {
                         StructureType event = (StructureType) emailEvent;
                         if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
-                                !EmailConstants.EMAIL.equals(event.getName())) {
-                            dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onMessageErrorMessage);
+                                !EmailConstants.EMAIL_MESSAGE.equals(event.getName())) {
+                            dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(),
+                                    onEmailMessageErrorMessage);
                             return;
                         }
                     }
@@ -106,7 +107,7 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                     if (errorEvent instanceof BStructureType) {
                         StructureType event = (StructureType) errorEvent;
                         if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
-                                !EmailConstants.EMAIL.equals(event.getName())) {
+                                !EmailConstants.EMAIL_MESSAGE.equals(event.getName())) {
                             dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onErrorErrorMessage);
                             return;
                         }
