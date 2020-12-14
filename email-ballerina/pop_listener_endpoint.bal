@@ -27,14 +27,15 @@ public class PopListener {
     # Gets invoked during the `email:PopListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
-    public isolated function init(PopListenerConfig listenerConfig) {
+    # + return - () or else error upon failure to initialize the listener
+    public isolated function init(PopListenerConfig listenerConfig) returns Error? {
         self.config = listenerConfig;
         PopConfig popConfig = {
              port: listenerConfig.port,
              enableSsl: listenerConfig.enableSsl,
              properties: listenerConfig.properties
         };
-        checkpanic externalInit(self, self.config, popConfig, "POP");
+        return externalInit(self, self.config, popConfig, "POP");
     }
 
     # Starts the `email:PopListener`.

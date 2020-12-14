@@ -43,7 +43,11 @@ function testReceiveComplexEmailImap() {
          properties: {"mail.imap.port":"3143"}
     };
     string[] returnArray = [];
-    ImapClient imapClient = new (host, username, password, imapConfig);
+    ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
+    if (imapClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the IMAP4 client.");
+    }
+    ImapClient imapClient = <ImapClient>imapClientOrError;
     Message|Error? emailResponse = imapClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;

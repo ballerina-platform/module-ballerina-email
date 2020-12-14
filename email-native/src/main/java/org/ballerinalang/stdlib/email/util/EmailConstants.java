@@ -104,6 +104,7 @@ public class EmailConstants {
     public static final String PROPS_SMTP_AUTH = "mail.smtp.auth";
     public static final String PROPS_SMTP_STARTTLS = "mail.smtp.starttls.enable";
     public static final String SEND_ERROR = "SendError";
+    public static final String INIT_ERROR = "InitializationError";
 
     public static final String EMAIL_MESSAGE = "Message";
     public static final String ERROR = "Error";

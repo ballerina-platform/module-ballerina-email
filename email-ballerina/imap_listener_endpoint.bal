@@ -26,14 +26,15 @@ public class ImapListener {
     # Gets invoked during the `email:ImapListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
-    public isolated function init(ImapListenerConfig listenerConfig) {
+    # + return - () or else error upon failure to initialize the listener
+    public isolated function init(ImapListenerConfig listenerConfig) returns Error? {
         self.config = listenerConfig;
         ImapConfig imapConfig = {
              port: listenerConfig.port,
              enableSsl: listenerConfig.enableSsl,
              properties: listenerConfig.properties
         };
-        checkpanic externalInit(self, self.config, imapConfig, "IMAP");
+        return externalInit(self, self.config, imapConfig, "IMAP");
     }
 
     # Starts the `email:ImapListener`.

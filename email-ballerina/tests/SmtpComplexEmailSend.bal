@@ -43,7 +43,11 @@ function testSendComplexEmail() {
         properties: {"mail.smtp.port":"3025"}
     };
 
-    SmtpClient smtpClient = new (host, username,  password, smtpConfig);
+    SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
+    if (smtpClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the SMTP client.");
+    }
+    SmtpClient smtpClient = <SmtpClient>smtpClientOrError;
 
     //Create a text body part.
     mime:Entity bodyPart1 = new;

@@ -32,7 +32,11 @@ function testReceiveSimpleEmailImap() {
          port: 3993,
          enableSsl: true
     };
-    ImapClient imapClient = new (host, username, password, imapConfig);
+    ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
+    if (imapClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the IMAP4 client.");
+    }
+    ImapClient imapClient = <ImapClient>imapClientOrError;
     Message|Error? email = imapClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");

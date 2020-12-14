@@ -44,7 +44,11 @@ function testReceiveComplexEmailPop() {
          properties: {"mail.pop3.port":"3110"}
     };
     string[] returnArray = [];
-    PopClient popClient = new (host, username, password, popConfig);
+    PopClient|Error popClientOrError = new (host, username, password, popConfig);
+    if (popClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the POP3 client.");
+    }
+    PopClient popClient = <PopClient>popClientOrError;
     Message|Error? emailResponse = popClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
