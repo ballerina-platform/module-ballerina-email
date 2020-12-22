@@ -37,6 +37,9 @@ public class EmailConstants {
     public static final String MODULE_VERSION = "1.0.4";
     public static final Module EMAIL_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
                                                                  MODULE_VERSION);
+    public static final String HTML_CONTENT_TYPE = "text/html";
+    public static final BString ATTACHMENT_FILE_PATH = StringUtils.fromString("filePath");
+    public static final BString ATTACHMENT_CONTENT_TYPE = StringUtils.fromString("contentType");
     public static final BString PROPS_PORT = StringUtils.fromString("port");
     public static final BString PROPS_USERNAME = StringUtils.fromString("username");
     public static final BString MESSAGE_TO = StringUtils.fromString("to");
@@ -44,6 +47,7 @@ public class EmailConstants {
     public static final BString MESSAGE_BCC = StringUtils.fromString("bcc");
     public static final BString MESSAGE_SUBJECT = StringUtils.fromString("subject");
     public static final BString MESSAGE_MESSAGE_BODY = StringUtils.fromString("body");
+    public static final BString MESSAGE_HTML_MESSAGE_BODY = StringUtils.fromString("htmlBody");
     public static final BString MESSAGE_BODY_CONTENT_TYPE = StringUtils.fromString("contentType");
     public static final BString MESSAGE_FROM = StringUtils.fromString("from");
     public static final BString MESSAGE_SENDER = StringUtils.fromString("sender");

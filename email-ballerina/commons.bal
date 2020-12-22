@@ -21,7 +21,8 @@ import ballerina/mime;
 # + to - TO address list
 # + subject - Subject of email
 # + from - From address
-# + body - Body of the email message
+# + body - Text typed body of the email message
+# + htmlBody - HTML typed body of the email message
 # + cc - CC address list
 # + bcc - BCC address list
 # + replyTo - Reply To addresses
@@ -30,18 +31,29 @@ import ballerina/mime;
 # + sender - Sender's address
 # + attachments - Email attachements
 public type Message record {|
-    string[] to;
+    string|string[] to;
     string subject;
     string 'from;
     string body;
-    string[] cc?;
-    string[] bcc?;
-    string[] replyTo?;
+    string htmlBody?;
+    string|string[] cc?;
+    string|string[] bcc?;
+    string|string[] replyTo?;
     string contentType?;
     map<string> headers?;
     string sender?;
-    mime:Entity[] attachments?;
+    Attachment|(mime:Entity|Attachment)[] attachments?;
 |};
+
+# Email attachment.
+#
+# + filePath - File path of the attachment
+# + contentType - Content Type of the attachment
+public type Attachment record {|
+  string filePath;
+  string contentType;
+|};
+
 
 # Default folder to read emails.
 public const DEFAULT_FOLDER = "INBOX";

@@ -18,7 +18,7 @@ isolated function getNonNilString(string? nilableString) returns string {
     return nilableString ?: "";
 }
 
-isolated function concatStrings(string[]? addresses) returns string {
+isolated function concatStrings(string|string[]? addresses) returns string {
     string result = "";
     int i = 0;
     if addresses is string[] {
@@ -26,6 +26,8 @@ isolated function concatStrings(string[]? addresses) returns string {
             result = result + addresses[i];
             i = i + 1;
         }
+    } else if addresses is string {
+        return addresses;
     }
     return result;
 }

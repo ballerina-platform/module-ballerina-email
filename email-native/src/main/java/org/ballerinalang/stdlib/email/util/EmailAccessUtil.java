@@ -147,10 +147,10 @@ public class EmailAccessUtil {
      */
     public static BMap<BString, Object> getMapValue(Message message) throws MessagingException, IOException {
         Map<String, Object> valueMap = new HashMap<>();
-        BArray toAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.TO));
-        BArray ccAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.CC));
-        BArray bccAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.BCC));
-        BArray replyToAddressArrayValue = getAddressBArrayList(message.getReplyTo());
+        Object toAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.TO));
+        Object ccAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.CC));
+        Object bccAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.BCC));
+        Object replyToAddressArrayValue = getAddressBArrayList(message.getReplyTo());
         String subject = getStringNullChecked(message.getSubject());
         String messageBody = extractBodyFromMessage(message);
         BMap<BString, Object> headers = extractHeadersFromMessage(message);
@@ -378,12 +378,17 @@ public class EmailAccessUtil {
         return senderAddress;
     }
 
-    private static BArray getAddressBArrayList(Address[] addresses) {
+    private static Object getAddressBArrayList(Address[] addresses) {
         BArray addressArrayValue = ValueCreator.createArrayValue(stringArrayType);
         if (addresses != null) {
-            for (Address address: addresses) {
-                addressArrayValue.append(StringUtils.fromString(address.toString()));
+            if (addresses.length > 1) {
+                for (Address address: addresses) {
+                    addressArrayValue.append(StringUtils.fromString(address.toString()));
+                }
+            } else {
+                return addresses[0].toString();
             }
+
         }
         return addressArrayValue;
     }

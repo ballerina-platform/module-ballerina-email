@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/java;
+import ballerina/mime;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
 public client class SmtpClient {
@@ -45,6 +46,7 @@ public client class SmtpClient {
         } else if (!self.containsType(email?.contentType, "text")) {
             return SendError("Content type of the email should be text.");
         }
+        self.putAttachmentToArray(email);
         return send(self, email);
     }
 
@@ -55,6 +57,13 @@ public client class SmtpClient {
             return stringIndex is int;
         }
         return false;
+    }
+
+    private isolated function putAttachmentToArray(Message email) {
+        Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
+        if (attachments is Attachment) {
+            email.attachments = [attachments];
+        }
     }
 
 }

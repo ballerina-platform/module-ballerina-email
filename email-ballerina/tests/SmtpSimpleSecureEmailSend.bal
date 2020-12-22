@@ -41,7 +41,7 @@ function testSendSimpleEmail() {
     }
     SmtpClient smtpClient = <SmtpClient>smtpClientOrError;
     Message email = {
-        to: [toAddress],
+        to: toAddress,
         subject: subject,
         body: body,
         'from: fromAddress
