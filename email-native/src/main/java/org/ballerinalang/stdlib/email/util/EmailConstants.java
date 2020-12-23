@@ -24,7 +24,6 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
 
 import static io.ballerina.runtime.api.constants.RuntimeConstants.BALLERINA_BUILTIN_PKG_PREFIX;
-import static org.ballerinalang.stdlib.email.util.ModuleUtils.getModule;
 
 /**
  * Constants of the Email module.
@@ -38,14 +37,14 @@ public class EmailConstants {
 
      /**
      * email standard library version.
-     * @deprecated Use ModuleUtils.getModule().getVersion().
+     * @deprecated Use EmailUtils.getEmailPackage().getVersion().
      */
     @Deprecated
     public static final String MODULE_VERSION = "1.0.4";
 
      /**
      * email standard library package ID.
-     * @deprecated Use ModuleUtils.getModule().
+     * @deprecated Use EmailUtils.getEmailPackage().
      */
     @Deprecated
     public static final Module EMAIL_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
@@ -123,10 +122,10 @@ public class EmailConstants {
 
     // Strand meta data
     public static final StrandMetadata ON_MESSAGE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-            MODULE_NAME, getModule().getVersion(), ON_EMAIL_MESSAGE);
+            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_EMAIL_MESSAGE);
 
     public static final StrandMetadata ON_ERROR_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-            MODULE_NAME, getModule().getVersion(), ON_ERROR);
+            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_ERROR);
 
     private EmailConstants() {
         // private constructor

@@ -27,12 +27,11 @@ import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.email.client.EmailAccessClient;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
+import org.ballerinalang.stdlib.email.util.EmailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-
-import static org.ballerinalang.stdlib.email.util.ModuleUtils.getModule;
 
 /**
  * Provides the capability to read an email and forward it to a listener.
@@ -62,14 +61,14 @@ public class EmailConsumer {
         BMap<BString, Object> protocolConfig = (BMap<BString, Object>) emailProperties.get(
                 EmailConstants.PROTOCOL_CONFIG.getValue());
         if (protocol.equals(EmailConstants.IMAP)) {
-            client = ValueCreator.createObjectValue(getModule(), EmailConstants.IMAP_CLIENT,
+            client = ValueCreator.createObjectValue(EmailUtils.getEmailPackage(), EmailConstants.IMAP_CLIENT,
                                                        StringUtils.fromString(host), StringUtils.fromString(username),
                                                        StringUtils.fromString(password), protocolConfig);
             EmailAccessClient.initImapClientEndpoint(client, StringUtils.fromString(host),
                                                      StringUtils.fromString(username),
                                                      StringUtils.fromString(password), protocolConfig);
         } else if (protocol.equals(EmailConstants.POP)) {
-            client = ValueCreator.createObjectValue(getModule(), EmailConstants.POP_CLIENT,
+            client = ValueCreator.createObjectValue(EmailUtils.getEmailPackage(), EmailConstants.POP_CLIENT,
                                                        StringUtils.fromString(host), StringUtils.fromString(username),
                                                        StringUtils.fromString(password), protocolConfig);
             EmailAccessClient.initPopClientEndpoint(client, StringUtils.fromString(host),

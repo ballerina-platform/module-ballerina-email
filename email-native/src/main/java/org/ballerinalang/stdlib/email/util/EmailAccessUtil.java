@@ -66,7 +66,6 @@ import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
 import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
-import static org.ballerinalang.stdlib.email.util.ModuleUtils.getModule;
 
 /**
  * Contains utility functions related to the POP and IMAP protocols.
@@ -182,7 +181,7 @@ public class EmailAccessUtil {
         if (attachments != null && attachments.size() > 0) {
             valueMap.put(EmailConstants.MESSAGE_ATTACHMENTS.getValue(), attachments);
         }
-        return ValueCreator.createRecordValue(getModule(), EmailConstants.EMAIL_MESSAGE, valueMap);
+        return ValueCreator.createRecordValue(EmailUtils.getEmailPackage(), EmailConstants.EMAIL_MESSAGE, valueMap);
     }
 
     private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {
