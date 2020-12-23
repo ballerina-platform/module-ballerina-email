@@ -34,7 +34,19 @@ public class EmailConstants {
 
     // Common constants
     public static final String MODULE_NAME = "email";
+
+     /**
+     * email standard library version.
+     * @deprecated Use EmailUtils.getEmailPackage().getVersion().
+     */
+    @Deprecated
     public static final String MODULE_VERSION = "1.0.4";
+
+     /**
+     * email standard library package ID.
+     * @deprecated Use EmailUtils.getEmailPackage().
+     */
+    @Deprecated
     public static final Module EMAIL_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
                                                                  MODULE_VERSION);
     public static final BString PROPS_PORT = StringUtils.fromString("port");
@@ -110,11 +122,10 @@ public class EmailConstants {
 
     // Strand meta data
     public static final StrandMetadata ON_MESSAGE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-                                                                                MODULE_NAME, MODULE_VERSION,
-            ON_EMAIL_MESSAGE);
+            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_EMAIL_MESSAGE);
 
     public static final StrandMetadata ON_ERROR_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-                                                                              MODULE_NAME, MODULE_VERSION, ON_ERROR);
+            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_ERROR);
 
     private EmailConstants() {
         // private constructor
