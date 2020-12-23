@@ -53,6 +53,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
+import static org.ballerinalang.stdlib.email.util.ModuleUtils.getModule;
 
 /**
  * Contains the utility functions related to the SMTP protocol.
@@ -263,7 +264,7 @@ public class SmtpUtil {
     }
 
     public static BError getBallerinaError(String typeId, String message) {
-        return ErrorCreator.createDistinctError(typeId, EmailConstants.EMAIL_PACKAGE_ID,
+        return ErrorCreator.createDistinctError(typeId, getModule(),
                                                  StringUtils.fromString(message));
     }
 }
