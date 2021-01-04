@@ -66,6 +66,9 @@ import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
 import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
 
 /**
  * Contains utility functions related to the POP and IMAP protocols.
@@ -89,10 +92,30 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.PROPS_POP_HOST, host);
         properties.put(EmailConstants.PROPS_POP_PORT,
                 Long.toString(emailAccessConfig.getIntValue(EmailConstants.PROPS_PORT)));
+        BString security = emailAccessConfig.getStringValue(EmailConstants.PROPS_SECURITY);
+        if (security != null) {
+            String securityType = security.getValue();
+            switch (securityType) {
+                case PROPS_START_TLS_AUTO:
+                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                    break;
+                case PROPS_START_TLS_ALWAYS:
+                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_POP_STARTTLS_REQUIRED, "true");
+                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                    break;
+                case PROPS_START_TLS_NEVER:
+                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "false");
+                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                    break;
+                default:
+                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "true");
+            }
+        } else {
+            properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "true");
+        }
         properties.put(EmailConstants.PROPS_POP_AUTH, "true");
-        properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
-        properties.put(EmailConstants.PROPS_POP_SSL_ENABLE,
-                emailAccessConfig.getBooleanValue(EmailConstants.PROPS_SSL));
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.POP_PROTOCOL);
         CommonUtil.addCustomProperties(
                 (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
@@ -119,10 +142,30 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.PROPS_IMAP_HOST, host);
         properties.put(EmailConstants.PROPS_IMAP_PORT,
                 Long.toString(emailAccessConfig.getIntValue(EmailConstants.PROPS_PORT)));
+        BString security = emailAccessConfig.getStringValue(EmailConstants.PROPS_SECURITY);
+        if (security != null) {
+            String securityType = security.getValue();
+            switch (securityType) {
+                case PROPS_START_TLS_AUTO:
+                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                    break;
+                case PROPS_START_TLS_ALWAYS:
+                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS_REQUIRED, "true");
+                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                    break;
+                case PROPS_START_TLS_NEVER:
+                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "false");
+                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                    break;
+                default:
+                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "true");
+            }
+        } else {
+            properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "true");
+        }
         properties.put(EmailConstants.PROPS_IMAP_AUTH, "true");
-        properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
-        properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE,
-                emailAccessConfig.getBooleanValue(EmailConstants.PROPS_SSL));
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
         CommonUtil.addCustomProperties(
                 (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);

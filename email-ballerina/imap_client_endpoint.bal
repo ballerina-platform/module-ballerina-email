@@ -59,11 +59,10 @@ isolated function imapRead(ImapClient clientEndpoint, string folder) returns Mes
 # Configuration of the IMAP Endpoint.
 #
 # + port - Port number of the IMAP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "imaps" protocol and false for the "imap" protocol
+# + security - Type of security channel
 # + properties - IMAP properties to override the existing configuration
 public type ImapConfig record {|
     int port = 993;
-    boolean enableSsl = true;
+    Security? security = ();
     map<string>? properties = ();
 |};

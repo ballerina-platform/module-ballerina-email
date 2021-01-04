@@ -31,8 +31,7 @@ function testSendSimpleEmail() {
 
     error? serverStatus = startSimpleSecureSmtpServer();
     SmtpConfig smtpConfig = {
-        port: 3465,
-        enableSsl: true
+        port: 3465
     };
 
     SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);

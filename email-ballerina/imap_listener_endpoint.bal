@@ -31,7 +31,7 @@ public class ImapListener {
         self.config = listenerConfig;
         ImapConfig imapConfig = {
              port: listenerConfig.port,
-             enableSsl: listenerConfig.enableSsl,
+             security: listenerConfig.security,
              properties: listenerConfig.properties
         };
         return externalInit(self, self.config, imapConfig, "IMAP");
@@ -159,8 +159,7 @@ final service isolated object{} imapAppointmentService = service object {
 # + password - Email server access password
 # + pollingIntervalInMillis - Periodic time interval to check new update
 # + port - Port number of the IMAP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "imaps" protocol and false for the "imap" protocol
+# + security - Type of security channel
 # + properties - IMAP4 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
 public type ImapListenerConfig record {|
@@ -169,7 +168,7 @@ public type ImapListenerConfig record {|
     string password;
     int pollingIntervalInMillis = 60000;
     int port = 993;
-    boolean enableSsl = true;
+    Security? security = ();
     map<string>? properties = ();
     string? cronExpression = ();
 |};

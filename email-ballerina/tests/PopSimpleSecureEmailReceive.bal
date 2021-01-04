@@ -30,8 +30,7 @@ function testReceiveSimpleEmailPop() {
     }
 
     PopConfig popConfig = {
-         port: 3995,
-         enableSsl: true
+         port: 3995
     };
     PopClient|Error popClientOrError = new (host, username, password, popConfig);
     if (popClientOrError is Error) {

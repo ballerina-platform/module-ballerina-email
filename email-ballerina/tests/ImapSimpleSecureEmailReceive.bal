@@ -29,8 +29,7 @@ function testReceiveSimpleEmailImap() {
     }
 
     ImapConfig imapConfig = {
-         port: 3993,
-         enableSsl: true
+         port: 3993
     };
     ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
     if (imapClientOrError is Error) {

@@ -82,11 +82,10 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 # Configuration of the SMTP Endpoint.
 #
 # + port - Port number of the SMTP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "smtps" protocol and false for the "smtp" protocol
+# + security - Type of security channel
 # + properties - SMTP properties to override the existing configuration
 public type SmtpConfig record {|
     int port = 465;
-    boolean enableSsl = true;
+    Security? security = ();
     map<string>? properties = ();
 |};

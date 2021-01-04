@@ -70,9 +70,15 @@ public class EmailConstants {
     // Common constants to POP and IMAP
     public static final BString PROPS_PROPERTIES = StringUtils.fromString("properties");
     public static final BString PROPS_SSL = StringUtils.fromString("enableSsl");
+    public static final BString PROPS_SECURITY = StringUtils.fromString("security");
     public static final BString PROPS_HOST = StringUtils.fromString("host");
     public static final BString PROPS_PASSWORD = StringUtils.fromString("password");
     public static final BString PROPS_PROTOCOL = StringUtils.fromString("protocol");
+    public static final String PROPS_START_TLS_AUTO = "START_TLS_AUTO";
+    public static final String PROPS_START_TLS_ALWAYS = "START_TLS_ALWAYS";
+    public static final String PROPS_START_TLS_NEVER = "START_TLS_NEVER";
+    public static final String PROPS_SSL_ALWAYS = "SSL";
+
     public static final String PROPS_STORE = "store";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
     public static final String MIME_CONTENT_TYPE_PATTERN = "multipart/*";
@@ -100,6 +106,7 @@ public class EmailConstants {
     public static final String PROPS_POP_PORT = "mail.pop3.port";
     public static final String PROPS_POP_AUTH = "mail.pop.auth";
     public static final String PROPS_POP_STARTTLS = "mail.pop3.starttls.enable";
+    public static final String PROPS_POP_STARTTLS_REQUIRED = "mail.pop3.starttls.required";
     public static final String PROPS_POP_SSL_ENABLE = "mail.pop3.ssl.enable";
 
     // IMAP related constants
@@ -110,6 +117,7 @@ public class EmailConstants {
     public static final String PROPS_IMAP_PORT = "mail.imap.port";
     public static final String PROPS_IMAP_STARTTLS = "mail.imap.starttls.enable";
     public static final String PROPS_IMAP_SSL_ENABLE = "mail.imap.ssl.enable";
+    public static final String PROPS_IMAP_STARTTLS_REQUIRED = "mail.imap.starttls.required";
     public static final String PROPS_IMAP_AUTH = "mail.imap.auth";
 
     // SMTP related constants
@@ -119,6 +127,7 @@ public class EmailConstants {
     public static final String PROPS_SMTP_PORT = "mail.smtp.port";
     public static final String PROPS_SMTP_AUTH = "mail.smtp.auth";
     public static final String PROPS_SMTP_STARTTLS = "mail.smtp.starttls.enable";
+    public static final String PROPS_SMTP_STARTTLS_REQUIRED = "mail.smtp.starttls.required";
     public static final String SEND_ERROR = "SendError";
     public static final String INIT_ERROR = "InitializationError";
 

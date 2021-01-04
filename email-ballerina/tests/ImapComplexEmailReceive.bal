@@ -39,7 +39,7 @@ function testReceiveComplexEmailImap() {
 
     ImapConfig imapConfig = {
          port: 31430, // This is an incorrect value. Later the correct value, 3143 will be set via a property.
-         enableSsl: false,
+         security: START_TLS_AUTO,
          properties: {"mail.imap.port":"3143"}
     };
     string[] returnArray = [];

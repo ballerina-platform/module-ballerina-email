@@ -40,7 +40,7 @@ function testSendComplexEmail() {
 
     SmtpConfig smtpConfig = {
         port: 30250, // This is an incorrect value. Later the correct value, 3025 will be set via a property.
-        enableSsl: false,
+        security: START_TLS_AUTO,
         properties: {"mail.smtp.port":"3025"}
     };
 

@@ -40,7 +40,7 @@ function testReceiveComplexEmailPop() {
 
     PopConfig popConfig = {
          port: 31100, // This is an incorrect value. Later the correct value, 3110 will be set via a property.
-         enableSsl: false,
+         security: START_TLS_AUTO,
          properties: {"mail.pop3.port":"3110"}
     };
     string[] returnArray = [];

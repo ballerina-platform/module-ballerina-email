@@ -59,11 +59,10 @@ isolated function popRead(PopClient clientEndpoint, string folder) returns Messa
 # Configuration of the POP Endpoint.
 #
 # + port - Port number of the POP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "pops" protocol and false for the "pop" protocol
+# + security - Type of security channel
 # + properties - POP3 properties to override the existing configuration
 public type PopConfig record {|
     int port = 995;
-    boolean enableSsl = true;
+    Security? security = ();
     map<string>? properties = ();
 |};

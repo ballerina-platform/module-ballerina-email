@@ -32,7 +32,7 @@ public class PopListener {
         self.config = listenerConfig;
         PopConfig popConfig = {
              port: listenerConfig.port,
-             enableSsl: listenerConfig.enableSsl,
+             security: listenerConfig.security,
              properties: listenerConfig.properties
         };
         return externalInit(self, self.config, popConfig, "POP");
@@ -160,8 +160,7 @@ final service isolated object{} popAppointmentService = service object {
 # + password - Email server access password
 # + pollingIntervalInMillis - Periodic time interval to check new update
 # + port - Port number of the POP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "pops" protocol and false for the "pop" protocol
+# + security - Type of security channel
 # + properties - POP3 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
 public type PopListenerConfig record {|
@@ -170,7 +169,7 @@ public type PopListenerConfig record {|
     string password;
     int pollingIntervalInMillis = 60000;
     int port = 995;
-    boolean enableSsl = true;
+    Security? security = ();
     map<string>? properties = ();
     string? cronExpression = ();
 |};

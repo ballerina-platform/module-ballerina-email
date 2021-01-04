@@ -54,6 +54,18 @@ public type Attachment record {|
   string contentType;
 |};
 
+# Security type.
+#
+# + START_TLS_AUTO - If STARTTLS exists use it else use plaintext
+# + START_TLS_ALWAYS - Use STARTTLS if not available throw error
+# + START_TLS_NEVER - Use plaintext
+# + SSL - Use SSL
+public enum Security {
+  START_TLS_AUTO,
+  START_TLS_ALWAYS,
+  START_TLS_NEVER,
+  SSL
+}
 
 # Default folder to read emails.
 public const DEFAULT_FOLDER = "INBOX";

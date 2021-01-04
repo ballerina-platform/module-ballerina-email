@@ -62,6 +62,9 @@ import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 import static org.ballerinalang.mime.util.MimeConstants.TEXT_PLAIN;
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
 
 /**
  * Contains the utility functions related to the SMTP protocol.
@@ -85,8 +88,29 @@ public class SmtpUtil {
         properties.put(EmailConstants.PROPS_SMTP_PORT, Long.toString(
                 smtpConfig.getIntValue(EmailConstants.PROPS_PORT)));
         properties.put(EmailConstants.PROPS_SMTP_AUTH, "true");
-        properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
-        properties.put(EmailConstants.PROPS_ENABLE_SSL, smtpConfig.getBooleanValue(EmailConstants.PROPS_SSL));
+        BString security = smtpConfig.getStringValue(EmailConstants.PROPS_SECURITY);
+        if (security != null) {
+            String securityType = security.getValue();
+            switch (securityType) {
+                case PROPS_START_TLS_AUTO:
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    break;
+                case PROPS_START_TLS_ALWAYS:
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    break;
+                case PROPS_START_TLS_NEVER:
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "false");
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    break;
+                default:
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+            }
+        } else {
+            properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+        }
         CommonUtil.addCustomProperties(
                 (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {

@@ -76,7 +76,6 @@ function testListenEmailPop() {
                                password: "abcdef123",
                                pollingIntervalInMillis: 2000,
                                port: 3995,
-                               enableSsl: true,
                                properties: ()
                            });
     if (emailServerOrError is Error) {
