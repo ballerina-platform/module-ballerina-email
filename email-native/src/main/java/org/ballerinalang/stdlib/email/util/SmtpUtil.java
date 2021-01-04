@@ -334,7 +334,7 @@ public class SmtpUtil {
     }
 
     public static BError getBallerinaError(String typeId, String message) {
-        return ErrorCreator.createDistinctError(typeId, EmailConstants.EMAIL_PACKAGE_ID,
+        return ErrorCreator.createDistinctError(typeId, EmailUtils.getEmailPackage(),
                                                  StringUtils.fromString(message));
     }
 }

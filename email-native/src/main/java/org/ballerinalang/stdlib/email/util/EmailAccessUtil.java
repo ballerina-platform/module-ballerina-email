@@ -181,7 +181,7 @@ public class EmailAccessUtil {
         if (attachments != null && attachments.size() > 0) {
             valueMap.put(EmailConstants.MESSAGE_ATTACHMENTS.getValue(), attachments);
         }
-        return ValueCreator.createRecordValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.EMAIL_MESSAGE, valueMap);
+        return ValueCreator.createRecordValue(EmailUtils.getEmailPackage(), EmailConstants.EMAIL_MESSAGE, valueMap);
     }
 
     private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {
