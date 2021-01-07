@@ -93,22 +93,6 @@ task copyStdlibs(type: Copy) {
     }
 }
 
-
-//TODO: remove this once loading dependencies from bir cache is fixed
-task deleteCache(type: Delete) {
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/log"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/io"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/config"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/time"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/runtime"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/system"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/task"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/mime"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/file"
-    delete "${buildDir}/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/repo/cache/ballerina/stringutils"
-}
-
-
 def packageName = "email"
 def packageOrg = "ballerina"
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
@@ -128,7 +112,7 @@ task updateTomlVersions {
         def stdlibDependentTimeVersion = project.stdlibTimeVersion.split("-")[0]
         def stdlibDependentStringutilsVersion = project.stdlibStringutilsVersion.split("-")[0]
         def stdlibDependentLogVersion = project.stdlibLogVersion.split("-")[0]
-        def stdlibDependentSystemVersion = project.stdlibSystemVersion.split("-")[0]
+        def stdlibDependentOsVersion = project.stdlibOsVersion.split("-")[0]
         def stdlibDependentConfigVersion = project.stdlibConfigVersion.split("-")[0]
         def stdlibDependentIoVersion = project.stdlibIoVersion.split("-")[0]
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
@@ -139,7 +123,7 @@ task updateTomlVersions {
         newConfig = newConfig.replace("@stdlib.time.version@", stdlibDependentTimeVersion)
         newConfig = newConfig.replace("@stdlib.stringutils.version@", stdlibDependentStringutilsVersion)
         newConfig = newConfig.replace("@stdlib.log.version@", stdlibDependentLogVersion)
-        newConfig = newConfig.replace("@stdlib.system.version@", stdlibDependentSystemVersion)
+        newConfig = newConfig.replace("@stdlib.os.version@", stdlibDependentOsVersion)
         newConfig = newConfig.replace("@stdlib.config.version@", stdlibDependentConfigVersion)
         newConfig = newConfig.replace("@stdlib.io.version@", stdlibDependentIoVersion)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
@@ -159,7 +143,6 @@ task ballerinaTest {
     dependsOn(":email-test-utils:build")
     dependsOn(updateTomlVersions)
     finalizedBy(revertTomlFile)
-    finalizedBy(deleteCache)
 
     def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
     def debugParams = ""
