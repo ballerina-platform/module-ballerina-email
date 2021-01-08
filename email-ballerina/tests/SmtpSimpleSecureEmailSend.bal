@@ -38,7 +38,7 @@ function testSendSimpleEmail() {
     if (smtpClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
-    SmtpClient smtpClient = <SmtpClient>smtpClientOrError;
+    SmtpClient smtpClient = checkpanic smtpClientOrError;
     Message email = {
         to: toAddress,
         subject: subject,
@@ -60,7 +60,7 @@ function testSendSimpleEmail() {
     if (smtpClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
-    smtpClient = <SmtpClient>smtpClientOrError;
+    smtpClient = checkpanic smtpClientOrError;
     response = smtpClient->sendEmailMessage(email);
     if (response is Error) {
         test:assertTrue(stringutils:contains(response.message(), "Authentication credentials invalid"),

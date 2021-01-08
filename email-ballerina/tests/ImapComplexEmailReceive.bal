@@ -47,7 +47,7 @@ function testReceiveComplexEmailImap() {
     if (imapClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
-    ImapClient imapClient = <ImapClient>imapClientOrError;
+    ImapClient imapClient = checkpanic imapClientOrError;
     Message|Error? emailResponse = imapClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;

@@ -48,7 +48,7 @@ function testReceiveComplexEmailPop() {
     if (popClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
-    PopClient popClient = <PopClient>popClientOrError;
+    PopClient popClient = checkpanic popClientOrError;
     Message|Error? emailResponse = popClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;

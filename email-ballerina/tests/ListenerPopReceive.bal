@@ -81,7 +81,7 @@ function testListenEmailPop() {
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 listener.");
     }
-    PopListener emailServer = <PopListener>emailServerOrError;
+    PopListener emailServer = checkpanic emailServerOrError;
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {

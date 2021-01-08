@@ -35,7 +35,7 @@ function testReceiveSimpleEmailImap() {
     if (imapClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
-    ImapClient imapClient = <ImapClient>imapClientOrError;
+    ImapClient imapClient = checkpanic imapClientOrError;
     Message|Error? email = imapClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");

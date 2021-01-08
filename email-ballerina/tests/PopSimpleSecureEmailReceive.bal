@@ -36,7 +36,7 @@ function testReceiveSimpleEmailPop() {
     if (popClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
-    PopClient popClient = <PopClient>popClientOrError;
+    PopClient popClient = checkpanic popClientOrError;
     Message|Error? email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");

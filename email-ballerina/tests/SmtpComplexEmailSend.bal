@@ -48,7 +48,7 @@ function testSendComplexEmail() {
     if (smtpClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
-    SmtpClient smtpClient = <SmtpClient>smtpClientOrError;
+    SmtpClient smtpClient = checkpanic smtpClientOrError;
 
     //Create a text body part.
     mime:Entity bodyPart1 = new;

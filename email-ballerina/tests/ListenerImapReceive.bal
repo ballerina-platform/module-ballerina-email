@@ -81,7 +81,7 @@ function testListenEmailImap() {
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 listener.");
     }
-    ImapListener emailServer = <ImapListener>emailServerOrError;
+    ImapListener emailServer = checkpanic emailServerOrError;
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {
