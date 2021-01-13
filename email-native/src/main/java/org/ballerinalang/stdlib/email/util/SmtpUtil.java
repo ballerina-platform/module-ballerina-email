@@ -18,21 +18,24 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import org.ballerinalang.jvm.BallerinaErrors;
-import org.ballerinalang.jvm.values.ArrayValue;
-import org.ballerinalang.jvm.values.ArrayValueImpl;
-import org.ballerinalang.jvm.values.ErrorValue;
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.ObjectValue;
-import org.ballerinalang.jvm.values.api.BString;
+import io.ballerina.runtime.api.creators.ErrorCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BError;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.mime.nativeimpl.MimeDataSourceBuilder;
 import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityHeaderHandler;
 import org.ballerinalang.mime.util.MimeConstants;
+import org.ballerinalang.mime.util.MimeUtil;
 import org.ballerinalang.stdlib.io.channels.base.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -44,6 +47,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -52,7 +56,15 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
+import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
+import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
+import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
+import static org.ballerinalang.mime.util.MimeConstants.TEXT_PLAIN;
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
 
 /**
  * Contains the utility functions related to the SMTP protocol.
@@ -64,22 +76,43 @@ public class SmtpUtil {
     private static final Logger log = LoggerFactory.getLogger(SmtpUtil.class);
 
     /**
-     * Generates the Properties object using the passed MapValue.
+     * Generates the Properties object using the passed BMap.
      *
-     * @param smtpConfig MapValue with the configuration values
+     * @param smtpConfig BMap with the configuration values
      * @param host Host address of the SMTP server
      * @return Properties Set of properties required to connect to an SMTP server
      */
-    public static Properties getProperties(MapValue<BString, Object> smtpConfig, String host) {
+    public static Properties getProperties(BMap<BString, Object> smtpConfig, String host) {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_SMTP_HOST, host);
         properties.put(EmailConstants.PROPS_SMTP_PORT, Long.toString(
                 smtpConfig.getIntValue(EmailConstants.PROPS_PORT)));
         properties.put(EmailConstants.PROPS_SMTP_AUTH, "true");
-        properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
-        properties.put(EmailConstants.PROPS_ENABLE_SSL, smtpConfig.getBooleanValue(EmailConstants.PROPS_SSL));
+        BString security = smtpConfig.getStringValue(EmailConstants.PROPS_SECURITY);
+        if (security != null) {
+            String securityType = security.getValue();
+            switch (securityType) {
+                case PROPS_START_TLS_AUTO:
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    break;
+                case PROPS_START_TLS_ALWAYS:
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    break;
+                case PROPS_START_TLS_NEVER:
+                    properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "false");
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    break;
+                default:
+                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+            }
+        } else {
+            properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+        }
         CommonUtil.addCustomProperties(
-                (MapValue<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
+                (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("SMTP Properties set are as follows.");
@@ -101,7 +134,7 @@ public class SmtpUtil {
      * @throws MessagingException If an error occurs related to messaging operations
      * @throws IOException If an error occurs related to I/O operations
      */
-    public static MimeMessage generateMessage(Session session, String username, MapValue<BString, Object> message)
+    public static MimeMessage generateMessage(Session session, String username, BMap<BString, Object> message)
             throws MessagingException, IOException {
         Address[] toAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_TO);
         Address[] ccAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_CC);
@@ -109,6 +142,7 @@ public class SmtpUtil {
         Address[] replyToAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_REPLY_TO);
         String subject = message.getStringValue(EmailConstants.MESSAGE_SUBJECT).getValue();
         String messageBody = message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY).getValue();
+        String htmlMessageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_HTML_MESSAGE_BODY));
         String bodyContentType = message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE).getValue();
         String fromAddress = message.getStringValue(EmailConstants.MESSAGE_FROM).getValue();
         if (fromAddress == null || fromAddress.isEmpty()) {
@@ -131,20 +165,24 @@ public class SmtpUtil {
         if (!senderAddress.isEmpty()) {
             emailMessage.setSender(new InternetAddress(senderAddress));
         }
-        ArrayValue attachments = message.getArrayValue(EmailConstants.MESSAGE_ATTACHMENTS);
+        Object attachments = message.get(EmailConstants.MESSAGE_ATTACHMENTS);
         if (attachments == null) {
-            emailMessage.setContent(messageBody, bodyContentType);
+            if (!htmlMessageBody.isEmpty()) {
+                addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
+            } else {
+                emailMessage.setContent(messageBody, bodyContentType);
+            }
         } else {
-            addBodyAndAttachments(emailMessage, messageBody, bodyContentType, attachments);
+            addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
         }
         addMessageHeaders(emailMessage, message);
         return emailMessage;
     }
 
-    private static void addMessageHeaders(MimeMessage emailMessage, MapValue<BString, Object> message)
+    private static void addMessageHeaders(MimeMessage emailMessage, BMap<BString, Object> message)
             throws MessagingException {
-        MapValue<BString, BString> headers =
-                (MapValue<BString, BString>) message.getMapValue(EmailConstants.MESSAGE_HEADERS);
+        BMap<BString, BString> headers =
+                (BMap<BString, BString>) message.getMapValue(EmailConstants.MESSAGE_HEADERS);
         if (headers != null) {
             BString[] headerNames = headers.getKeys();
             for (BString headerName : headerNames) {
@@ -153,33 +191,72 @@ public class SmtpUtil {
         }
     }
 
-    private static void addBodyAndAttachments(MimeMessage emailMessage, String messageBody, String bodyContentType,
-                                              ArrayValue attachments)
+    private static void addBodyAndAttachments(MimeMessage emailMessage, String messageBody, String htmlMessageBody,
+                                              String bodyContentType, Object attachments)
             throws MessagingException, IOException {
+        boolean multipartAdded = false;
         BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(messageBody, bodyContentType);
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageBodyPart);
-        for (int i = 0; i < attachments.size(); i++) {
-            if (attachments.get(i) instanceof ObjectValue) {
-                ObjectValue mimeEntity = (ObjectValue) attachments.get(i);
-                String contentType = getContentTypeWithParameters(mimeEntity);
-                if (contentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
-                    multipart.addBodyPart(populateMultipart(mimeEntity));
-                } else {
-                    multipart.addBodyPart(buildJavaMailBodyPart(mimeEntity, contentType));
-                }
+        if (!htmlMessageBody.isEmpty()) {
+            addTextAndHtmlContentToEmail(messageBodyPart, messageBody, htmlMessageBody);
+            multipartAdded = true;
+        } else {
+            messageBodyPart.setContent(messageBody, bodyContentType);
+        }
+        Multipart multipart;
+        if (multipartAdded) {
+            multipart = (Multipart) messageBodyPart.getContent();
+        } else {
+            multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+        }
+        if (attachments instanceof BArray) {
+            BArray attachmentArray = (BArray) attachments;
+            for (int i = 0; i < attachmentArray.size(); i++) {
+                Object attachedEntityOrRecord = attachmentArray.get(i);
+                addAttachment(attachedEntityOrRecord, multipart);
             }
+        } else {
+            addAttachment(attachments, multipart);
         }
         emailMessage.setContent(multipart);
     }
 
-    private static MimeBodyPart populateMultipart(ObjectValue mimeEntity) throws IOException, MessagingException {
+    private static void addAttachment(Object attachedEntityOrRecord, Multipart multipart)
+            throws IOException, MessagingException {
+        if (attachedEntityOrRecord instanceof BObject) {
+            BObject mimeEntity = (BObject) attachedEntityOrRecord;
+            String contentType = getContentTypeWithParameters(mimeEntity);
+            if (contentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
+                multipart.addBodyPart(populateMultipart(mimeEntity));
+            } else {
+                multipart.addBodyPart(buildJavaMailBodyPart(mimeEntity, contentType));
+            }
+        } else if (attachedEntityOrRecord instanceof BMap) {
+            BMap<BString, BString> attachedEntity = (BMap<BString, BString>) attachedEntityOrRecord;
+            String attachmentFilePath
+                    = attachedEntity.getStringValue(EmailConstants.ATTACHMENT_FILE_PATH).getValue();
+            String attachmentContentType
+                    = attachedEntity.getStringValue(EmailConstants.ATTACHMENT_CONTENT_TYPE).getValue();
+            File file = new File(attachmentFilePath);
+            BObject mimeEntity = ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+            mimeEntity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getByteChannelForTempFile(
+                    file.getAbsolutePath()));
+            MimeUtil.setContentType(ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE), mimeEntity,
+                    TEXT_PLAIN);
+            if (attachmentContentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
+                multipart.addBodyPart(populateMultipart(mimeEntity));
+            } else {
+                multipart.addBodyPart(buildJavaMailBodyPart(mimeEntity, attachmentContentType));
+            }
+        }
+    }
+
+    private static MimeBodyPart populateMultipart(BObject mimeEntity) throws IOException, MessagingException {
         Multipart multipart = new MimeMultipart();
-        ArrayValue multipartMimeEntityArrayValue = EntityBodyHandler.getBodyPartArray(mimeEntity);
+        BArray multipartMimeEntityArrayValue = EntityBodyHandler.getBodyPartArray(mimeEntity);
         int entityCount = multipartMimeEntityArrayValue.size();
         for (int i = 0; i < entityCount; i++) {
-            ObjectValue childMimeEntity = (ObjectValue) multipartMimeEntityArrayValue.get(i);
+            BObject childMimeEntity = (BObject) multipartMimeEntityArrayValue.get(i);
             String childContentType = getContentTypeWithParameters(childMimeEntity);
             if (childContentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
                 multipart.addBodyPart(populateMultipart(childMimeEntity));
@@ -192,7 +269,7 @@ public class SmtpUtil {
         return returnMimeBodyPart;
     }
 
-    private static MimeBodyPart buildJavaMailBodyPart(ObjectValue mimeEntity, String contentType)
+    private static MimeBodyPart buildJavaMailBodyPart(BObject mimeEntity, String contentType)
             throws MessagingException, IOException {
         MimeBodyPart attachmentBodyPart = new MimeBodyPart();
         Channel channel = EntityBodyHandler.getByteChannel(mimeEntity);
@@ -204,7 +281,7 @@ public class SmtpUtil {
             if (CommonUtil.isTextBased(contentType)) {
                 attachmentBodyPart.setText(((BString) MimeDataSourceBuilder.getText(mimeEntity)).getValue());
             } else {
-                ArrayValue binaryContent = (ArrayValue) MimeDataSourceBuilder.getByteArray(mimeEntity);
+                BArray binaryContent = (BArray) MimeDataSourceBuilder.getByteArray(mimeEntity);
                 attachmentBodyPart.setContent(binaryContent.getBytes(), MimeConstants.OCTET_STREAM);
             }
         }
@@ -212,13 +289,13 @@ public class SmtpUtil {
         return attachmentBodyPart;
     }
 
-    private static void addHeadersToJavaMailBodyPart(ObjectValue mimeEntity, MimeBodyPart attachmentBodyPart)
+    private static void addHeadersToJavaMailBodyPart(BObject mimeEntity, MimeBodyPart attachmentBodyPart)
             throws MessagingException {
 
-        MapValue<BString, Object> entityHeaders = EntityHeaderHandler.getEntityHeaderMap(mimeEntity);
+        BMap<BString, Object> entityHeaders = EntityHeaderHandler.getEntityHeaderMap(mimeEntity);
 
         for (BString entryKey : entityHeaders.getKeys()) {
-            ArrayValueImpl entryValues = (ArrayValueImpl) entityHeaders.get(entryKey);
+            BArray entryValues = (BArray) entityHeaders.get(entryKey);
             if (entryValues.size() > 0) {
                 String headerName = entryKey.getValue();
                 String headerValue = entryValues.getBString(0).getValue();
@@ -230,7 +307,7 @@ public class SmtpUtil {
         }
     }
 
-    private static Address[] extractAddressLists(MapValue<BString, Object> message, BString addressType)
+    private static Address[] extractAddressLists(BMap<BString, Object> message, BString addressType)
             throws AddressException {
         String[] address =  getNullCheckedStringArray(message, addressType);
         int addressArrayLength = address.length;
@@ -241,17 +318,35 @@ public class SmtpUtil {
         return addressArray;
     }
 
-    private static String[] getNullCheckedStringArray(MapValue<BString, Object> mapValue, BString parameter) {
+    private static String[] getNullCheckedStringArray(BMap<BString, Object> mapValue, BString parameter) {
         if (mapValue != null) {
-            ArrayValue arrayValue = mapValue.getArrayValue(parameter);
-            if (arrayValue != null) {
-                return arrayValue.getStringArray();
+            Object parameterValue = mapValue.get(parameter);
+            if (parameterValue != null) {
+                if (parameterValue instanceof BArray) {
+                    return ((BArray) parameterValue).getStringArray();
+                } else if (parameterValue instanceof BString) {
+                    return new String[]{((BString) parameterValue).getValue()};
+                } else {
+                    return new String[0];
+                }
             } else {
                 return new String[0];
             }
         } else {
             return new String[0];
         }
+    }
+
+    private static void addTextAndHtmlContentToEmail(Part emailPart, String textContent, String htmlContent)
+            throws MessagingException {
+        Multipart multipart = new MimeMultipart();
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setText(textContent);
+        multipart.addBodyPart(messageBodyPart);
+        messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(htmlContent, EmailConstants.HTML_CONTENT_TYPE);
+        multipart.addBodyPart(messageBodyPart);
+        emailPart.setContent(multipart);
     }
 
     private static String getNullCheckedString(BString string) {
@@ -262,7 +357,8 @@ public class SmtpUtil {
         return string != null && !string.isEmpty();
     }
 
-    public static ErrorValue getBallerinaError(String typeId, String message) {
-        return BallerinaErrors.createDistinctError(typeId, EmailConstants.EMAIL_PACKAGE_ID, message);
+    public static BError getBallerinaError(String typeId, String message) {
+        return ErrorCreator.createDistinctError(typeId, EmailUtils.getEmailPackage(),
+                                                 StringUtils.fromString(message));
     }
 }

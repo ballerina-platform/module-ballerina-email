@@ -18,6 +18,8 @@
 
 package org.ballerinalang.stdlib.email.service.compiler;
 
+import io.ballerina.runtime.api.types.StructureType;
+import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 import org.ballerinalang.compiler.plugins.AbstractCompilerPlugin;
 import org.ballerinalang.compiler.plugins.SupportedResourceParamTypes;
 import org.ballerinalang.model.tree.AnnotationAttachmentNode;
@@ -32,9 +34,8 @@ import org.wso2.ballerinalang.compiler.tree.BLangSimpleVariable;
 
 import java.util.List;
 
+import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_EMAIL_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR;
-import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
-import static org.ballerinalang.util.diagnostic.Diagnostic.Kind.ERROR;
 
 /**
  * Compiler plugin for validating Email Listener.
@@ -46,7 +47,7 @@ import static org.ballerinalang.util.diagnostic.Diagnostic.Kind.ERROR;
                 name = EmailConstants.LISTENER),
         paramTypes = {
                 @SupportedResourceParamTypes.Type(packageName = EmailConstants.MODULE_NAME,
-                        name = EmailConstants.EMAIL),
+                        name = EmailConstants.EMAIL_MESSAGE),
                 @SupportedResourceParamTypes.Type(packageName = EmailConstants.MODULE_NAME,
                         name = EmailConstants.ERROR)
         }
@@ -69,23 +70,24 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
     public void validate(String serviceName, BLangFunction resource, DiagnosticLog dlog) {
         final List<BLangSimpleVariable> parameters = resource.getParameters();
         switch (resource.getName().getValue()) {
-            case ON_MESSAGE:
-                String onMessageErrorMessage = "Invalid resource signature for %s in service %s. "
-                        + "The parameter should be a " + EmailConstants.MODULE_NAME + ":" + EmailConstants.EMAIL +
-                        " with no returns.";
-                onMessageErrorMessage = String.format(onMessageErrorMessage, resource.getName().getValue(),
+            case ON_EMAIL_MESSAGE:
+                String onEmailMessageErrorMessage = "Invalid resource signature for %s in service %s. "
+                        + "The parameter should be a " + EmailConstants.MODULE_NAME + ":"
+                        + EmailConstants.EMAIL_MESSAGE + " with no returns.";
+                onEmailMessageErrorMessage = String.format(onEmailMessageErrorMessage, resource.getName().getValue(),
                         serviceName);
                 if (parameters.size() != 1) {
-                    dlog.logDiagnostic(ERROR, resource.getPosition(), onMessageErrorMessage);
+                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onEmailMessageErrorMessage);
                     return;
                 }
                 BType emailEvent = parameters.get(0).getTypeNode().type;
                 if (emailEvent.getKind().equals(TypeKind.OBJECT)) {
                     if (emailEvent instanceof BStructureType) {
-                        BStructureType event = (BStructureType) emailEvent;
-                        if (!EmailConstants.MODULE_NAME.equals(event.tsymbol.pkgID.name.value) ||
-                                !EmailConstants.EMAIL.equals(event.tsymbol.name.value)) {
-                            dlog.logDiagnostic(ERROR, resource.getPosition(), onMessageErrorMessage);
+                        StructureType event = (StructureType) emailEvent;
+                        if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
+                                !EmailConstants.EMAIL_MESSAGE.equals(event.getName())) {
+                            dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(),
+                                    onEmailMessageErrorMessage);
                             return;
                         }
                     }
@@ -97,24 +99,25 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                         " with no returns.";
                 onErrorErrorMessage = String.format(onErrorErrorMessage, resource.getName().getValue(), serviceName);
                 if (parameters.size() != 1) {
-                    dlog.logDiagnostic(ERROR, resource.getPosition(), onErrorErrorMessage);
+                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onErrorErrorMessage);
                     return;
                 }
                 BType errorEvent = parameters.get(0).getTypeNode().type;
                 if (errorEvent.getKind().equals(TypeKind.OBJECT)) {
                     if (errorEvent instanceof BStructureType) {
-                        BStructureType event = (BStructureType) errorEvent;
-                        if (!EmailConstants.MODULE_NAME.equals(event.tsymbol.pkgID.name.value) ||
-                                !EmailConstants.EMAIL.equals(event.tsymbol.name.value)) {
-                            dlog.logDiagnostic(ERROR, resource.getPosition(), onErrorErrorMessage);
+                        StructureType event = (StructureType) errorEvent;
+                        if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
+                                !EmailConstants.EMAIL_MESSAGE.equals(event.getName())) {
+                            dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onErrorErrorMessage);
                             return;
                         }
                     }
                 }
                 break;
             default:
-                dlog.logDiagnostic(ERROR, resource.getPosition(), "Invalid resource name " +
-                        resource.getName().getValue() + " in service " + serviceName);
+                dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(),
+                        "Invalid resource name " + resource.getName().getValue() + " in service "
+                                + serviceName);
         }
     }
 }

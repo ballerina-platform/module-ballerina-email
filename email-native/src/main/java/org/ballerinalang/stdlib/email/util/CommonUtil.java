@@ -18,8 +18,8 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.api.BString;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.mime.util.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +96,7 @@ public class CommonUtil {
      * @param customProperties Custom properties from Ballerina
      * @param properties Properties to be used to create the session
      */
-    public static void addCustomProperties(MapValue<BString, Object> customProperties, Properties properties) {
+    public static void addCustomProperties(BMap<BString, Object> customProperties, Properties properties) {
         if (customProperties != null) {
             for (BString propertyName : customProperties.getKeys()) {
                 properties.put(propertyName.getValue(),

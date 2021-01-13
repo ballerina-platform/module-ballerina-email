@@ -18,10 +18,10 @@
 
 package org.ballerinalang.stdlib.email.server;
 
-import org.ballerinalang.jvm.BRuntime;
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.ObjectValue;
-import org.ballerinalang.jvm.values.api.BString;
+import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 
 import java.util.HashMap;
@@ -44,10 +44,12 @@ public class EmailListenerHelper {
      * @param serviceEndpointConfig Email server endpoint configuration
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public static void init(ObjectValue emailListener, MapValue<BString, Object> serviceEndpointConfig)
+    public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig,
+                            BMap<BString, Object> protocolConfig, BString protocol)
             throws EmailConnectorException {
-        final EmailListener listener = new EmailListener(BRuntime.getCurrentRuntime());
-        Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig);
+        final EmailListener listener = new EmailListener(Runtime.getCurrentRuntime());
+        Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig, protocolConfig,
+                protocol.getValue());
         EmailConnector emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
         emailListener.addNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR, emailConnector);
     }
@@ -57,19 +59,21 @@ public class EmailListenerHelper {
      * @param emailListener Ballerina email listener
      * @param service Ballerina service to be listened
      */
-    public static void register(ObjectValue emailListener, ObjectValue service) {
+    public static void register(BObject emailListener, BObject service) {
         EmailConnector emailConnector = (EmailConnector) emailListener.getNativeData(
                 EmailConstants.EMAIL_SERVER_CONNECTOR);
         EmailListener listener = emailConnector.getEmailListener();
         listener.addService(service);
     }
 
-    private static Map<String, Object> getServerConnectorParamMap(MapValue<BString, Object> serviceEndpointConfig) {
+    private static Map<String, Object> getServerConnectorParamMap(BMap<BString, Object> serviceEndpointConfig,
+                                                                  BMap<BString, Object> protocolConfig,
+                                                                  String protocol) {
         Map<String, Object> params = new HashMap<>(7);
-        MapValue<BString, BString> secureSocket = (MapValue<BString, BString>) serviceEndpointConfig.getMapValue(
+        BMap<BString, BString> secureSocket = (BMap<BString, BString>) serviceEndpointConfig.getMapValue(
                 EmailConstants.ENDPOINT_CONFIG_SECURE_SOCKET);
         if (secureSocket != null) {
-            final MapValue<BString, BString> privateKey = (MapValue<BString, BString>) secureSocket.getMapValue(
+            final BMap<BString, BString> privateKey = (BMap<BString, BString>) secureSocket.getMapValue(
                     EmailConstants.ENDPOINT_CONFIG_PRIVATE_KEY);
             if (privateKey != null) {
                 final String privateKeyPath = privateKey.getStringValue(EmailConstants.ENDPOINT_CONFIG_PATH).getValue();
@@ -82,8 +86,6 @@ public class EmailListenerHelper {
                 }
             }
         }
-        MapValue<BString, Object> protocolConfig = (MapValue<BString, Object>) serviceEndpointConfig.getMapValue(
-                EmailConstants.PROTOCOL_CONFIG);
         if (protocolConfig != null) {
             params.put(EmailConstants.PROTOCOL_CONFIG.getValue(), protocolConfig);
         }
@@ -93,8 +95,7 @@ public class EmailListenerHelper {
                    serviceEndpointConfig.getStringValue(EmailConstants.PROPS_USERNAME).getValue());
         params.put(EmailConstants.PROPS_PASSWORD.getValue(),
                    serviceEndpointConfig.getStringValue(EmailConstants.PROPS_PASSWORD).getValue());
-        params.put(EmailConstants.PROPS_PROTOCOL.getValue(),
-                   serviceEndpointConfig.getStringValue(EmailConstants.PROPS_PROTOCOL).getValue());
+        params.put(EmailConstants.PROPS_PROTOCOL.getValue(), protocol);
         return params;
     }
 
@@ -103,7 +104,7 @@ public class EmailListenerHelper {
      * @param emailListener Ballerina listener for connecting to the email server endpoint
      * @throws Exception If an error occurs during the polling operations
      */
-    public static void poll(ObjectValue emailListener) throws Exception {
+    public static void poll(BObject emailListener) throws Exception {
         EmailConnector connector = (EmailConnector) emailListener.getNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR);
         try {
             connector.poll();

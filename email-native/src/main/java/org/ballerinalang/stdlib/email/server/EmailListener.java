@@ -18,9 +18,10 @@
 
 package org.ballerinalang.stdlib.email.server;
 
-import org.ballerinalang.jvm.BRuntime;
-import org.ballerinalang.jvm.values.ErrorValue;
-import org.ballerinalang.jvm.values.ObjectValue;
+import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.async.Callback;
+import io.ballerina.runtime.api.values.BError;
+import io.ballerina.runtime.api.values.BObject;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_EMAIL_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR_METADATA;
-import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE_METADATA;
 
 /**
@@ -42,15 +43,15 @@ public class EmailListener {
 
     private static final Logger log = LoggerFactory.getLogger(EmailListener.class);
 
-    private final BRuntime runtime;
+    private final Runtime runtime;
 
-    private Map<String, ObjectValue> registeredServices = new HashMap<>();
+    private Map<String, BObject> registeredServices = new HashMap<>();
 
     /**
      * Constructor for listener class for email.
      * @param runtime Current Ballerina runtime
      */
-    public EmailListener(BRuntime runtime) {
+    public EmailListener(Runtime runtime) {
         this.runtime = runtime;
     }
 
@@ -59,12 +60,22 @@ public class EmailListener {
      * @param emailEvent Email object to be received
      * @return If successful return true
      */
-    public boolean onMessage(EmailEvent emailEvent) {
+    public boolean onEmailMessage(EmailEvent emailEvent) {
         Object email = emailEvent.getEmailObject();
         if (runtime != null) {
-            Set<Map.Entry<String, ObjectValue>> services = registeredServices.entrySet();
-            for (Map.Entry<String, ObjectValue> service : services) {
-                runtime.invokeMethodSync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA, email, true);
+            Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
+            for (Map.Entry<String, BObject> service : services) {
+                runtime.invokeMethodAsync(service.getValue(), ON_EMAIL_MESSAGE, null, ON_MESSAGE_METADATA,
+                                          new Callback() {
+                    @Override
+                    public void notifySuccess(Object o) {
+                    }
+
+                    @Override
+                    public void notifyFailure(BError error) {
+                        log.error("Error while invoking email onEmailMessage method.");
+                    }
+                }, email, true);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -77,19 +88,28 @@ public class EmailListener {
      * @param error Email object to be received
      */
     public void onError(Object error) {
-        log.error(((ErrorValue) error).getMessage());
+        log.error(((BError) error).getMessage());
         if (runtime != null) {
-            Set<Map.Entry<String, ObjectValue>> services = registeredServices.entrySet();
-            for (Map.Entry<String, ObjectValue> service : services) {
-                runtime.invokeMethodSync(service.getValue(), EmailConstants.ON_ERROR, null,
-                                         ON_ERROR_METADATA, error, true);
+            Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
+            for (Map.Entry<String, BObject> service : services) {
+                runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_ERROR, null, ON_ERROR_METADATA,
+                        new Callback() {
+                    @Override
+                    public void notifySuccess(Object o) {
+                    }
+
+                    @Override
+                    public void notifyFailure(BError error) {
+                        log.error("Error while invoking email onEmailMessage method.");
+                    }
+                }, error, true);
             }
         } else {
             log.error("Runtime should not be null.");
         }
     }
 
-    protected void addService(ObjectValue service) {
+    protected void addService(BObject service) {
         if (service != null && service.getType() != null && service.getType().getName() != null) {
             registeredServices.put(service.getType().getName(), service);
         }
