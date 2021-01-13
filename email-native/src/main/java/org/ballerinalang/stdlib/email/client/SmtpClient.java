@@ -54,9 +54,13 @@ public class SmtpClient {
      * @param username Represents the username of the SMTP server
      * @param password Represents the password of the SMTP server
      * @param config Properties required to configure the SMTP Session
+     * @return If an error occurs in the SMTP client, error
      */
-    public static void initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
+    public static Object initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
                                           BMap<BString, Object> config) {
+        if (config.size() == 0) {
+            return SmtpUtil.getBallerinaError(EmailConstants.INIT_ERROR, "SmtpConfig should not be empty.");
+        }
         Properties properties = SmtpUtil.getProperties(config, host.getValue());
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
@@ -66,6 +70,7 @@ public class SmtpClient {
                 });
         clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
         clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        return null;
     }
 
     /**

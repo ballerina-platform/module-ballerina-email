@@ -27,6 +27,7 @@ function testSendComplexEmail() {
     string password = "abcdef123";
     string subject = "Test E-Mail";
     string body = "This is a test e-mail.";
+    string htmlBody = "<h1>This message is embedded in HTML tags.</h1>";
     string contentType = "text/html";
     string fromAddress = "someone1@localhost.com";
     string sender = "someone2@localhost.com";
@@ -39,11 +40,15 @@ function testSendComplexEmail() {
 
     SmtpConfig smtpConfig = {
         port: 30250, // This is an incorrect value. Later the correct value, 3025 will be set via a property.
-        enableSsl: false,
+        security: START_TLS_AUTO,
         properties: {"mail.smtp.port":"3025"}
     };
 
-    SmtpClient smtpClient = new (host, username,  password, smtpConfig);
+    SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
+    if (smtpClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the SMTP client.");
+    }
+    SmtpClient smtpClient = checkpanic smtpClientOrError;
 
     //Create a text body part.
     mime:Entity bodyPart1 = new;
@@ -82,8 +87,11 @@ function testSendComplexEmail() {
     mime:Entity bodyPart6 = new;
     bodyPart6.setByteArray(binary);
 
+    // Create another attachment
+    Attachment att7 = {filePath: "tests/resources/datafiles/vaccine.txt", contentType: "text/plain"};
+
     //Create an array to hold all the body parts.
-    mime:Entity[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6];
+    (mime:Entity|Attachment)[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, att7];
 
     Message email = {
         to: toAddresses,
@@ -91,6 +99,7 @@ function testSendComplexEmail() {
         bcc: bccAddresses,
         subject: subject,
         body: body,
+        htmlBody: htmlBody,
         contentType: contentType,
         headers: {header1_name: "header1_value"},
         'from: fromAddress,

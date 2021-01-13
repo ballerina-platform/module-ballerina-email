@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/java;
+import ballerina/mime;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
 public client class SmtpClient {
@@ -25,9 +26,10 @@ public client class SmtpClient {
     # + username - Username of the SMTP Client
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
+    # + return - An `email:Error` if failed to initialize or else `()`
     public isolated function init(@untainted string host, @untainted string username, @untainted string password,
-            SmtpConfig clientConfig = {}) {
-        initSmtpClientEndpoint(self, host, username, password, clientConfig);
+            SmtpConfig clientConfig = {}) returns Error? {
+        return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
     # Sends a message.
@@ -42,8 +44,9 @@ public client class SmtpClient {
         if (email?.contentType == ()) {
             email.contentType = "text/plain";
         } else if (!self.containsType(email?.contentType, "text")) {
-            return SendError("Content type of the email should be text.");
+            return error SendError("Content type of the email should be text.");
         }
+        self.putAttachmentToArray(email);
         return send(self, email);
     }
 
@@ -56,10 +59,17 @@ public client class SmtpClient {
         return false;
     }
 
+    private isolated function putAttachmentToArray(Message email) {
+        Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
+        if (attachments is Attachment) {
+            email.attachments = [attachments];
+        }
+    }
+
 }
 
 isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
-        SmtpConfig config) = @java:Method {
+        SmtpConfig config) returns Error? = @java:Method {
     name : "initClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
@@ -72,11 +82,10 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 # Configuration of the SMTP Endpoint.
 #
 # + port - Port number of the SMTP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "smtps" protocol and false for the "smtp" protocol
+# + security - Type of security channel
 # + properties - SMTP properties to override the existing configuration
 public type SmtpConfig record {|
     int port = 465;
-    boolean enableSsl = true;
+    Security? security = ();
     map<string>? properties = ();
 |};

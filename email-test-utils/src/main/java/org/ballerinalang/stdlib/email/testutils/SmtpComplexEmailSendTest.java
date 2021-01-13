@@ -20,8 +20,15 @@ package org.ballerinalang.stdlib.email.testutils;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import org.ballerinalang.mime.util.MimeConstants;
 import org.ballerinalang.stdlib.email.util.CommonUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -29,12 +36,6 @@ import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
@@ -65,6 +66,7 @@ public class SmtpComplexEmailSendTest {
     private static final String EMAIL_SENDER = "someone2@localhost.com";
     private static final String EMAIL_SUBJECT = "Test E-Mail";
     private static final String EMAIL_TEXT = "This is a test e-mail.";
+    private static final String EMAIL_HTML = "<h1>This message is embedded in HTML tags.</h1>";
     private static final String EMAIL_CONTENT_TYPE = "text/html";
     private static final String HEADER1_NAME = "header1_name";
     private static final String HEADER1_VALUE = "header1_value";
@@ -99,15 +101,17 @@ public class SmtpComplexEmailSendTest {
             assertTrue(message.isMimeType("multipart/*"));
             Multipart multiPart = (Multipart) message.getContent();
             int multiPartCount = multiPart.getCount();
-            assertEquals(7, multiPartCount);
+            assertEquals(9, multiPartCount);
 
             testMessageBody((MimeBodyPart) multiPart.getBodyPart(0));
-            testAttachment1((MimeBodyPart) multiPart.getBodyPart(1));
-            testAttachment2((MimeBodyPart) multiPart.getBodyPart(2));
-            testAttachment3((MimeBodyPart) multiPart.getBodyPart(3));
-            testAttachment4((MimeBodyPart) multiPart.getBodyPart(4));
-            testAttachment5((MimeBodyPart) multiPart.getBodyPart(5));
-            testAttachment6((MimeBodyPart) multiPart.getBodyPart(6));
+            htmlMessageBody((MimeBodyPart) multiPart.getBodyPart(1));
+            testAttachment1((MimeBodyPart) multiPart.getBodyPart(2));
+            testAttachment2((MimeBodyPart) multiPart.getBodyPart(3));
+            testAttachment3((MimeBodyPart) multiPart.getBodyPart(4));
+            testAttachment4((MimeBodyPart) multiPart.getBodyPart(5));
+            testAttachment5((MimeBodyPart) multiPart.getBodyPart(6));
+            testAttachment6((MimeBodyPart) multiPart.getBodyPart(7));
+            testAttachment7((MimeBodyPart) multiPart.getBodyPart(8));
 
             assertEquals(HEADER1_VALUE, message.getHeader(HEADER1_NAME)[0]);
             assertEquals(EMAIL_FROM, message.getFrom()[0].toString());
@@ -121,6 +125,11 @@ public class SmtpComplexEmailSendTest {
 
     private static void testMessageBody(MimeBodyPart bodyPart) throws IOException, MessagingException {
         assertEquals(EMAIL_TEXT, ((String) bodyPart.getContent()));
+        assertTrue(bodyPart.getContentType().startsWith(MimeConstants.TEXT_PLAIN));
+    }
+
+    private static void htmlMessageBody(MimeBodyPart bodyPart) throws IOException, MessagingException {
+        assertEquals(EMAIL_HTML, ((String) bodyPart.getContent()));
         assertTrue(bodyPart.getContentType().startsWith(EMAIL_CONTENT_TYPE));
     }
 
@@ -168,6 +177,12 @@ public class SmtpComplexEmailSendTest {
         assertEquals("application/octet-stream", bodyPart.getContentType());
         assertEquals("Test content".getBytes(),
                 CommonUtil.convertInputStreamToByteArray((SharedByteArrayInputStream) bodyPart.getContent()));
+    }
+
+    private static void testAttachment7(MimeBodyPart bodyPart) throws IOException, MessagingException {
+        InputStream input = bodyPart.getInputStream();
+        assertEquals("There is a vaccine for COVID-19.", convertInputStreamToString(input));
+        assertTrue(bodyPart.getContentType().startsWith("text/plain"));
     }
 
     public static void compareInputStreams(InputStream input1, InputStream input2) {
