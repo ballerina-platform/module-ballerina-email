@@ -66,7 +66,7 @@ allprojects {
         }
 
         maven {
-            url = 'https://maven.pkg.github.com/ballerina-platform/module-ballerina-email'
+            url = 'https://maven.pkg.github.com/ballerina-platform/ballerina-lang'
             credentials {
                 username System.getenv("packageUser")
                 password System.getenv("packagePAT")
