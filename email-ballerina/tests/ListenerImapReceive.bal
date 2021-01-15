@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/java;
-import ballerina/runtime;
+import ballerina/lang.runtime as runtime;
 import ballerina/stringutils;
 import ballerina/test;
 
@@ -27,7 +27,7 @@ string receivedErrorImap = "";
 function isOnEmailInvokedImap() returns boolean {
     int i = 0;
     while ((!onEmailMessageInvokedImap) && (i < 10)) {
-    	 runtime:sleep(1000);
+    	 runtime:sleep(1);
     	 i += 1;
     }
     return onEmailMessageInvokedImap;
@@ -36,7 +36,7 @@ function isOnEmailInvokedImap() returns boolean {
 function isonErrorInvokedImap() returns boolean {
     int i = 0;
     while ((!onErrorInvokedImap) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return onErrorInvokedImap;
@@ -45,7 +45,7 @@ function isonErrorInvokedImap() returns boolean {
 function getreceivedMessageImap() returns string {
     int i = 0;
     while ((!onEmailMessageInvokedImap) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return <@untainted>receivedMessageImap;
@@ -54,14 +54,14 @@ function getreceivedMessageImap() returns string {
 function getreceivedErrorImap() returns string {
     int i = 0;
     while ((!onErrorInvokedImap) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return <@untainted>receivedErrorImap;
 }
 
 @test:Config {
-    dependsOn: ["testReceiveSimpleEmailImap"]
+    dependsOn: [testReceiveSimpleEmailImap]
 }
 function testListenEmailImap() {
 

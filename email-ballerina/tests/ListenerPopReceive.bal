@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/java;
-import ballerina/runtime;
+import ballerina/lang.runtime as runtime;
 import ballerina/stringutils;
 import ballerina/test;
 
@@ -27,7 +27,7 @@ string receivedErrorPop = "";
 function isOnEmailInvokedPop() returns boolean {
     int i = 0;
     while ((!onEmailMessageInvokedPop) && (i < 10)) {
-    	 runtime:sleep(1000);
+    	 runtime:sleep(1);
     	 i += 1;
     }
     return onEmailMessageInvokedPop;
@@ -36,7 +36,7 @@ function isOnEmailInvokedPop() returns boolean {
 function isonErrorInvokedPop() returns boolean {
     int i = 0;
     while ((!onErrorInvokedPop) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return onErrorInvokedPop;
@@ -45,7 +45,7 @@ function isonErrorInvokedPop() returns boolean {
 function getreceivedMessagePop() returns string {
     int i = 0;
     while ((!onEmailMessageInvokedPop) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return <@untainted>receivedMessagePop;
@@ -54,14 +54,14 @@ function getreceivedMessagePop() returns string {
 function getreceivedErrorPop() returns string {
     int i = 0;
     while ((!onErrorInvokedPop) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return <@untainted>receivedErrorPop;
 }
 
 @test:Config {
-    dependsOn: ["testReceiveSimpleEmailPop"]
+    dependsOn: [testReceiveSimpleEmailPop]
 }
 function testListenEmailPop() {
 
