@@ -61,7 +61,7 @@ function getreceivedErrorImap() returns string {
 }
 
 @test:Config {
-    dependsOn: ["testReceiveSimpleEmailImap"]
+    dependsOn: [testReceiveSimpleEmailImap]
 }
 function testListenEmailImap() {
 

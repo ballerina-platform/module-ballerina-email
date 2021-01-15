@@ -61,7 +61,7 @@ function getreceivedErrorPop() returns string {
 }
 
 @test:Config {
-    dependsOn: ["testReceiveSimpleEmailPop"]
+    dependsOn: [testReceiveSimpleEmailPop]
 }
 function testListenEmailPop() {
 
