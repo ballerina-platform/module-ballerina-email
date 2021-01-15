@@ -411,8 +411,4 @@ public class SmtpUtil {
         return string != null && !string.isEmpty();
     }
 
-//    public static BError getBallerinaError(String typeId, String message) {
-//        return ErrorCreator.createDistinctError(typeId, EmailUtils.getEmailPackage(),
-//                                                 StringUtils.fromString(message));
-//    }
 }
