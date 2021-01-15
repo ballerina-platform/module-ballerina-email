@@ -54,6 +54,33 @@ public type Attachment record {|
   string contentType;
 |};
 
+# Secure Socket configuration.
+#
+# + certificate - Server certificate
+# + protocol - SSL or TLS protocol
+# + ciphers - Ciper used
+public type SecureSocket record {|
+    Certificate certificate;
+    Protocol? protocol = ();
+    string[]? ciphers = ();
+|};
+
+# Certificate configuration.
+#
+# + path - Certificate file location
+public type Certificate record {|
+    string path;
+|};
+
+# Transport security protocol.
+#
+# + name - Protocol name
+# + versions - Protocol versions
+public type Protocol record {|
+    string name;
+    string[] versions;
+|};
+
 # Security type.
 #
 # + START_TLS_AUTO - If STARTTLS exists use it else use plaintext

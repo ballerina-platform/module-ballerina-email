@@ -61,8 +61,10 @@ isolated function imapRead(ImapClient clientEndpoint, string folder) returns Mes
 # + port - Port number of the IMAP server
 # + security - Type of security channel
 # + properties - IMAP properties to override the existing configuration
+# + secureSocket - Secure socket configuration
 public type ImapConfig record {|
     int port = 993;
     Security? security = ();
     map<string>? properties = ();
+    SecureSocket? secureSocket = ();
 |};

@@ -76,7 +76,17 @@ function testListenEmailPop() {
                                password: "abcdef123",
                                pollingIntervalInMillis: 2000,
                                port: 3995,
-                               properties: ()
+                               properties: {"mail.pop3.ssl.checkserveridentity":"false"},
+                               secureSocket: {
+                                    certificate: {
+                                        path: "tests/resources/certsandkeys/greenmail.crt"
+                                    },
+                                    protocol: {
+                                        name: "TLS",
+                                        versions: ["TLSv1.2", "TLSv1.1"]
+                                    },
+                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+                               }
                            });
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 listener.");

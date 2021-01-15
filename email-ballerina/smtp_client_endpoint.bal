@@ -84,8 +84,10 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 # + port - Port number of the SMTP server
 # + security - Type of security channel
 # + properties - SMTP properties to override the existing configuration
+# + secureSocket - Secure socket configuration
 public type SmtpConfig record {|
     int port = 465;
     Security? security = ();
     map<string>? properties = ();
+    SecureSocket? secureSocket = ();
 |};

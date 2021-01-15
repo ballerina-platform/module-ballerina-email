@@ -21,13 +21,14 @@ package org.ballerinalang.stdlib.email.client;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import org.ballerinalang.stdlib.email.util.CommonUtil;
 import org.ballerinalang.stdlib.email.util.EmailAccessUtil;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
-import org.ballerinalang.stdlib.email.util.SmtpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 
 import javax.mail.Flags;
@@ -62,9 +63,15 @@ public class EmailAccessClient {
      * @param config Properties required to configure the POP session
      * @return If an error occurs in the POP client, returns an error
      */
-    public static Object initPopClientEndpoint(BObject clientEndpoint, BString host, BString username,
-                                               BString password, BMap<BString, Object> config) {
-        Properties properties = EmailAccessUtil.getPopProperties(config, host.getValue());
+    public static Object initPopClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
+                                               BMap<BString, Object> config) {
+        Properties properties;
+        try {
+            properties = EmailAccessUtil.getPopProperties(config, host.getValue());
+        } catch (IOException | GeneralSecurityException e) {
+            log.error("Failed to initialize POP3 server : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, e.getMessage());
+        }
         Session session = Session.getInstance(properties, null);
         try {
             Store store = session.getStore(EmailConstants.POP_PROTOCOL);
@@ -75,7 +82,7 @@ public class EmailAccessClient {
             return null;
         } catch (NoSuchProviderException e) {
             log.error("Failed initialize client properties : ", e);
-            return SmtpUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
         }
     }
 
@@ -90,7 +97,13 @@ public class EmailAccessClient {
      */
     public static Object initImapClientEndpoint(BObject clientEndpoint, BString host, BString username,
                                                 BString password, BMap<BString, Object> config) {
-        Properties properties = EmailAccessUtil.getImapProperties(config, host.getValue());
+        Properties properties;
+        try {
+            properties = EmailAccessUtil.getImapProperties(config, host.getValue());
+        } catch (IOException | GeneralSecurityException e) {
+            log.error("Failed to initialize IMAP server : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, e.getMessage());
+        }
         Session session = Session.getInstance(properties, null);
         try {
             Store store = session.getStore(EmailConstants.IMAP_PROTOCOL);
@@ -101,7 +114,7 @@ public class EmailAccessClient {
             return null;
         } catch (NoSuchProviderException e) {
             log.error("Failed initialize client properties : ", e);
-            return SmtpUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
         }
     }
 
@@ -140,7 +153,7 @@ public class EmailAccessClient {
             return mapValue;
         } catch (MessagingException | IOException e) {
             log.error("Failed to read message : ", e);
-            return SmtpUtil.getBallerinaError(EmailConstants.READ_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.READ_ERROR, e.getMessage());
         }
     }
 

@@ -31,7 +31,18 @@ function testSendSimpleEmail() {
 
     error? serverStatus = startSimpleSecureSmtpServer();
     SmtpConfig smtpConfig = {
-        port: 3465
+        port: 3465,
+        properties: {"mail.smtp.ssl.checkserveridentity":"false"},
+        secureSocket: {
+            certificate: {
+                path: "tests/resources/certsandkeys/greenmail.crt"
+            },
+            protocol: {
+                name: "TLS",
+                versions: ["TLSv1.2", "TLSv1.1"]
+            },
+            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+        }
     };
 
     SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
