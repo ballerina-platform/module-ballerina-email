@@ -19,7 +19,7 @@ import ballerina/test;
 
 @test:Config {
 }
-function testReceiveSimpleEmailPop() {
+function testReceiveSimpleEmailPop() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -47,7 +47,7 @@ function testReceiveSimpleEmailPop() {
     if (popClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
-    PopClient popClient = checkpanic popClientOrError;
+    PopClient popClient = check popClientOrError;
     Message|Error? email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");

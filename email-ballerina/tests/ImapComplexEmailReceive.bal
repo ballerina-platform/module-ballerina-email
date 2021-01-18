@@ -21,7 +21,7 @@ import ballerina/stringutils;
 import ballerina/test;
 
 @test:Config {}
-function testReceiveComplexEmailImap() {
+function testReceiveComplexEmailImap() returns @tainted error? {
 
     string host = "127.0.0.1";
     string username = "hascode";
@@ -47,7 +47,7 @@ function testReceiveComplexEmailImap() {
     if (imapClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
-    ImapClient imapClient = checkpanic imapClientOrError;
+    ImapClient imapClient = check imapClientOrError;
     Message|Error? emailResponse = imapClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
@@ -97,7 +97,7 @@ function testReceiveComplexEmailImap() {
                 }
             }
             if (att0 is mime:Entity) {
-                returnArray[11] = att0.getHeader("H1");
+                returnArray[11] = check att0.getHeader("H1");
                 returnArray[12] = att0.getContentType();
             }
             json? headers = emailResponse?.headers;

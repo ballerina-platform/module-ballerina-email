@@ -63,7 +63,7 @@ function getreceivedErrorImap() returns string {
 @test:Config {
     dependsOn: [testReceiveSimpleEmailImap]
 }
-function testListenEmailImap() {
+function testListenEmailImap() returns @tainted error? {
 
     Error? listenerStatus = startImapListener();
     if (listenerStatus is Error) {
@@ -91,7 +91,7 @@ function testListenEmailImap() {
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 listener.");
     }
-    ImapListener emailServer = checkpanic emailServerOrError;
+    ImapListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {

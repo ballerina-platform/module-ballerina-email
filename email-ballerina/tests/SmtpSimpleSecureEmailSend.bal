@@ -20,7 +20,7 @@ import ballerina/test;
 
 @test:Config {
 }
-function testSendSimpleEmail() {
+function testSendSimpleEmail() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -49,7 +49,7 @@ function testSendSimpleEmail() {
     if (smtpClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
-    SmtpClient smtpClient = checkpanic smtpClientOrError;
+    SmtpClient smtpClient = check smtpClientOrError;
     Message email = {
         to: toAddress,
         subject: subject,
@@ -71,7 +71,7 @@ function testSendSimpleEmail() {
     if (smtpClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
-    smtpClient = checkpanic smtpClientOrError;
+    smtpClient = check smtpClientOrError;
     response = smtpClient->sendEmailMessage(email);
     if (response is Error) {
         test:assertTrue(stringutils:contains(response.message(), "Authentication credentials invalid"),

@@ -20,7 +20,7 @@ import ballerina/test;
 
 @test:Config {
 }
-function testSendComplexEmail() {
+function testSendComplexEmail() returns @tainted error? {
 
     string host = "127.0.0.1";
     string username = "hascode";
@@ -48,7 +48,7 @@ function testSendComplexEmail() {
     if (smtpClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
-    SmtpClient smtpClient = checkpanic smtpClientOrError;
+    SmtpClient smtpClient = check smtpClientOrError;
 
     //Create a text body part.
     mime:Entity bodyPart1 = new;

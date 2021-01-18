@@ -63,7 +63,7 @@ function getreceivedErrorPop() returns string {
 @test:Config {
     dependsOn: [testReceiveSimpleEmailPop]
 }
-function testListenEmailPop() {
+function testListenEmailPop() returns @tainted error? {
 
     Error? listenerStatus = startPopListener();
     if (listenerStatus is Error) {
@@ -91,7 +91,7 @@ function testListenEmailPop() {
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 listener.");
     }
-    PopListener emailServer = checkpanic emailServerOrError;
+    PopListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {
