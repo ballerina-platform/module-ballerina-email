@@ -16,7 +16,7 @@
 
 import ballerina/java;
 import ballerina/lang.runtime as runtime;
-import ballerina/stringutils;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 boolean onEmailMessageInvokedImap = false;
@@ -123,7 +123,7 @@ function testListenEmailImap() returns @tainted error? {
     }
 
     test:assertTrue(onErrorInvokedImap, msg = "Error was not listened by method, onError with IMAP.");
-    test:assertTrue(stringutils:contains(receivedErrorImap, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(strings:includes(receivedErrorImap, "Couldn't connect to host, port: 127.0.0.1,"),
         msg = "Listened error message is not matched with IMAP.");
 
 }

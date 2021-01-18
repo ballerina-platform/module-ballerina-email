@@ -16,7 +16,7 @@
 
 import ballerina/java;
 import ballerina/lang.runtime as runtime;
-import ballerina/stringutils;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 boolean onEmailMessageInvokedPop = false;
@@ -122,7 +122,7 @@ function testListenEmailPop() returns @tainted error? {
     }
 
     test:assertTrue(onErrorInvokedPop, msg = "Error was not listened by method, onError with POP.");
-    test:assertTrue(stringutils:contains(receivedErrorPop, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(strings:includes(receivedErrorPop, "Couldn't connect to host, port: 127.0.0.1,"),
         msg = "Listened error message is not matched with POP.");
 
 }
