@@ -32,7 +32,8 @@ public client class SmtpClient {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
-    # Sends a message.
+
+    # Sends an email message.
     # ```ballerina
     # email:Error? response = smtpClient->sendEmailMessage(email);
     # ```
@@ -47,6 +48,61 @@ public client class SmtpClient {
             return error SendError("Content type of the email should be text.");
         }
         self.putAttachmentToArray(email);
+        return send(self, email);
+    }
+
+    # Sends an email message with optional parameters.
+    # ```ballerina
+    # email:Error? response = smtpClient->sendEmail(toAddress, subject, fromAddress,
+    #   emailBody, sender="eve@abc.com");
+    # ```
+    #
+    # + to - TO address list
+    # + subject - Subject of email
+    # + from - From address
+    # + body - Text typed body of the email message
+    # + options - Optional parameters of the email
+    # + return - An `email:Error` if failed to send the message to the recipient or else `()`
+    remote isolated function sendEmail(string|string[] to, string subject, string 'from, string body, *Options options)
+            returns Error? {
+        Message email = {
+            to: to,
+            subject: subject,
+            body: body,
+            'from: 'from
+        };
+        string? htmlBody = options?.htmlBody;
+        if (!(htmlBody is ())) {
+            email.htmlBody = <string>htmlBody;
+        }
+        string? contentType = options?.contentType;
+        if (!(contentType is ())) {
+            email.contentType = <string>contentType;
+        }
+        map<string>? headers = options?.headers;
+        if (!(headers is ())) {
+            email.headers = <map<string>>headers;
+        }
+        string|string[]? cc = options?.cc;
+        if (!(cc is ())) {
+            email.cc = <string|string[]>cc;
+        }
+        string|string[]? bcc = options?.bcc;
+        if (!(bcc is ())) {
+            email.bcc = <string|string[]>bcc;
+        }
+        string|string[]? replyTo = options?.replyTo;
+        if (!(replyTo is ())) {
+            email.replyTo = <string|string[]>replyTo;
+        }
+        string? sender = options?.sender;
+        if (!(sender is ())) {
+            email.sender = <string>sender;
+        }
+        Attachment|(mime:Entity|Attachment)[]? attachments = options?.attachments;
+        if (!(attachments is ())) {
+            email.attachments = <Attachment|(mime:Entity|Attachment)[]>attachments;
+        }
         return send(self, email);
     }
 
