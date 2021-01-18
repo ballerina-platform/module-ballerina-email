@@ -42,11 +42,6 @@ org = "ballerina"
 name = "mime"
 version = "@stdlib.mime.version@"
 
-[[dependency]]
-org = "ballerina"
-name = "stringutils"
-version = "@stdlib.stringutils.version@"
-
 [[platform.java11.dependency]]
 path = "./lib/javax.mail-1.6.2.jar"
 groupId = "javax.mail"

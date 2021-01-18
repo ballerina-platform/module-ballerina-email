@@ -16,7 +16,7 @@
 
 import ballerina/java;
 import ballerina/lang.runtime as runtime;
-import ballerina/stringutils;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 boolean onEmailMessageInvokedPop = false;
@@ -63,7 +63,7 @@ function getreceivedErrorPop() returns string {
 @test:Config {
     dependsOn: [testReceiveSimpleEmailPop]
 }
-function testListenEmailPop() {
+function testListenEmailPop() returns @tainted error? {
 
     Error? listenerStatus = startPopListener();
     if (listenerStatus is Error) {
@@ -76,12 +76,22 @@ function testListenEmailPop() {
                                password: "abcdef123",
                                pollingIntervalInMillis: 2000,
                                port: 3995,
-                               properties: ()
+                               properties: {"mail.pop3.ssl.checkserveridentity":"false"},
+                               secureSocket: {
+                                    certificate: {
+                                        path: "tests/resources/certsandkeys/greenmail.crt"
+                                    },
+                                    protocol: {
+                                        name: "TLS",
+                                        versions: ["TLSv1.2", "TLSv1.1"]
+                                    },
+                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+                               }
                            });
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 listener.");
     }
-    PopListener emailServer = checkpanic emailServerOrError;
+    PopListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {
@@ -112,7 +122,7 @@ function testListenEmailPop() {
     }
 
     test:assertTrue(onErrorInvokedPop, msg = "Error was not listened by method, onError with POP.");
-    test:assertTrue(stringutils:contains(receivedErrorPop, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(strings:includes(receivedErrorPop, "Couldn't connect to host, port: 127.0.0.1,"),
         msg = "Listened error message is not matched with POP.");
 
 }

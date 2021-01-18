@@ -18,6 +18,10 @@
 
 package org.ballerinalang.stdlib.email.util;
 
+import com.sun.mail.util.MailSSLSocketFactory;
+import io.ballerina.runtime.api.creators.ErrorCreator;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.mime.util.MimeConstants;
@@ -25,9 +29,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Properties;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  * Contains the common utility functions.
@@ -106,4 +122,36 @@ public class CommonUtil {
             }
         }
     }
+
+    protected static SSLSocketFactory createSSLSocketFactory(File crtFile, String protocol)
+            throws GeneralSecurityException, IOException {
+        SSLContext sslContext = SSLContext.getInstance(protocol);
+        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        trustStore.load(null, null);
+        X509Certificate result;
+        try (InputStream input = new FileInputStream(crtFile)) {
+            result = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(input);
+        }
+        trustStore.setCertificateEntry(crtFile.getName(), result);
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(trustStore);
+        TrustManager[] trustManagers = tmf.getTrustManagers();
+        sslContext.init(null, trustManagers, new SecureRandom());
+        return sslContext.getSocketFactory();
+    }
+
+    protected static SSLSocketFactory createDefaultSSLSocketFactory()
+            throws GeneralSecurityException {
+        MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory();
+        TrustManager[] mailTrustManagers = mailSSLSocketFactory.getTrustManagers();
+        SSLContext sslContext = SSLContext.getInstance(EmailConstants.DEFAULT_TRANSPORT_PROTOCOL);
+        sslContext.init(null, mailTrustManagers, new SecureRandom());
+        return sslContext.getSocketFactory();
+    }
+
+    public static BError getBallerinaError(String typeId, String message) {
+        return ErrorCreator.createDistinctError(typeId, EmailUtils.getEmailPackage(),
+                StringUtils.fromString(message));
+    }
+
 }

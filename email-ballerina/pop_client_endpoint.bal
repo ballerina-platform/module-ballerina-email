@@ -61,8 +61,10 @@ isolated function popRead(PopClient clientEndpoint, string folder) returns Messa
 # + port - Port number of the POP server
 # + security - Type of security channel
 # + properties - POP3 properties to override the existing configuration
+# + secureSocket - Secure socket configuration
 public type PopConfig record {|
     int port = 995;
     Security? security = ();
     map<string>? properties = ();
+    SecureSocket? secureSocket = ();
 |};

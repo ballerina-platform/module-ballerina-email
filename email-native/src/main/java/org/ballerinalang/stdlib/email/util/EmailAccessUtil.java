@@ -44,8 +44,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,6 +61,7 @@ import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
+import javax.net.ssl.SSLSocketFactory;
 
 import static org.ballerinalang.mime.util.MimeConstants.BODY_PARTS;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
@@ -66,6 +69,13 @@ import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
 import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
+import static org.ballerinalang.stdlib.email.util.CommonUtil.createDefaultSSLSocketFactory;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PATH;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_NAME;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_VERSIONS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
@@ -87,7 +97,8 @@ public class EmailAccessUtil {
      * @param host Host address of email server
      * @return Properties Email server access properties
      */
-    public static Properties getPopProperties(BMap<BString, Object> emailAccessConfig, String host) {
+    public static Properties getPopProperties(BMap<BString, Object> emailAccessConfig, String host)
+            throws GeneralSecurityException, IOException {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_POP_HOST, host);
         properties.put(EmailConstants.PROPS_POP_PORT,
@@ -114,7 +125,13 @@ public class EmailAccessUtil {
             }
         } else {
             properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "true");
+            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
+            properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
+            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY, createDefaultSSLSocketFactory());
         }
+        addPopCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
+                (EmailConstants.PROPS_SECURE_SOCKET), properties);
         properties.put(EmailConstants.PROPS_POP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.POP_PROTOCOL);
         CommonUtil.addCustomProperties(
@@ -137,7 +154,8 @@ public class EmailAccessUtil {
      * @param host Host address of email server
      * @return Properties Email server access properties
      */
-    public static Properties getImapProperties(BMap<BString, Object> emailAccessConfig, String host) {
+    public static Properties getImapProperties(BMap<BString, Object> emailAccessConfig, String host)
+            throws GeneralSecurityException, IOException {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_IMAP_HOST, host);
         properties.put(EmailConstants.PROPS_IMAP_PORT,
@@ -164,9 +182,15 @@ public class EmailAccessUtil {
             }
         } else {
             properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "true");
+            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
+            properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
+            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY, createDefaultSSLSocketFactory());
         }
         properties.put(EmailConstants.PROPS_IMAP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
+        addImapCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
+                (EmailConstants.PROPS_SECURE_SOCKET), properties);
         CommonUtil.addCustomProperties(
                 (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
@@ -225,6 +249,86 @@ public class EmailAccessUtil {
             valueMap.put(EmailConstants.MESSAGE_ATTACHMENTS.getValue(), attachments);
         }
         return ValueCreator.createRecordValue(EmailUtils.getEmailPackage(), EmailConstants.EMAIL_MESSAGE, valueMap);
+    }
+
+    protected static void addPopCertificate(BMap<BString, Object> secureSocket, Properties properties)
+            throws IOException, GeneralSecurityException {
+        if (secureSocket != null) {
+            String protocolName = null;
+            String[] protocolVersions = null;
+            String certificatePath;
+            String[] supportedCiphers = null;
+            BMap<BString, Object> protocol = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERT_PROTOCOL);
+            if (protocol != null) {
+                protocolName = protocol.getStringValue(PROPS_CERT_PROTOCOL_NAME).getValue();
+                BArray versions = protocol.getArrayValue(PROPS_CERT_PROTOCOL_VERSIONS);
+                if (versions != null) {
+                    protocolVersions = versions.getStringArray();
+                }
+            }
+            BArray ciphers = secureSocket.getArrayValue(PROPS_CERT_CIPHERS);
+            if (ciphers != null) {
+                supportedCiphers = ciphers.getStringArray();
+            }
+            BMap<BString, Object> certificate = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERTIFICATE);
+            if (certificate != null) {
+                certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
+                SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
+                        protocolName);
+                properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY, sslSocketFactory);
+                properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+                properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
+                properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
+                properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                if (protocolVersions != null) {
+                    properties.put(EmailConstants.PROPS_POP_PROTOCOLS, String.join(" ", protocolVersions));
+                }
+                if (supportedCiphers != null) {
+                    properties.put(EmailConstants.PROPS_POP_CIPHERSUITES, String.join(" ", supportedCiphers));
+                }
+            }
+        }
+    }
+
+    protected static void addImapCertificate(BMap<BString, Object> secureSocket, Properties properties)
+            throws IOException, GeneralSecurityException {
+        if (secureSocket != null) {
+            String protocolName = null;
+            String[] protocolVersions = null;
+            String certificatePath;
+            String[] supportedCiphers = null;
+            BMap<BString, Object> protocol = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERT_PROTOCOL);
+            if (protocol != null) {
+                protocolName = protocol.getStringValue(PROPS_CERT_PROTOCOL_NAME).getValue();
+                BArray versions = protocol.getArrayValue(PROPS_CERT_PROTOCOL_VERSIONS);
+                if (versions != null) {
+                    protocolVersions = versions.getStringArray();
+                }
+            }
+            BArray ciphers = secureSocket.getArrayValue(PROPS_CERT_CIPHERS);
+            if (ciphers != null) {
+                supportedCiphers = ciphers.getStringArray();
+            }
+            BMap<BString, Object> certificate = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERTIFICATE);
+            if (certificate != null) {
+                certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
+                SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
+                        protocolName);
+                properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY, sslSocketFactory);
+                properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+                properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
+                properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
+                properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                if (protocolVersions != null) {
+                    properties.put(EmailConstants.PROPS_IMAP_PROTOCOLS, String.join(" ", protocolVersions));
+                }
+                if (supportedCiphers != null) {
+                    properties.put(EmailConstants.PROPS_IMAP_CIPHERSUITES, String.join(" ", supportedCiphers));
+                }
+            }
+        }
     }
 
     private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {

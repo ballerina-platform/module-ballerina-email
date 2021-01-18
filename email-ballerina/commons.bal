@@ -45,6 +45,27 @@ public type Message record {|
     Attachment|(mime:Entity|Attachment)[] attachments?;
 |};
 
+# Optional parameters for an Email message.
+#
+# + htmlBody - HTML typed body of the email message
+# + contentType - Content Type of the Body
+# + headers - Header list
+# + cc - CC address list
+# + bcc - BCC address list
+# + replyTo - Reply To addresses
+# + sender - Sender's address
+# + attachments - Email attachements
+public type Options record {|
+    string htmlBody?;
+    string contentType?;
+    map<string> headers?;
+    string|string[] cc?;
+    string|string[] bcc?;
+    string|string[] replyTo?;
+    string sender?;
+    Attachment|(mime:Entity|Attachment)[] attachments?;
+|};
+
 # Email attachment.
 #
 # + filePath - File path of the attachment
@@ -52,6 +73,33 @@ public type Message record {|
 public type Attachment record {|
   string filePath;
   string contentType;
+|};
+
+# Secure Socket configuration.
+#
+# + certificate - Server certificate
+# + protocol - SSL or TLS protocol
+# + ciphers - Ciper used
+public type SecureSocket record {|
+    Certificate certificate;
+    Protocol? protocol = ();
+    string[]? ciphers = ();
+|};
+
+# Certificate configuration.
+#
+# + path - Certificate file location
+public type Certificate record {|
+    string path;
+|};
+
+# Transport security protocol.
+#
+# + name - Protocol name
+# + versions - Protocol versions
+public type Protocol record {|
+    string name;
+    string[] versions;
 |};
 
 # Security type.

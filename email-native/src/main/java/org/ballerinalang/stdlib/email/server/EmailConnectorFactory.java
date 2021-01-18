@@ -18,6 +18,8 @@
 
 package org.ballerinalang.stdlib.email.server;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 /**
@@ -38,8 +40,8 @@ public class EmailConnectorFactory {
      * @return Generated new Email connector
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public static EmailConnector createServerConnector(Map<String, Object> connectorConfig,
-                                                EmailListener emailListener) throws EmailConnectorException {
+    public static EmailConnector createServerConnector(Map<String, Object> connectorConfig, EmailListener emailListener)
+            throws EmailConnectorException, GeneralSecurityException, IOException {
         return new EmailConnector(connectorConfig, emailListener);
     }
 }

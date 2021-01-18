@@ -17,11 +17,10 @@
 import ballerina/mime;
 import ballerina/java;
 import ballerina/lang.'string as strings;
-import ballerina/stringutils;
 import ballerina/test;
 
 @test:Config {}
-function testReceiveComplexEmailImap() {
+function testReceiveComplexEmailImap() returns @tainted error? {
 
     string host = "127.0.0.1";
     string username = "hascode";
@@ -47,7 +46,7 @@ function testReceiveComplexEmailImap() {
     if (imapClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
-    ImapClient imapClient = checkpanic imapClientOrError;
+    ImapClient imapClient = check imapClientOrError;
     Message|Error? emailResponse = imapClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
@@ -97,7 +96,7 @@ function testReceiveComplexEmailImap() {
                 }
             }
             if (att0 is mime:Entity) {
-                returnArray[11] = att0.getHeader("H1");
+                returnArray[11] = check att0.getHeader("H1");
                 returnArray[12] = att0.getContentType();
             }
             json? headers = emailResponse?.headers;
@@ -126,7 +125,7 @@ function testReceiveComplexEmailImap() {
         test:assertEquals(returnArray[10], "This is a sample source of bytes.",
             msg = "Email attachment binary is not matched.");
         test:assertEquals(returnArray[11], "V1", msg = "Email MIME header value is not matched.");
-        test:assertTrue(stringutils:contains(returnArray[12], "text/plain"),
+        test:assertTrue(strings:includes(returnArray[12], "text/plain"),
             msg = "Email content type is not matched.");
         test:assertEquals(returnArray[13], "header1_value", msg = "Email header value is not matched.");
 

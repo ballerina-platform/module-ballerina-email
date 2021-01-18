@@ -50,6 +50,8 @@ public class EmailConstants {
     public static final Module EMAIL_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, MODULE_NAME,
                                                                  MODULE_VERSION);
     public static final String HTML_CONTENT_TYPE = "text/html";
+    public static final String DEFAULT_TRANSPORT_PROTOCOL = "TLS";
+    public static final String SSL_SOCKET_FACTORY_CLASS = "javax.net.ssl.SSLSocketFactory";
     public static final BString ATTACHMENT_FILE_PATH = StringUtils.fromString("filePath");
     public static final BString ATTACHMENT_CONTENT_TYPE = StringUtils.fromString("contentType");
     public static final BString PROPS_PORT = StringUtils.fromString("port");
@@ -66,6 +68,13 @@ public class EmailConstants {
     public static final BString MESSAGE_REPLY_TO = StringUtils.fromString("replyTo");
     public static final BString MESSAGE_ATTACHMENTS = StringUtils.fromString("attachments");
     public static final BString MESSAGE_HEADERS = StringUtils.fromString("headers");
+    public static final BString PROPS_SECURE_SOCKET = StringUtils.fromString("secureSocket");
+    public static final BString PROPS_CERTIFICATE = StringUtils.fromString("certificate");
+    public static final BString PROPS_CERT_PROTOCOL = StringUtils.fromString("protocol");
+    public static final BString PROPS_CERT_PROTOCOL_NAME = StringUtils.fromString("name");
+    public static final BString PROPS_CERT_PROTOCOL_VERSIONS = StringUtils.fromString("versions");
+    public static final BString PROPS_CERT_CIPHERS = StringUtils.fromString("ciphers");
+    public static final BString PROPS_CERT_PATH = StringUtils.fromString("path");
 
     // Common constants to POP and IMAP
     public static final BString PROPS_PROPERTIES = StringUtils.fromString("properties");
@@ -108,6 +117,12 @@ public class EmailConstants {
     public static final String PROPS_POP_STARTTLS = "mail.pop3.starttls.enable";
     public static final String PROPS_POP_STARTTLS_REQUIRED = "mail.pop3.starttls.required";
     public static final String PROPS_POP_SSL_ENABLE = "mail.pop3.ssl.enable";
+    public static final String PROPS_POP_CHECK_SERVER_IDENTITY = "mail.pop3.ssl.checkserveridentity";
+    public static final String PROPS_POP_SOCKET_FACTORY_FALLBACK = "mail.pop3.socketFactory.fallback";
+    public static final String PROPS_POP_SOCKET_FACTORY = "mail.pop3.ssl.socketFactory";
+    public static final String PROPS_POP_SOCKET_FACTORY_CLASS = "mail.pop3.ssl.socketFactory.class";
+    public static final String PROPS_POP_PROTOCOLS = "mail.pop3.ssl.protocols";
+    public static final String PROPS_POP_CIPHERSUITES = "mail.pop3.ssl.ciphersuites";
 
     // IMAP related constants
     public static final String IMAP = "IMAP";
@@ -119,10 +134,22 @@ public class EmailConstants {
     public static final String PROPS_IMAP_SSL_ENABLE = "mail.imap.ssl.enable";
     public static final String PROPS_IMAP_STARTTLS_REQUIRED = "mail.imap.starttls.required";
     public static final String PROPS_IMAP_AUTH = "mail.imap.auth";
+    public static final String PROPS_IMAP_CHECK_SERVER_IDENTITY = "mail.imap.ssl.checkserveridentity";
+    public static final String PROPS_IMAP_SOCKET_FACTORY_FALLBACK = "mail.imap.socketFactory.fallback";
+    public static final String PROPS_IMAP_SOCKET_FACTORY = "mail.imap.ssl.socketFactory";
+    public static final String PROPS_IMAP_SOCKET_FACTORY_CLASS = "mail.imap.ssl.socketFactory.class";
+    public static final String PROPS_IMAP_PROTOCOLS = "mail.imap.ssl.protocols";
+    public static final String PROPS_IMAP_CIPHERSUITES = "mail.imap.ssl.ciphersuites";
 
     // SMTP related constants
     public static final String PROPS_SESSION = "session";
     public static final String PROPS_ENABLE_SSL = "mail.smtp.ssl.enable";
+    public static final String PROPS_SMTP_CHECK_SERVER_IDENTITY = "mail.smtp.ssl.checkserveridentity";
+    public static final String PROPS_SMTP_SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
+    public static final String PROPS_SMTP_SOCKET_FACTORY = "mail.smtp.ssl.socketFactory";
+    public static final String PROPS_SMTP_SOCKET_FACTORY_CLASS = "mail.smtp.ssl.socketFactory.class";
+    public static final String PROPS_SMTP_PROTOCOLS = "mail.smtp.ssl.protocols";
+    public static final String PROPS_SMTP_CIPHERSUITES = "mail.smtp.ssl.ciphersuites";
     public static final String PROPS_SMTP_HOST = "mail.smtp.host";
     public static final String PROPS_SMTP_PORT = "mail.smtp.port";
     public static final String PROPS_SMTP_AUTH = "mail.smtp.auth";

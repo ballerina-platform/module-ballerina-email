@@ -18,11 +18,8 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
-import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -38,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -55,6 +53,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.net.ssl.SSLSocketFactory;
 
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
@@ -62,6 +61,12 @@ import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 import static org.ballerinalang.mime.util.MimeConstants.TEXT_PLAIN;
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PATH;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_NAME;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_VERSIONS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
@@ -82,7 +87,8 @@ public class SmtpUtil {
      * @param host Host address of the SMTP server
      * @return Properties Set of properties required to connect to an SMTP server
      */
-    public static Properties getProperties(BMap<BString, Object> smtpConfig, String host) {
+    public static Properties getProperties(BMap<BString, Object> smtpConfig, String host)
+            throws IOException, GeneralSecurityException {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_SMTP_HOST, host);
         properties.put(EmailConstants.PROPS_SMTP_PORT, Long.toString(
@@ -110,7 +116,15 @@ public class SmtpUtil {
             }
         } else {
             properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+            properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
+            properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
+            properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
+            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY, CommonUtil.createDefaultSSLSocketFactory());
         }
+        addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
+                properties);
         CommonUtil.addCustomProperties(
                 (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
@@ -177,6 +191,46 @@ public class SmtpUtil {
         }
         addMessageHeaders(emailMessage, message);
         return emailMessage;
+    }
+
+    protected static void addCertificate(BMap<BString, Object> secureSocket, Properties properties)
+            throws IOException, GeneralSecurityException {
+        if (secureSocket != null) {
+            String protocolName = null;
+            String[] protocolVersions = null;
+            String certificatePath;
+            String[] supportedCiphers = null;
+            BMap<BString, Object> protocol = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERT_PROTOCOL);
+            if (protocol != null) {
+                protocolName = protocol.getStringValue(PROPS_CERT_PROTOCOL_NAME).getValue();
+                BArray versions = protocol.getArrayValue(PROPS_CERT_PROTOCOL_VERSIONS);
+                if (versions != null) {
+                    protocolVersions = versions.getStringArray();
+                }
+            }
+            BArray ciphers = secureSocket.getArrayValue(PROPS_CERT_CIPHERS);
+            if (ciphers != null) {
+                supportedCiphers = ciphers.getStringArray();
+            }
+            BMap<BString, Object> certificate = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERTIFICATE);
+            if (certificate != null) {
+                certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
+                SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
+                        protocolName);
+                properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY, sslSocketFactory);
+                properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+                properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
+                properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
+                properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+                properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+                if (protocolVersions != null) {
+                    properties.put(EmailConstants.PROPS_SMTP_PROTOCOLS, String.join(" ", protocolVersions));
+                }
+                if (supportedCiphers != null) {
+                    properties.put(EmailConstants.PROPS_SMTP_CIPHERSUITES, String.join(" ", supportedCiphers));
+                }
+            }
+        }
     }
 
     private static void addMessageHeaders(MimeMessage emailMessage, BMap<BString, Object> message)
@@ -357,8 +411,4 @@ public class SmtpUtil {
         return string != null && !string.isEmpty();
     }
 
-    public static BError getBallerinaError(String typeId, String message) {
-        return ErrorCreator.createDistinctError(typeId, EmailUtils.getEmailPackage(),
-                                                 StringUtils.fromString(message));
-    }
 }

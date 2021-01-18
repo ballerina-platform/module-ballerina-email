@@ -19,7 +19,7 @@ import ballerina/test;
 
 @test:Config {
 }
-function testReceiveSimpleEmailPop() {
+function testReceiveSimpleEmailPop() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -30,13 +30,24 @@ function testReceiveSimpleEmailPop() {
     }
 
     PopConfig popConfig = {
-         port: 3995
+         port: 3995,
+         properties: {"mail.pop3.ssl.checkserveridentity":"false"},
+         secureSocket: {
+             certificate: {
+                 path: "tests/resources/certsandkeys/greenmail.crt"
+             },
+             protocol: {
+                 name: "TLS",
+                 versions: ["TLSv1.2", "TLSv1.1"]
+             },
+             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+         }
     };
     PopClient|Error popClientOrError = new (host, username, password, popConfig);
     if (popClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
-    PopClient popClient = checkpanic popClientOrError;
+    PopClient popClient = check popClientOrError;
     Message|Error? email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");
