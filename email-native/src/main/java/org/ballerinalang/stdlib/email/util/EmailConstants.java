@@ -78,7 +78,6 @@ public class EmailConstants {
 
     // Common constants to POP and IMAP
     public static final BString PROPS_PROPERTIES = StringUtils.fromString("properties");
-    public static final BString PROPS_SSL = StringUtils.fromString("enableSsl");
     public static final BString PROPS_SECURITY = StringUtils.fromString("security");
     public static final BString PROPS_HOST = StringUtils.fromString("host");
     public static final BString PROPS_PASSWORD = StringUtils.fromString("password");
@@ -86,7 +85,6 @@ public class EmailConstants {
     public static final String PROPS_START_TLS_AUTO = "START_TLS_AUTO";
     public static final String PROPS_START_TLS_ALWAYS = "START_TLS_ALWAYS";
     public static final String PROPS_START_TLS_NEVER = "START_TLS_NEVER";
-    public static final String PROPS_SSL_ALWAYS = "SSL";
 
     public static final String PROPS_STORE = "store";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
@@ -99,7 +97,6 @@ public class EmailConstants {
     public static final BString ENDPOINT_CONFIG_PASS_KEY = StringUtils.fromString("password");
     public static final String IDENTITY = "IDENTITY";
     public static final String IDENTITY_PASS_PHRASE = "IDENTITY_PASS_PHRASE";
-    public static final String URI = "uri";
     public static final String EMAIL_SERVER_CONNECTOR = "serverConnector";
     public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocolConfig");
     public static final String DEFAULT_STORE_LOCATION = "INBOX";

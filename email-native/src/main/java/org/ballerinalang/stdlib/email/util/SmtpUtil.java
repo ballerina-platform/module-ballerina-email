@@ -112,16 +112,10 @@ public class SmtpUtil {
                     properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
                     break;
                 default:
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+                    addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
             }
         } else {
-            properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
-            properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
-            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
-            properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
-            properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
-            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
-            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY, CommonUtil.createDefaultSSLSocketFactory());
+            addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
                 properties);
@@ -217,12 +211,7 @@ public class SmtpUtil {
                 certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
                 SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
                         protocolName);
-                properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY, sslSocketFactory);
-                properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
-                properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
-                properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
-                properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
-                properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
+                addBasicTransportSecurityProperties(sslSocketFactory, properties);
                 if (protocolVersions != null) {
                     properties.put(EmailConstants.PROPS_SMTP_PROTOCOLS, String.join(" ", protocolVersions));
                 }
@@ -231,6 +220,15 @@ public class SmtpUtil {
                 }
             }
         }
+    }
+
+    private static void addBasicTransportSecurityProperties(SSLSocketFactory sslSocketFactory, Properties properties) {
+        properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY, sslSocketFactory);
+        properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+        properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
+        properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
+        properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+        properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
     }
 
     private static void addMessageHeaders(MimeMessage emailMessage, BMap<BString, Object> message)
