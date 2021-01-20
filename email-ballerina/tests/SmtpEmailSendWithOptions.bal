@@ -92,21 +92,6 @@ function testSendEmailWithOptions() returns @tainted error? {
     //Create an array to hold all the body parts.
     (mime:Entity|Attachment)[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, att7];
 
-    //Message email = {
-    //    to: toAddresses, v
-    //    cc: ccAddresses, v
-    //    bcc: bccAddresses, v
-    //    subject: subject, v
-    //    body: body, v
-    //    htmlBody: htmlBody, v
-    //    contentType: contentType, v
-    //    headers: {header1_name: "header1_value"}, v
-    //    'from: fromAddress, v
-    //    sender: sender,
-    //    replyTo: replyToAddresses,
-    //    attachments: bodyParts
-    //};
-
     Error? response = smtpClient->sendEmail(toAddresses, subject, fromAddress, body, cc=ccAddresses, bcc=bccAddresses,
         htmlBody=htmlBody, contentType=contentType, headers={header1_name: "header1_value"}, sender=sender,
         replyTo=replyToAddresses, attachments=bodyParts);
