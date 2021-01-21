@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/mime;
-import ballerina/java;
+import ballerina/jballerina.java;
 import ballerina/lang.'string as strings;
 import ballerina/test;
 
