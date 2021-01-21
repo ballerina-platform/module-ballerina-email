@@ -2,40 +2,6 @@
 org = "ballerina"
 name = "email"
 version = "@toml.version@"
-[[dependency]]
-org = "ballerina"
-name = "io"
-version = "@stdlib.io.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "time"
-version = "@stdlib.time.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "file"
-version = "@stdlib.file.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "log"
-version = "@stdlib.log.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "os"
-version = "@stdlib.os.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "task"
-version = "@stdlib.task.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "mime"
-version = "@stdlib.mime.version@"
 
 [[platform.java11.dependency]]
 path = "./lib/javax.mail-1.6.2.jar"
