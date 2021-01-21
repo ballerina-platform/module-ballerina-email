@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
 import ballerina/mime;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
