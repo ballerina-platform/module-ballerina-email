@@ -18,7 +18,6 @@
 
 package org.ballerinalang.stdlib.email.util;
 
-import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
@@ -55,10 +54,10 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.net.ssl.SSLSocketFactory;
 
+import static io.ballerina.runtime.api.creators.ValueCreator.createObjectValue;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
-import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 import static org.ballerinalang.mime.util.MimeConstants.TEXT_PLAIN;
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
@@ -290,10 +289,10 @@ public class SmtpUtil {
             String attachmentContentType
                     = attachedEntity.getStringValue(EmailConstants.ATTACHMENT_CONTENT_TYPE).getValue();
             File file = new File(attachmentFilePath);
-            BObject mimeEntity = ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+            BObject mimeEntity = createObjectValue(MimeUtil.getMimePackage(), ENTITY);
             mimeEntity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getByteChannelForTempFile(
                     file.getAbsolutePath()));
-            MimeUtil.setContentType(ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE), mimeEntity,
+            MimeUtil.setContentType(createObjectValue(MimeUtil.getMimePackage(), MEDIA_TYPE), mimeEntity,
                     TEXT_PLAIN);
             if (attachmentContentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
                 multipart.addBodyPart(populateMultipart(mimeEntity));
