@@ -16,23 +16,19 @@
  */
 
 plugins {
-    id "com.github.spotbugs" version "4.0.5"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
-    id "de.undercouch.download" version "4.0.4"
-    id "net.researchgate.release" version "2.8.0"
+    id "com.github.spotbugs" version "${githubSpotbugsVersion}"
+    id "com.github.johnrengelman.shadow" version "${githubJohnrengelmanShadowVersion}"
+    id "de.undercouch.download" version "${underCouchDownloadVersion}"
+    id "net.researchgate.release" version "${researchgateReleaseVersion}"
 }
 
-ext.ballerinaLangVersion = project.ballerinaLangVersion
 ext.stdlibTaskVersion = project.stdlibTaskVersion
 ext.stdlibMimeVersion = project.stdlibMimeVersion
 ext.stdlibFileVersion = project.stdlibFileVersion
 ext.stdlibTimeVersion = project.stdlibTimeVersion
 ext.stdlibLogVersion = project.stdlibLogVersion
 ext.stdlibOsVersion = project.stdlibOsVersion
-ext.stdlibIoVersion = project.stdlibIoVersion
-ext.puppycrawlCheckstyleVersion = "8.18"
 ext.testngVersion = "6.14.3"
-ext.slf4jVersion = "1.7.30"
 ext.javaMailVersion = "1.6.2"
 ext.greenmailVersion = "1.5.11"
 ext.mimepullVersion= "1.9.11"
