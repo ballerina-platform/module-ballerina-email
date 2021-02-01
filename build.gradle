@@ -22,17 +22,6 @@ plugins {
     id "net.researchgate.release" version "${researchgateReleaseVersion}"
 }
 
-ext.stdlibTaskVersion = project.stdlibTaskVersion
-ext.stdlibMimeVersion = project.stdlibMimeVersion
-ext.stdlibFileVersion = project.stdlibFileVersion
-ext.stdlibTimeVersion = project.stdlibTimeVersion
-ext.stdlibLogVersion = project.stdlibLogVersion
-ext.stdlibOsVersion = project.stdlibOsVersion
-ext.testngVersion = "6.14.3"
-ext.javaMailVersion = "1.6.2"
-ext.greenmailVersion = "1.5.11"
-ext.mimepullVersion= "1.9.11"
-
 allprojects {
     group = 'org.ballerinalang'
     version = project.version

@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         if: github.repository_owner == 'ballerina-platform'
         steps:
-            name: Initiating repository event
+            - name: Initiating repository event
             run: |
                 curl -u ${{ secrets.BALLERINA_BOT_USERNAME }} -X POST \
                 https://api.github.com/repos/ballerina-platform/ballerina-standard-library/dispatches \
