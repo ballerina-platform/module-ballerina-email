@@ -184,7 +184,6 @@ test {
 }
 
 task ballerinaBuild {
-    mustRunAfter(test)
     inputs.dir file(project.projectDir)
     dependsOn(initializeVariables)
     finalizedBy(revertTomlFile)
