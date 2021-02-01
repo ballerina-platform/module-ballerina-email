@@ -68,7 +68,6 @@ import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
-import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 import static org.ballerinalang.stdlib.email.util.CommonUtil.createDefaultSSLSocketFactory;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
@@ -464,7 +463,7 @@ public class EmailAccessUtil {
 
     private static BObject getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
         String textPayload = (String) bodyPart.getContent();
-        BObject entity = ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+        BObject entity = ValueCreator.createObjectValue(MimeUtil.getMimePackage(), ENTITY);
         entity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getEntityWrapper(textPayload));
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.TEXT_PLAIN);
         setEntityHeaders(entity, bodyPart);
@@ -496,11 +495,11 @@ public class EmailAccessUtil {
     }
 
     private static BObject createMediaTypeObject() {
-        return ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, MEDIA_TYPE);
+        return ValueCreator.createObjectValue(MimeUtil.getMimePackage(), MEDIA_TYPE);
     }
 
     private static BObject createEntityObject() {
-        return ValueCreator.createObjectValue(PROTOCOL_MIME_PKG_ID, ENTITY);
+        return ValueCreator.createObjectValue(MimeUtil.getMimePackage(), ENTITY);
     }
 
     private static String extractFromAddressFromMessage(Message message) throws MessagingException {
