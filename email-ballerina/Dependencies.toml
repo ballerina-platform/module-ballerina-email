@@ -1,34 +1,34 @@
 [[dependency]]
 org = "ballerina"
 name = "io"
-version = "0.5.6"
+version = "@stdlib.io.version@"
 
 [[dependency]]
 org = "ballerina"
 name = "time"
-version = "1.0.7"
+version = "@stdlib.time.version@"
 
 [[dependency]]
 org = "ballerina"
 name = "file"
-version = "0.6.4"
+version = "@stdlib.file.version@"
 
 [[dependency]]
 org = "ballerina"
 name = "log"
-version = "1.0.6"
+version = "@stdlib.log.version@"
 
 [[dependency]]
 org = "ballerina"
 name = "os"
-version = "0.7.1"
+version = "@stdlib.os.version@"
 
 [[dependency]]
 org = "ballerina"
 name = "task"
-version = "1.1.6"
+version = "@stdlib.task.version@"
 
 [[dependency]]
 org = "ballerina"
 name = "mime"
-version = "1.0.6"
+version = "@stdlib.mime.version@"
