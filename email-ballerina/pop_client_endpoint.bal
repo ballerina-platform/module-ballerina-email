@@ -64,7 +64,5 @@ isolated function popRead(PopClient clientEndpoint, string folder) returns Messa
 public type PopConfig record {|
     int port = 995;
     Security security = SSL;
-    //map<string>? properties = ();
     SecureSocket secureSocket?;
-    //SecureSocket? secureSocket = ();
 |};

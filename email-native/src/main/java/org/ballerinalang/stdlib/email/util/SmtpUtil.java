@@ -120,8 +120,6 @@ public class SmtpUtil {
         }
         addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
                 properties);
-//        CommonUtil.addCustomProperties(
-//                (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("SMTP Properties set are as follows.");

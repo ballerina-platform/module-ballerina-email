@@ -143,8 +143,5 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 public type SmtpConfig record {|
     int port = 465;
     Security security = SSL;
-    //Security? security = (); // TODO have to remove null check like `Security security = Security.SSL;`
-    //map<string>? properties = (); // TODO remove properties
     SecureSocket secureSocket?;
-    //SecureSocket? secureSocket = (); // TODO check the change like `SecureSocket secureSocket?;`
 |};

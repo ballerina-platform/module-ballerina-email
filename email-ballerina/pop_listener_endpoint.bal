@@ -33,8 +33,6 @@ public class PopListener {
         PopConfig popConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
-             //properties: listenerConfig.properties,
-             //secureSocket: listenerConfig.secureSocket
         };
         SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
         if (!(secureSocketParam is ())) {
@@ -175,10 +173,8 @@ public type PopListenerConfig record {|
     int pollingIntervalInMillis = 60000;
     int port = 995;
     Security security = SSL;
-    //map<string>? properties = ();
     string? cronExpression = ();
     SecureSocket secureSocket?;
-    //SecureSocket? secureSocket = ();
 |};
 
 isolated function poll(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{

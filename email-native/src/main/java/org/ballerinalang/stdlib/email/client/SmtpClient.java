@@ -96,7 +96,6 @@ public class SmtpClient {
         } catch (MessagingException | IOException e) {
             log.error("Failed to send message to SMTP server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.SEND_ERROR, e.getMessage());
-            // TODO verify if we want to close
         }
     }
 

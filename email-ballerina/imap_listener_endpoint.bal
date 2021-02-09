@@ -32,8 +32,6 @@ public class ImapListener {
         ImapConfig imapConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
-             //properties: listenerConfig.properties,
-             //secureSocket: listenerConfig.secureSocket
         };
         SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
         if (!(secureSocketParam is ())) {
@@ -174,8 +172,6 @@ public type ImapListenerConfig record {|
     int pollingIntervalInMillis = 60000;
     int port = 993;
     Security security = SSL;
-    //map<string>? properties = ();
     string? cronExpression = ();
     SecureSocket secureSocket?;
-    //SecureSocket? secureSocket = ();
 |};

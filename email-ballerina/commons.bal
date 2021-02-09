@@ -34,7 +34,7 @@ public type Message record {|
     string|string[] to;
     string subject;
     string 'from;
-    string body; // TODO think about making optional
+    string body;
     string htmlBody?;
     string|string[] cc?;
     string|string[] bcc?;
@@ -43,7 +43,6 @@ public type Message record {|
     map<string> headers?;
     string sender?;
     mime:Entity|Attachment|(mime:Entity|Attachment)[] attachments?;
-    // TODO update like mime:Entity|Attachment|(mime:Entity|Attachment)[]
 |};
 
 # Optional parameters for an Email message.

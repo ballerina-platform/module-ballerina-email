@@ -103,23 +103,6 @@ public class CommonUtil {
         return buffer.toByteArray();
     }
 
-//    /**
-//     * Add custom properties from the Ballerina configuration.
-//     *
-//     * @param customProperties Custom properties from Ballerina
-//     * @param properties Properties to be used to create the session
-//     */
-//    public static void addCustomProperties(BMap<BString, Object> customProperties, Properties properties) {
-//        if (customProperties != null) {
-//            for (BString propertyName : customProperties.getKeys()) {
-//                properties.put(propertyName.getValue(),
-//                               customProperties.getStringValue(propertyName).getValue());
-//                log.debug("Added custom protocol property with Name: " + propertyName + ", Value: "
-//                                  + customProperties.getStringValue(propertyName).getValue());
-//            }
-//        }
-//    }
-
     protected static SSLSocketFactory createSSLSocketFactory(File crtFile, String protocol)
             throws GeneralSecurityException, IOException {
         SSLContext sslContext = SSLContext.getInstance(protocol);

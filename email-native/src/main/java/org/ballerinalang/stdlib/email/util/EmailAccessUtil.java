@@ -79,9 +79,6 @@ import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_VERIFY_HOSTNAME;
 
-//import static org.ballerinalang.stdlib.email.util.CommonUtil.createDefaultSSLSocketFactory;
-//import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
-
 /**
  * Contains utility functions related to the POP and IMAP protocols.
  *
@@ -133,8 +130,6 @@ public class EmailAccessUtil {
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
         properties.put(EmailConstants.PROPS_POP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.POP_PROTOCOL);
-//        CommonUtil.addCustomProperties(
-//                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("POP3 Properties set are as follows.");
@@ -187,8 +182,6 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
         addImapCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
-//        CommonUtil.addCustomProperties(
-//                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("IMAP4 Properties set are as follows.");

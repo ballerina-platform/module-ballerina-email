@@ -64,7 +64,5 @@ isolated function imapRead(ImapClient clientEndpoint, string folder) returns Mes
 public type ImapConfig record {|
     int port = 993;
     Security security = SSL;
-    //map<string>? properties = ();
     SecureSocket secureSocket?;
-    //SecureSocket? secureSocket = ();
 |};
