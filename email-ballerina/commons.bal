@@ -34,7 +34,7 @@ public type Message record {|
     string|string[] to;
     string subject;
     string 'from;
-    string body;
+    string body; // TODO think about making optional
     string htmlBody?;
     string|string[] cc?;
     string|string[] bcc?;
@@ -42,7 +42,8 @@ public type Message record {|
     string contentType?;
     map<string> headers?;
     string sender?;
-    Attachment|(mime:Entity|Attachment)[] attachments?;
+    mime:Entity|Attachment|(mime:Entity|Attachment)[] attachments?;
+    // TODO update like mime:Entity|Attachment|(mime:Entity|Attachment)[]
 |};
 
 # Optional parameters for an Email message.
@@ -63,7 +64,8 @@ public type Options record {|
     string|string[] bcc?;
     string|string[] replyTo?;
     string sender?;
-    Attachment|(mime:Entity|Attachment)[] attachments?;
+    mime:Entity|Attachment|(mime:Entity|Attachment)[] attachments?;
+    // TODO update like mime:Entity|Attachment|(mime:Entity|Attachment)[]
 |};
 
 # Email attachment.
@@ -80,10 +82,12 @@ public type Attachment record {|
 # + certificate - Server certificate
 # + protocol - SSL or TLS protocol
 # + ciphers - Ciper used
+# + verifyHostname - Enable hostname verification
 public type SecureSocket record {|
     Certificate certificate;
     Protocol? protocol = ();
     string[]? ciphers = ();
+    boolean verifyHostname = true;
 |};
 
 # Certificate configuration.

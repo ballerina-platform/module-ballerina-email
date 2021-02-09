@@ -32,10 +32,14 @@ public class PopListener {
         self.config = listenerConfig;
         PopConfig popConfig = {
              port: listenerConfig.port,
-             security: listenerConfig.security,
-             properties: listenerConfig.properties,
-             secureSocket: listenerConfig.secureSocket
+             security: listenerConfig.security
+             //properties: listenerConfig.properties,
+             //secureSocket: listenerConfig.secureSocket
         };
+        SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
+        if (!(secureSocketParam is ())) {
+            popConfig.secureSocket = secureSocketParam;
+        }
         return externalInit(self, self.config, popConfig, "POP");
     }
 
@@ -162,7 +166,6 @@ final service isolated object{} popAppointmentService = service object {
 # + pollingIntervalInMillis - Periodic time interval to check new update
 # + port - Port number of the POP server
 # + security - Type of security channel
-# + properties - POP3 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
 public type PopListenerConfig record {|
@@ -171,10 +174,11 @@ public type PopListenerConfig record {|
     string password;
     int pollingIntervalInMillis = 60000;
     int port = 995;
-    Security? security = ();
-    map<string>? properties = ();
+    Security security = SSL;
+    //map<string>? properties = ();
     string? cronExpression = ();
-    SecureSocket? secureSocket = ();
+    SecureSocket secureSocket?;
+    //SecureSocket? secureSocket = ();
 |};
 
 isolated function poll(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{

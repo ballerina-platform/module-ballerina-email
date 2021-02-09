@@ -48,7 +48,7 @@ function getreceivedMessageImap() returns string {
          runtime:sleep(1);
          i += 1;
     }
-    return <@untainted>receivedMessageImap;
+    return receivedMessageImap;
 }
 
 function getreceivedErrorImap() returns string {
@@ -57,7 +57,7 @@ function getreceivedErrorImap() returns string {
          runtime:sleep(1);
          i += 1;
     }
-    return <@untainted>receivedErrorImap;
+    return receivedErrorImap;
 }
 
 @test:Config {
@@ -76,7 +76,6 @@ function testListenEmailImap() returns @tainted error? {
                                password: "abcdef123",
                                pollingIntervalInMillis: 2000,
                                port: 3993,
-                               properties: {"mail.imap.ssl.checkserveridentity":"false"},
                                secureSocket: {
                                     certificate: {
                                         path: "tests/resources/certsandkeys/greenmail.crt"
@@ -85,7 +84,8 @@ function testListenEmailImap() returns @tainted error? {
                                         name: "TLS",
                                         versions: ["TLSv1.2", "TLSv1.1"]
                                     },
-                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+                                    verifyHostname: false
                                }
                            });
     if (emailServerOrError is Error) {
@@ -95,12 +95,12 @@ function testListenEmailImap() returns @tainted error? {
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {
-            receivedMessageImap = <@untainted>emailMessage.subject;
+            receivedMessageImap = emailMessage.subject;
             onEmailMessageInvokedImap = true;
         }
 
         remote function onError(Error emailError) {
-            receivedErrorImap = <@untainted>emailError.message();
+            receivedErrorImap = emailError.message();
             onErrorInvokedImap = true;
         }
     };

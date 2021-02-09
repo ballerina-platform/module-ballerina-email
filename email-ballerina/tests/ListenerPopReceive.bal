@@ -48,7 +48,7 @@ function getreceivedMessagePop() returns string {
          runtime:sleep(1);
          i += 1;
     }
-    return <@untainted>receivedMessagePop;
+    return receivedMessagePop;
 }
 
 function getreceivedErrorPop() returns string {
@@ -57,7 +57,7 @@ function getreceivedErrorPop() returns string {
          runtime:sleep(1);
          i += 1;
     }
-    return <@untainted>receivedErrorPop;
+    return receivedErrorPop;
 }
 
 @test:Config {
@@ -76,7 +76,6 @@ function testListenEmailPop() returns @tainted error? {
                                password: "abcdef123",
                                pollingIntervalInMillis: 2000,
                                port: 3995,
-                               properties: {"mail.pop3.ssl.checkserveridentity":"false"},
                                secureSocket: {
                                     certificate: {
                                         path: "tests/resources/certsandkeys/greenmail.crt"
@@ -85,7 +84,8 @@ function testListenEmailPop() returns @tainted error? {
                                         name: "TLS",
                                         versions: ["TLSv1.2", "TLSv1.1"]
                                     },
-                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+                                    verifyHostname: false
                                }
                            });
     if (emailServerOrError is Error) {
@@ -95,12 +95,12 @@ function testListenEmailPop() returns @tainted error? {
 
     service object {} emailObserver = service object {
         remote function onEmailMessage(Message emailMessage) {
-            receivedMessagePop = <@untainted>emailMessage.subject;
+            receivedMessagePop = emailMessage.subject;
             onEmailMessageInvokedPop = true;
         }
 
         remote function onError(Error emailError) {
-            receivedErrorPop = <@untainted>emailError.message();
+            receivedErrorPop = emailError.message();
             onErrorInvokedPop = true;
         }
     };

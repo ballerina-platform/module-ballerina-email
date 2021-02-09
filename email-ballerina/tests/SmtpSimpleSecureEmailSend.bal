@@ -32,7 +32,6 @@ function testSendSimpleEmail() returns @tainted error? {
     error? serverStatus = startSimpleSecureSmtpServer();
     SmtpConfig smtpConfig = {
         port: 3465,
-        properties: {"mail.smtp.ssl.checkserveridentity":"false"},
         secureSocket: {
             certificate: {
                 path: "tests/resources/certsandkeys/greenmail.crt"
@@ -41,7 +40,8 @@ function testSendSimpleEmail() returns @tainted error? {
                 name: "TLS",
                 versions: ["TLSv1.2", "TLSv1.1"]
             },
-            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+            verifyHostname: false
         }
     };
 

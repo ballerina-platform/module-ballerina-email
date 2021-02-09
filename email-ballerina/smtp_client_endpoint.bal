@@ -27,8 +27,8 @@ public client class SmtpClient {
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
-    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
-            SmtpConfig clientConfig = {}) returns Error? {
+    public isolated function init(string host, string username, string password, SmtpConfig clientConfig = {})
+            returns Error? {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
@@ -99,9 +99,9 @@ public client class SmtpClient {
         if (!(sender is ())) {
             email.sender = <string>sender;
         }
-        Attachment|(mime:Entity|Attachment)[]? attachments = options?.attachments;
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]? attachments = options?.attachments;
         if (!(attachments is ())) {
-            email.attachments = <Attachment|(mime:Entity|Attachment)[]>attachments;
+            email.attachments = <mime:Entity|Attachment|(mime:Entity|Attachment)[]>attachments;
         }
         return send(self, email);
     }
@@ -116,8 +116,8 @@ public client class SmtpClient {
     }
 
     private isolated function putAttachmentToArray(Message email) {
-        Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
-        if (attachments is Attachment) {
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
+        if (attachments is Attachment || attachments is mime:Entity) {
             email.attachments = [attachments];
         }
     }
@@ -139,11 +139,12 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 #
 # + port - Port number of the SMTP server
 # + security - Type of security channel
-# + properties - SMTP properties to override the existing configuration
 # + secureSocket - Secure socket configuration
 public type SmtpConfig record {|
     int port = 465;
-    Security? security = ();
-    map<string>? properties = ();
-    SecureSocket? secureSocket = ();
+    Security security = SSL;
+    //Security? security = (); // TODO have to remove null check like `Security security = Security.SSL;`
+    //map<string>? properties = (); // TODO remove properties
+    SecureSocket secureSocket?;
+    //SecureSocket? secureSocket = (); // TODO check the change like `SecureSocket secureSocket?;`
 |};

@@ -68,7 +68,6 @@ import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
-import static org.ballerinalang.stdlib.email.util.CommonUtil.createDefaultSSLSocketFactory;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PATH;
@@ -78,6 +77,10 @@ import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROT
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_VERIFY_HOSTNAME;
+
+//import static org.ballerinalang.stdlib.email.util.CommonUtil.createDefaultSSLSocketFactory;
+//import static org.ballerinalang.mime.util.MimeConstants.PROTOCOL_MIME_PKG_ID;
 
 /**
  * Contains utility functions related to the POP and IMAP protocols.
@@ -114,27 +117,24 @@ public class EmailAccessUtil {
                     properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
                     properties.put(EmailConstants.PROPS_POP_STARTTLS_REQUIRED, "true");
                     properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                    addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
                     break;
                 case PROPS_START_TLS_NEVER:
                     properties.put(EmailConstants.PROPS_POP_STARTTLS, "false");
                     properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
                     break;
                 default:
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "true");
+                    addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
             }
         } else {
-            properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "true");
-            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
-            properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
-            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
-            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY, createDefaultSSLSocketFactory());
+            addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         addPopCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
         properties.put(EmailConstants.PROPS_POP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.POP_PROTOCOL);
-        CommonUtil.addCustomProperties(
-                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
+//        CommonUtil.addCustomProperties(
+//                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("POP3 Properties set are as follows.");
@@ -171,27 +171,24 @@ public class EmailAccessUtil {
                     properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
                     properties.put(EmailConstants.PROPS_IMAP_STARTTLS_REQUIRED, "true");
                     properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                    addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
                     break;
                 case PROPS_START_TLS_NEVER:
                     properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "false");
                     properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
                     break;
                 default:
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "true");
+                    addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
             }
         } else {
-            properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "true");
-            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
-            properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
-            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
-            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY, createDefaultSSLSocketFactory());
+            addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         properties.put(EmailConstants.PROPS_IMAP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
         addImapCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
-        CommonUtil.addCustomProperties(
-                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
+//        CommonUtil.addCustomProperties(
+//                (BMap<BString, Object>) emailAccessConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("IMAP4 Properties set are as follows.");
@@ -278,13 +275,21 @@ public class EmailAccessUtil {
                 properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
                 properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
                 properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
-                properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+                properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
                 properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
                 if (protocolVersions != null) {
                     properties.put(EmailConstants.PROPS_POP_PROTOCOLS, String.join(" ", protocolVersions));
                 }
                 if (supportedCiphers != null) {
                     properties.put(EmailConstants.PROPS_POP_CIPHERSUITES, String.join(" ", supportedCiphers));
+                }
+            }
+            if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
+                Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);
+                if (verifyHostname) {
+                    properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
+                } else {
+                    properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "false");
                 }
             }
         }
@@ -318,7 +323,7 @@ public class EmailAccessUtil {
                 properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
                 properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
                 properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
-                properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+                properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
                 properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
                 if (protocolVersions != null) {
                     properties.put(EmailConstants.PROPS_IMAP_PROTOCOLS, String.join(" ", protocolVersions));
@@ -327,7 +332,35 @@ public class EmailAccessUtil {
                     properties.put(EmailConstants.PROPS_IMAP_CIPHERSUITES, String.join(" ", supportedCiphers));
                 }
             }
+            if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
+                Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);
+                if (verifyHostname) {
+                    properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
+                } else {
+                    properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "false");
+                }
+            }
         }
+    }
+
+    private static void addBasicPopTransportSecurityProperties(SSLSocketFactory sslSocketFactory,
+                                                               Properties properties) {
+        properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY, sslSocketFactory);
+        properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+        properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
+        properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
+        properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "true");
+        properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+    }
+
+    private static void addBasicImapTransportSecurityProperties(SSLSocketFactory sslSocketFactory,
+                                                                Properties properties) {
+        properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY, sslSocketFactory);
+        properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+        properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
+        properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
+        properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "true");
+        properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
     }
 
     private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {

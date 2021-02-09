@@ -69,6 +69,7 @@ import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROT
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_VERIFY_HOSTNAME;
 
 /**
  * Contains the utility functions related to the SMTP protocol.
@@ -99,16 +100,17 @@ public class SmtpUtil {
             switch (securityType) {
                 case PROPS_START_TLS_AUTO:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
                     break;
                 case PROPS_START_TLS_ALWAYS:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
+                    addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
                     break;
                 case PROPS_START_TLS_NEVER:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "false");
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
                     break;
                 default:
                     addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
@@ -118,8 +120,8 @@ public class SmtpUtil {
         }
         addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
                 properties);
-        CommonUtil.addCustomProperties(
-                (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
+//        CommonUtil.addCustomProperties(
+//                (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("SMTP Properties set are as follows.");
@@ -218,6 +220,14 @@ public class SmtpUtil {
                     properties.put(EmailConstants.PROPS_SMTP_CIPHERSUITES, String.join(" ", supportedCiphers));
                 }
             }
+            if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
+                Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);
+                if (verifyHostname) {
+                    properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
+                } else {
+                    properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "false");
+                }
+            }
         }
     }
 
@@ -226,7 +236,7 @@ public class SmtpUtil {
         properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
         properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
         properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
-        properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+        properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
         properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
     }
 

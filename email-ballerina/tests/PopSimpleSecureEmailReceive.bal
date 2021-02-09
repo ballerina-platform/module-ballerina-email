@@ -31,7 +31,6 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
 
     PopConfig popConfig = {
          port: 3995,
-         properties: {"mail.pop3.ssl.checkserveridentity":"false"},
          secureSocket: {
              certificate: {
                  path: "tests/resources/certsandkeys/greenmail.crt"
@@ -40,7 +39,8 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
                  name: "TLS",
                  versions: ["TLSv1.2", "TLSv1.1"]
              },
-             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+             verifyHostname: false
          }
     };
     PopClient|Error popClientOrError = new (host, username, password, popConfig);

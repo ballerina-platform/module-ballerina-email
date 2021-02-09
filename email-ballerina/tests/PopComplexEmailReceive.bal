@@ -38,9 +38,8 @@ function testReceiveComplexEmailPop() returns @tainted error? {
     }
 
     PopConfig popConfig = {
-         port: 31100, // This is an incorrect value. Later the correct value, 3110 will be set via a property.
-         security: START_TLS_AUTO,
-         properties: {"mail.pop3.port":"3110"}
+         port: 3110,
+         security: START_TLS_AUTO
     };
     string[] returnArray = [];
     PopClient|Error popClientOrError = new (host, username, password, popConfig);
@@ -57,7 +56,7 @@ function testReceiveComplexEmailPop() returns @tainted error? {
         returnArray[4] = concatStrings(emailResponse.to);
         returnArray[5] = concatStrings(emailResponse?.cc);
         returnArray[6] = concatStrings(emailResponse?.replyTo);
-        Attachment|(mime:Entity|Attachment)[]? attachments = emailResponse?.attachments;
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]? attachments = emailResponse?.attachments;
         if (attachments is (mime:Entity|Attachment)[]) {
             var att0 = attachments[0];
             if (att0 is mime:Entity) {

@@ -26,7 +26,7 @@ public client class ImapClient {
     # + password - Password of the IMAP Client
     # + clientConfig - Configurations for the IMAP Client
     # + return - An `email:Error` if failed while creating the client or else `()`
-    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
+    public isolated function init(string host, string username, string password,
             ImapConfig clientConfig = {}) returns Error? {
         return initImapClientEndpoint(self, host, username, password, clientConfig);
     }
@@ -60,11 +60,11 @@ isolated function imapRead(ImapClient clientEndpoint, string folder) returns Mes
 #
 # + port - Port number of the IMAP server
 # + security - Type of security channel
-# + properties - IMAP properties to override the existing configuration
 # + secureSocket - Secure socket configuration
 public type ImapConfig record {|
     int port = 993;
-    Security? security = ();
-    map<string>? properties = ();
-    SecureSocket? secureSocket = ();
+    Security security = SSL;
+    //map<string>? properties = ();
+    SecureSocket secureSocket?;
+    //SecureSocket? secureSocket = ();
 |};
