@@ -64,7 +64,6 @@ public type Options record {|
     string|string[] replyTo?;
     string sender?;
     mime:Entity|Attachment|(mime:Entity|Attachment)[] attachments?;
-    // TODO update like mime:Entity|Attachment|(mime:Entity|Attachment)[]
 |};
 
 # Email attachment.
