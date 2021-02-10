@@ -40,11 +40,9 @@ import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.mail.Address;
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -180,7 +178,7 @@ public class SmtpUtil {
             if (hasTextBody && !hasHtmlBody || !hasTextBody && hasHtmlBody) {
                 emailMessage.setContent(messageBody, bodyContentType);
             } else if (hasTextBody) { // hasHtmlBody is also implicitly true
-                addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
+                emailMessage.setContent(getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
             }
         } else {
             addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
@@ -257,21 +255,9 @@ public class SmtpUtil {
     private static void addBodyAndAttachments(MimeMessage emailMessage, String messageBody, String htmlMessageBody,
                                               String bodyContentType, Object attachments)
             throws MessagingException, IOException {
-        boolean multipartAdded = false;
-        BodyPart messageBodyPart = new MimeBodyPart();
-        if (!htmlMessageBody.isEmpty()) {
-            addTextAndHtmlContentToEmail(messageBodyPart, messageBody, htmlMessageBody);
-            multipartAdded = true;
-        } else {
-            messageBodyPart.setContent(messageBody, bodyContentType);
-        }
-        Multipart multipart;
-        if (multipartAdded) {
-            multipart = (Multipart) messageBodyPart.getContent();
-        } else {
-            multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-        }
+        Multipart multipart = new MimeMultipart("mixed");
+        addMultipartChild(multipart, getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
+
         if (attachments instanceof BArray) {
             BArray attachmentArray = (BArray) attachments;
             for (int i = 0; i < attachmentArray.size(); i++) {
@@ -282,6 +268,12 @@ public class SmtpUtil {
             addAttachment(attachments, multipart);
         }
         emailMessage.setContent(multipart);
+    }
+
+    private static void addMultipartChild(Multipart parent, MimeMultipart child) throws MessagingException {
+        final MimeBodyPart mbp = new MimeBodyPart();
+        parent.addBodyPart(mbp);
+        mbp.setContent(child);
     }
 
     private static void addAttachment(Object attachedEntityOrRecord, Multipart multipart)
@@ -400,7 +392,7 @@ public class SmtpUtil {
         }
     }
 
-    private static void addTextAndHtmlContentToEmail(Part emailPart, String textContent, String htmlContent)
+    private static MimeMultipart getAlternativeContentFromTextAndHtml(String textContent, String htmlContent)
             throws MessagingException {
         MimeMultipart multipart = new MimeMultipart("alternative");
         MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -409,7 +401,7 @@ public class SmtpUtil {
         messageBodyPart = new MimeBodyPart();
         messageBodyPart.setContent(htmlContent, EmailConstants.HTML_CONTENT_TYPE);
         multipart.addBodyPart(messageBodyPart);
-        emailPart.setContent(multipart);
+        return multipart;
     }
 
     private static String getNullCheckedString(BString string) {
