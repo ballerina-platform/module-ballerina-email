@@ -34,7 +34,7 @@ public type Message record {|
     string|string[] to;
     string subject;
     string 'from;
-    string body;
+    string body?;
     string htmlBody?;
     string|string[] cc?;
     string|string[] bcc?;
@@ -47,6 +47,7 @@ public type Message record {|
 
 # Optional parameters for an Email message.
 #
+# + body - Text typed body of the email message
 # + htmlBody - HTML typed body of the email message
 # + contentType - Content Type of the Body
 # + headers - Header list
@@ -56,6 +57,7 @@ public type Message record {|
 # + sender - Sender's address
 # + attachments - Email attachements
 public type Options record {|
+    string body?;
     string htmlBody?;
     string contentType?;
     map<string> headers?;

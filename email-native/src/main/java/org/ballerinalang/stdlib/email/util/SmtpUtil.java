@@ -148,7 +148,7 @@ public class SmtpUtil {
         Address[] bccAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_BCC);
         Address[] replyToAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_REPLY_TO);
         String subject = message.getStringValue(EmailConstants.MESSAGE_SUBJECT).getValue();
-        String messageBody = message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY).getValue();
+        String messageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY));
         String htmlMessageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_HTML_MESSAGE_BODY));
         String bodyContentType = message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE).getValue();
         String fromAddress = message.getStringValue(EmailConstants.MESSAGE_FROM).getValue();
@@ -173,15 +173,19 @@ public class SmtpUtil {
             emailMessage.setSender(new InternetAddress(senderAddress));
         }
         Object attachments = message.get(EmailConstants.MESSAGE_ATTACHMENTS);
-        if (attachments == null) {
-            if (!htmlMessageBody.isEmpty()) {
-                addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
+
+        if (!messageBody.isEmpty()) {
+            if (attachments == null) {
+                if (!htmlMessageBody.isEmpty()) {
+                    addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
+                } else {
+                    emailMessage.setContent(messageBody, bodyContentType);
+                }
             } else {
-                emailMessage.setContent(messageBody, bodyContentType);
+                addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
             }
-        } else {
-            addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
         }
+
         addMessageHeaders(emailMessage, message);
         return emailMessage;
     }

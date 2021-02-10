@@ -50,7 +50,10 @@ function testReceiveComplexEmailPop() returns @tainted error? {
     Message|Error? emailResponse = popClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
-        returnArray[1] = <string>emailResponse.body;
+        string? emailBody = <string>emailResponse?.body;
+        if (emailBody is string) {
+            returnArray[1] = emailBody;
+        }
         returnArray[2] = emailResponse.'from;
         returnArray[3] = getNonNilString(emailResponse?.sender);
         returnArray[4] = concatStrings(emailResponse.to);
