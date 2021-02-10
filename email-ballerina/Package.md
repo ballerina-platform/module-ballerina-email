@@ -175,4 +175,4 @@ service "emailObserver" on emailListener {
 }
 ```
 
-For information on the operations, which you can perform with this module, see the below **Functions**. For examples on the usage of the operation, see the [Send and Receive Emails Example](https://ballerina.io/swan-lake/learn/by-example/send-and-receive-emails.html).
+For information on the operations, which you can perform with this module, see the below **Functions**. For examples on the usage of the operation, see the [Send and Receive Emails Example](https://ballerina.io/learn/by-example/send-and-receive-emails.html).

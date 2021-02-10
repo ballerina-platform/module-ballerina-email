@@ -174,16 +174,16 @@ public class SmtpUtil {
         }
         Object attachments = message.get(EmailConstants.MESSAGE_ATTACHMENTS);
 
-        if (!messageBody.isEmpty()) {
-            if (attachments == null) {
-                if (!htmlMessageBody.isEmpty()) {
-                    addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
-                } else {
-                    emailMessage.setContent(messageBody, bodyContentType);
-                }
-            } else {
-                addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
+        if (attachments == null) {
+            boolean hasTextBody = !messageBody.isEmpty();
+            boolean hasHtmlBody = !htmlMessageBody.isEmpty();
+            if (hasTextBody && !hasHtmlBody || !hasTextBody && hasHtmlBody) {
+                emailMessage.setContent(messageBody, bodyContentType);
+            } else if (hasTextBody) { // hasHtmlBody is also implicitly true
+                addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
             }
+        } else {
+            addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
         }
 
         addMessageHeaders(emailMessage, message);
@@ -402,8 +402,8 @@ public class SmtpUtil {
 
     private static void addTextAndHtmlContentToEmail(Part emailPart, String textContent, String htmlContent)
             throws MessagingException {
-        Multipart multipart = new MimeMultipart();
-        BodyPart messageBodyPart = new MimeBodyPart();
+        MimeMultipart multipart = new MimeMultipart("alternative");
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setText(textContent);
         multipart.addBodyPart(messageBodyPart);
         messageBodyPart = new MimeBodyPart();

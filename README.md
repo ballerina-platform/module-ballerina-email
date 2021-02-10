@@ -10,9 +10,9 @@ The Email library is one of the standard library modules of the<a target="_blank
 
 It provides implementation for sending emails over SMTP and receiving (with client and listener modes) over POP3 and IMAP4 protocols.
 
-For more information go to [The Email Module](https://ballerina.io/swan-lake/learn/api-docs/ballerina/email/index.html).
+For more information go to [The Email Module](https://ballerina.io/learn/api-docs/ballerina/email/index.html).
 
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/swan-lake/learn/by-example/).
+For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).
 
 ## Issues and Projects 
 
