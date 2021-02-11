@@ -175,7 +175,7 @@ service "emailObserver" on emailListener {
 }
 ```
 
-For information on the operations, which you can perform with this package, see the below **Functions**. For examples on the usage of the operation, see the following.
+For information on the operations, which you can perform with this package, see the **Functions**  below. For examples of the usage of the operation, see the following.
   * [Send Emails Example](https://ballerina.io/learn/by-example/send-email.html)
   * [Receive Emails using a client Example](https://ballerina.io/learn/by-example/receive-email-using-client.html)
   * [Receive Emails using a listener Example](https://ballerina.io/learn/by-example/receive-email-using-listener.html)

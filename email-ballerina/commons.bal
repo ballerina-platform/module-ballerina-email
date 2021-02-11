@@ -47,7 +47,7 @@ public type Message record {|
 
 # Optional parameters for an Email message.
 #
-# + body - Text typed body of the email message
+# + body - Text-type body of the email message
 # + htmlBody - HTML typed body of the email message
 # + contentType - Content Type of the Body
 # + headers - Header list
