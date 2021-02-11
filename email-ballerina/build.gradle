@@ -19,6 +19,21 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 description = 'Ballerina - Ballerina Email Connector'
 
+def packageName = "email"
+def packageOrg = "ballerina"
+def tomlVersion = project.version.replace("-SNAPSHOT", "")
+def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
+def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
+def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
+def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
+def artifactLibParent = file("$project.projectDir/build/lib_parent/")
+def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
+def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
+def originalConfig = ballerinaConfigFile.text
+def originalDependencyConfig = ballerinaDependencyFile.text
+def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/" +
+        "jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
+
 configurations {
     jbalTools
     packingJars
@@ -28,7 +43,7 @@ dependencies {
     jbalTools("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
         transitive = false
     }
-    compile project(':email-native')
+    compile project(":${packageName}-native")
     packingJars (group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
         transitive = false
     }
@@ -92,28 +107,15 @@ task copyStdlibs(type: Copy) {
     }
 }
 
-def packageName = "email"
-def packageOrg = "ballerina"
-def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
-def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
-def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
-def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
-def artifactLibParent = file("$project.projectDir/build/lib_parent/")
-def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def tomlVersion = project.version.split("-")[0]
-def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
-def originalConfig = ballerinaConfigFile.text
-def originalDependencyConfig = ballerinaDependencyFile.text
-
 task updateTomlVersions {
     doLast {
-        def stdlibDependentTaskVersion = project.stdlibTaskVersion.split("-")[0]
-        def stdlibDependentMimeVersion = project.stdlibMimeVersion.split("-")[0]
-        def stdlibDependentFileVersion = project.stdlibFileVersion.split("-")[0]
-        def stdlibDependentTimeVersion = project.stdlibTimeVersion.split("-")[0]
-        def stdlibDependentLogVersion = project.stdlibLogVersion.split("-")[0]
-        def stdlibDependentOsVersion = project.stdlibOsVersion.split("-")[0]
-        def stdlibDependentIoVersion = project.stdlibIoVersion.split("-")[0]
+        def stdlibDependentTaskVersion = project.stdlibTaskVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentMimeVersion = project.stdlibMimeVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentFileVersion = project.stdlibFileVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentTimeVersion = project.stdlibTimeVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentLogVersion = project.stdlibLogVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentOsVersion = project.stdlibOsVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentIoVersion = project.stdlibIoVersion.replace("-SNAPSHOT", "")
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         ballerinaConfigFile.text = newConfig
@@ -140,6 +142,7 @@ def groupParams = ""
 def disableGroups = ""
 def debugParams = ""
 def balJavaDebugParam = ""
+def testParams = ""
 
 task initializeVariables {
     if (project.hasProperty("groups")) {
@@ -154,6 +157,23 @@ task initializeVariables {
     if (project.hasProperty("balJavaDebug")) {
         balJavaDebugParam = "BAL_JAVA_DEBUG=${project.findProperty("balJavaDebug")}"
     }
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(":${packageName}-ballerina:build") || graph.hasTask(":${packageName}-ballerina:publish"))  {
+            ballerinaTest.enabled = false
+        }
+
+        if (graph.hasTask(":${packageName}-ballerina:test")) {
+            testParams = "--code-coverage --includes=*"
+        } else {
+            testParams = "--skip-tests"
+        }
+
+        if (graph.hasTask(":${packageName}-ballerina:publish")) {
+            ballerinaPublish.enabled = true
+        } else {
+            ballerinaPublish.enabled = false
+        }
+    }
 }
 
 task ballerinaTest {
@@ -163,8 +183,6 @@ task ballerinaTest {
     dependsOn(updateTomlVersions)
     dependsOn(initializeVariables)
     finalizedBy(revertTomlFile)
-
-    def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
 
     doLast {
         exec {
@@ -188,19 +206,7 @@ task ballerinaBuild {
     dependsOn(initializeVariables)
     finalizedBy(revertTomlFile)
 
-    def testParams = "--skip-tests"
-    gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(':email-ballerina:build') || graph.hasTask(':email-ballerina:publish')) {
-            ballerinaTest.enabled = false
-        }
-        if (graph.hasTask(':email-ballerina:test')) {
-            testParams = "--code-coverage --includes=*"
-        }
-    }
-
     doLast {
-        def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
-
         // Build and populate caches
         exec {
             workingDir project.projectDir
@@ -254,19 +260,9 @@ build {
     dependsOn(ballerinaBuild)
 }
 
-task ballerinaPush {
-    dependsOn(build)
+task ballerinaPublish {
     doLast {
-        // Publish to central
-        if (!project.hasProperty("publishToCentral")) {
-            return
-        }
-        if (project.version.endsWith('-SNAPSHOT')) {
-            throw new GradleException("Stdlib not pushed to central for snapshot version '${project.version}'.")
-        } else {
-            if (ballerinaCentralAccessToken == null) {
-                throw new GradleException("Central push failed invalid access token.")
-            }
+        if (ballerinaCentralAccessToken != null) {
             println("Publishing to the ballerina central..")
             exec {
                 workingDir project.projectDir
@@ -279,10 +275,6 @@ task ballerinaPush {
             }
         }
     }
-}
-
-publish {
-    dependsOn(ballerinaPush)
 }
 
 task createArtifactZip(type: Zip) {
@@ -305,7 +297,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ballerina-platform/module-ballerina-email")
+            url = uri("https://maven.pkg.github.com/ballerina-platform/module-${packageOrg}-${packageName}")
             credentials {
                 username = System.getenv("packageUser")
                 password = System.getenv("packagePAT")
@@ -314,11 +306,14 @@ publishing {
     }
 }
 
-ballerinaBuild.dependsOn ":email-native:build"
-ballerinaBuild.dependsOn ":email-test-utils:build"
+ballerinaBuild.dependsOn ":${packageName}-native:build"
+ballerinaBuild.dependsOn ":${packageName}-test-utils:build"
 unpackStdLibs.dependsOn unpackJballerinaTools
 copyStdlibs.dependsOn unpackStdLibs
 updateTomlVersions.dependsOn copyStdlibs
 ballerinaBuild.dependsOn updateTomlVersions
 unpackJballerinaTools.dependsOn copyPackingJarsToLib
 build.dependsOn ballerinaBuild
+
+ballerinaPublish.dependsOn ballerinaBuild
+publish.dependsOn ballerinaPublish
