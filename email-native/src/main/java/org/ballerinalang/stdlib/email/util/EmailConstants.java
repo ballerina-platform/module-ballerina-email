@@ -75,6 +75,7 @@ public class EmailConstants {
     public static final BString PROPS_CERT_PROTOCOL_VERSIONS = StringUtils.fromString("versions");
     public static final BString PROPS_CERT_CIPHERS = StringUtils.fromString("ciphers");
     public static final BString PROPS_CERT_PATH = StringUtils.fromString("path");
+    public static final BString PROPS_VERIFY_HOSTNAME = StringUtils.fromString("verifyHostname");
 
     // Common constants to POP and IMAP
     public static final BString PROPS_PROPERTIES = StringUtils.fromString("properties");
@@ -140,7 +141,7 @@ public class EmailConstants {
 
     // SMTP related constants
     public static final String PROPS_SESSION = "session";
-    public static final String PROPS_ENABLE_SSL = "mail.smtp.ssl.enable";
+    public static final String PROPS_SMTP_ENABLE_SSL = "mail.smtp.ssl.enable";
     public static final String PROPS_SMTP_CHECK_SERVER_IDENTITY = "mail.smtp.ssl.checkserveridentity";
     public static final String PROPS_SMTP_SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
     public static final String PROPS_SMTP_SOCKET_FACTORY = "mail.smtp.ssl.socketFactory";

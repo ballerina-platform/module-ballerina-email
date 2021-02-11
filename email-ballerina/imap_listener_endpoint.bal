@@ -31,10 +31,12 @@ public class ImapListener {
         self.config = listenerConfig;
         ImapConfig imapConfig = {
              port: listenerConfig.port,
-             security: listenerConfig.security,
-             properties: listenerConfig.properties,
-             secureSocket: listenerConfig.secureSocket
+             security: listenerConfig.security
         };
+        SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
+        if (!(secureSocketParam is ())) {
+            imapConfig.secureSocket = secureSocketParam;
+        }
         return externalInit(self, self.config, imapConfig, "IMAP");
     }
 
@@ -161,7 +163,6 @@ final service isolated object{} imapAppointmentService = service object {
 # + pollingIntervalInMillis - Periodic time interval to check new update
 # + port - Port number of the IMAP server
 # + security - Type of security channel
-# + properties - IMAP4 properties to override the existing configuration
 # + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
 public type ImapListenerConfig record {|
@@ -170,8 +171,7 @@ public type ImapListenerConfig record {|
     string password;
     int pollingIntervalInMillis = 60000;
     int port = 993;
-    Security? security = ();
-    map<string>? properties = ();
+    Security security = SSL;
     string? cronExpression = ();
-    SecureSocket? secureSocket = ();
+    SecureSocket secureSocket?;
 |};

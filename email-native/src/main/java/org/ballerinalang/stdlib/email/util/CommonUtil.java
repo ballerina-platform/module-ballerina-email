@@ -22,8 +22,6 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
-import io.ballerina.runtime.api.values.BMap;
-import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.mime.util.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,6 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -104,23 +101,6 @@ public class CommonUtil {
             buffer.write(data, 0, nRead);
         }
         return buffer.toByteArray();
-    }
-
-    /**
-     * Add custom properties from the Ballerina configuration.
-     *
-     * @param customProperties Custom properties from Ballerina
-     * @param properties Properties to be used to create the session
-     */
-    public static void addCustomProperties(BMap<BString, Object> customProperties, Properties properties) {
-        if (customProperties != null) {
-            for (BString propertyName : customProperties.getKeys()) {
-                properties.put(propertyName.getValue(),
-                               customProperties.getStringValue(propertyName).getValue());
-                log.debug("Added custom protocol property with Name: " + propertyName + ", Value: "
-                                  + customProperties.getStringValue(propertyName).getValue());
-            }
-        }
     }
 
     protected static SSLSocketFactory createSSLSocketFactory(File crtFile, String protocol)

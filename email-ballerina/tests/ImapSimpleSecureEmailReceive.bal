@@ -30,7 +30,6 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
 
     ImapConfig imapConfig = {
          port: 3993,
-         properties: {"mail.imap.ssl.checkserveridentity":"false"},
          secureSocket: {
              certificate: {
                  path: "tests/resources/certsandkeys/greenmail.crt"
@@ -39,7 +38,8 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
                  name: "TLS",
                  versions: ["TLSv1.2", "TLSv1.1"]
              },
-             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"]
+             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+             verifyHostname: false
          }
     };
     ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);

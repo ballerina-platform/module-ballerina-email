@@ -6,19 +6,19 @@ Ballerina Email Library
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/email.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Femail)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-The Email library is one of the standard library modules of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
+The Email package is one of the standard library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
 
 It provides implementation for sending emails over SMTP and receiving (with client and listener modes) over POP3 and IMAP4 protocols.
 
-For more information go to [The Email Module](https://ballerina.io/swan-lake/learn/api-docs/ballerina/email/index.html).
+For more information go to [The Email Package](https://ballerina.io/learn/api-docs/ballerina/email/index.html).
 
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/swan-lake/learn/by-example/).
+For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).
 
 ## Issues and Projects 
 
 Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Standard Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library). 
 
-This repository only contains the source code for the module.
+This repository only contains the source code for the package.
 
 ## Building from the Source
 
@@ -36,7 +36,7 @@ This repository only contains the source code for the module.
 
 Execute the commands below to build from source.
 
-1. To build the library:
+1. To build the package:
 
     ```shell script
         ./gradlew clean build
@@ -48,7 +48,7 @@ Execute the commands below to build from source.
         ./gradlew clean test
     ```
 
-3. To build the module without the tests:
+3. To build the package without the tests:
 
     ```shell script
         ./gradlew clean build -x test

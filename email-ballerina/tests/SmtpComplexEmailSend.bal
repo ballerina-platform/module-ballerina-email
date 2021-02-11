@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 import ballerina/test;
 
-@test:Config {dependsOn: [testSendEmailWithOptions], enable: false}
+@test:Config {dependsOn: [testSendEmailWithOptions]}
 function testSendComplexEmail() returns @tainted error? {
 
     string host = "127.0.0.1";
@@ -38,9 +38,8 @@ function testSendComplexEmail() returns @tainted error? {
     error? serverStatus = startComplexSmtpServer();
 
     SmtpConfig smtpConfig = {
-        port: 30250, // This is an incorrect value. Later the correct value, 3025 will be set via a property.
-        security: START_TLS_AUTO,
-        properties: {"mail.smtp.port":"3025"}
+        port: 3025,
+        security: START_TLS_AUTO
     };
 
     SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);

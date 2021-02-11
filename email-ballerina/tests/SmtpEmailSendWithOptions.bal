@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 import ballerina/test;
 
-@test:Config {dependsOn: [testSendSimpleEmail], enable: false}
+@test:Config {dependsOn: [testSendSimpleEmail]}
 function testSendEmailWithOptions() returns @tainted error? {
 
     string host = "127.0.0.1";
@@ -38,9 +38,8 @@ function testSendEmailWithOptions() returns @tainted error? {
     error? serverStatus = startSendWithOptionsSmtpServer();
 
     SmtpConfig smtpConfig = {
-        port: 30250, // This is an incorrect value. Later the correct value, 3025 will be set via a property.
-        security: START_TLS_AUTO,
-        properties: {"mail.smtp.port":"3025"}
+        port: 3025,
+        security: START_TLS_AUTO
     };
 
     SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
@@ -92,7 +91,7 @@ function testSendEmailWithOptions() returns @tainted error? {
     //Create an array to hold all the body parts.
     (mime:Entity|Attachment)[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, att7];
 
-    Error? response = smtpClient->sendEmail(toAddresses, subject, fromAddress, body, cc=ccAddresses, bcc=bccAddresses,
+    Error? response = smtpClient->sendEmail(toAddresses, subject, fromAddress, body=body, cc=ccAddresses, bcc=bccAddresses,
         htmlBody=htmlBody, contentType=contentType, headers={header1_name: "header1_value"}, sender=sender,
         replyTo=replyToAddresses, attachments=bodyParts);
     if (response is Error) {

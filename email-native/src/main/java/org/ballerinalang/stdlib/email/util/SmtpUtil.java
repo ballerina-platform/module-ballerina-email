@@ -40,11 +40,9 @@ import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.mail.Address;
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -69,6 +67,7 @@ import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROT
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_ALWAYS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_VERIFY_HOSTNAME;
 
 /**
  * Contains the utility functions related to the SMTP protocol.
@@ -99,16 +98,17 @@ public class SmtpUtil {
             switch (securityType) {
                 case PROPS_START_TLS_AUTO:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
                     break;
                 case PROPS_START_TLS_ALWAYS:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
+                    addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
                     break;
                 case PROPS_START_TLS_NEVER:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "false");
-                    properties.put(EmailConstants.PROPS_ENABLE_SSL, "false");
+                    properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
                     break;
                 default:
                     addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
@@ -118,8 +118,6 @@ public class SmtpUtil {
         }
         addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
                 properties);
-        CommonUtil.addCustomProperties(
-                (BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_PROPERTIES), properties);
         if (log.isDebugEnabled()) {
             Set<String> propertySet = properties.stringPropertyNames();
             log.debug("SMTP Properties set are as follows.");
@@ -148,7 +146,7 @@ public class SmtpUtil {
         Address[] bccAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_BCC);
         Address[] replyToAddressArray = extractAddressLists(message, EmailConstants.MESSAGE_REPLY_TO);
         String subject = message.getStringValue(EmailConstants.MESSAGE_SUBJECT).getValue();
-        String messageBody = message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY).getValue();
+        String messageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY));
         String htmlMessageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_HTML_MESSAGE_BODY));
         String bodyContentType = message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE).getValue();
         String fromAddress = message.getStringValue(EmailConstants.MESSAGE_FROM).getValue();
@@ -173,15 +171,19 @@ public class SmtpUtil {
             emailMessage.setSender(new InternetAddress(senderAddress));
         }
         Object attachments = message.get(EmailConstants.MESSAGE_ATTACHMENTS);
+
         if (attachments == null) {
-            if (!htmlMessageBody.isEmpty()) {
-                addTextAndHtmlContentToEmail(emailMessage, messageBody, htmlMessageBody);
-            } else {
+            boolean hasTextBody = !messageBody.isEmpty();
+            boolean hasHtmlBody = !htmlMessageBody.isEmpty();
+            if (hasTextBody && !hasHtmlBody || !hasTextBody && hasHtmlBody) {
                 emailMessage.setContent(messageBody, bodyContentType);
+            } else if (hasTextBody) { // hasHtmlBody is also implicitly true
+                emailMessage.setContent(getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
             }
         } else {
             addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
         }
+
         addMessageHeaders(emailMessage, message);
         return emailMessage;
     }
@@ -218,6 +220,14 @@ public class SmtpUtil {
                     properties.put(EmailConstants.PROPS_SMTP_CIPHERSUITES, String.join(" ", supportedCiphers));
                 }
             }
+            if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
+                Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);
+                if (verifyHostname) {
+                    properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
+                } else {
+                    properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "false");
+                }
+            }
         }
     }
 
@@ -226,7 +236,7 @@ public class SmtpUtil {
         properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
         properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_FALLBACK, "false");
         properties.put(EmailConstants.PROPS_SMTP_CHECK_SERVER_IDENTITY, "true");
-        properties.put(EmailConstants.PROPS_ENABLE_SSL, "true");
+        properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
         properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
     }
 
@@ -245,21 +255,9 @@ public class SmtpUtil {
     private static void addBodyAndAttachments(MimeMessage emailMessage, String messageBody, String htmlMessageBody,
                                               String bodyContentType, Object attachments)
             throws MessagingException, IOException {
-        boolean multipartAdded = false;
-        BodyPart messageBodyPart = new MimeBodyPart();
-        if (!htmlMessageBody.isEmpty()) {
-            addTextAndHtmlContentToEmail(messageBodyPart, messageBody, htmlMessageBody);
-            multipartAdded = true;
-        } else {
-            messageBodyPart.setContent(messageBody, bodyContentType);
-        }
-        Multipart multipart;
-        if (multipartAdded) {
-            multipart = (Multipart) messageBodyPart.getContent();
-        } else {
-            multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-        }
+        Multipart multipart = new MimeMultipart("mixed");
+        addMultipartChild(multipart, getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
+
         if (attachments instanceof BArray) {
             BArray attachmentArray = (BArray) attachments;
             for (int i = 0; i < attachmentArray.size(); i++) {
@@ -270,6 +268,12 @@ public class SmtpUtil {
             addAttachment(attachments, multipart);
         }
         emailMessage.setContent(multipart);
+    }
+
+    private static void addMultipartChild(Multipart parent, MimeMultipart child) throws MessagingException {
+        final MimeBodyPart mbp = new MimeBodyPart();
+        parent.addBodyPart(mbp);
+        mbp.setContent(child);
     }
 
     private static void addAttachment(Object attachedEntityOrRecord, Multipart multipart)
@@ -388,16 +392,16 @@ public class SmtpUtil {
         }
     }
 
-    private static void addTextAndHtmlContentToEmail(Part emailPart, String textContent, String htmlContent)
+    private static MimeMultipart getAlternativeContentFromTextAndHtml(String textContent, String htmlContent)
             throws MessagingException {
-        Multipart multipart = new MimeMultipart();
-        BodyPart messageBodyPart = new MimeBodyPart();
+        MimeMultipart multipart = new MimeMultipart("alternative");
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setText(textContent);
         multipart.addBodyPart(messageBodyPart);
         messageBodyPart = new MimeBodyPart();
         messageBodyPart.setContent(htmlContent, EmailConstants.HTML_CONTENT_TYPE);
         multipart.addBodyPart(messageBodyPart);
-        emailPart.setContent(multipart);
+        return multipart;
     }
 
     private static String getNullCheckedString(BString string) {

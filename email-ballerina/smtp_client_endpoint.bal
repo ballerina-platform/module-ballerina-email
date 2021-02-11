@@ -27,8 +27,8 @@ public client class SmtpClient {
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
-    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
-            SmtpConfig clientConfig = {}) returns Error? {
+    public isolated function init(string host, string username, string password, SmtpConfig clientConfig = {})
+            returns Error? {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
@@ -41,7 +41,6 @@ public client class SmtpClient {
     # + email - An `email:Message` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
     remote isolated function sendEmailMessage(Message email) returns Error? {
-        var body = email.body;
         if (email?.contentType == ()) {
             email.contentType = "text/plain";
         } else if (!self.containsType(email?.contentType, "text")) {
@@ -60,17 +59,19 @@ public client class SmtpClient {
     # + to - TO address list
     # + subject - Subject of email
     # + from - From address
-    # + body - Text typed body of the email message
     # + options - Optional parameters of the email
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function sendEmail(string|string[] to, string subject, string 'from, string body, *Options options)
+    remote isolated function sendEmail(string|string[] to, string subject, string 'from, *Options options)
             returns Error? {
         Message email = {
             to: to,
             subject: subject,
-            body: body,
             'from: 'from
         };
+        string? body = options?.body;
+        if (!(body is ())) {
+            email.body = <string>body;
+        }
         string? htmlBody = options?.htmlBody;
         if (!(htmlBody is ())) {
             email.htmlBody = <string>htmlBody;
@@ -99,9 +100,9 @@ public client class SmtpClient {
         if (!(sender is ())) {
             email.sender = <string>sender;
         }
-        Attachment|(mime:Entity|Attachment)[]? attachments = options?.attachments;
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]? attachments = options?.attachments;
         if (!(attachments is ())) {
-            email.attachments = <Attachment|(mime:Entity|Attachment)[]>attachments;
+            email.attachments = <mime:Entity|Attachment|(mime:Entity|Attachment)[]>attachments;
         }
         return send(self, email);
     }
@@ -116,8 +117,8 @@ public client class SmtpClient {
     }
 
     private isolated function putAttachmentToArray(Message email) {
-        Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
-        if (attachments is Attachment) {
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
+        if (attachments is Attachment || attachments is mime:Entity) {
             email.attachments = [attachments];
         }
     }
@@ -139,11 +140,9 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 #
 # + port - Port number of the SMTP server
 # + security - Type of security channel
-# + properties - SMTP properties to override the existing configuration
 # + secureSocket - Secure socket configuration
 public type SmtpConfig record {|
     int port = 465;
-    Security? security = ();
-    map<string>? properties = ();
-    SecureSocket? secureSocket = ();
+    Security security = SSL;
+    SecureSocket secureSocket?;
 |};

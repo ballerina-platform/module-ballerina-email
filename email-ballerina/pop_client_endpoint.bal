@@ -26,7 +26,7 @@ public client class PopClient {
     # + password - Password of the POP Client
     # + clientConfig - Configurations for the POP Client
     # + return - An `email:Error` if creating the client failed or else `()`
-    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
+    public isolated function init(string host, string username, string password,
             PopConfig clientConfig = {}) returns Error? {
         return initPopClientEndpoint(self, host, username, password, clientConfig);
     }
@@ -60,11 +60,9 @@ isolated function popRead(PopClient clientEndpoint, string folder) returns Messa
 #
 # + port - Port number of the POP server
 # + security - Type of security channel
-# + properties - POP3 properties to override the existing configuration
 # + secureSocket - Secure socket configuration
 public type PopConfig record {|
     int port = 995;
-    Security? security = ();
-    map<string>? properties = ();
-    SecureSocket? secureSocket = ();
+    Security security = SSL;
+    SecureSocket secureSocket?;
 |};

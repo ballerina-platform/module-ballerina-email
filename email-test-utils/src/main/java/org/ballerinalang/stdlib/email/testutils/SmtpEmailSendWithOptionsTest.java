@@ -35,6 +35,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.SharedByteArrayInputStream;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -101,17 +102,19 @@ public class SmtpEmailSendWithOptionsTest {
             assertTrue(message.isMimeType("multipart/*"));
             Multipart multiPart = (Multipart) message.getContent();
             int multiPartCount = multiPart.getCount();
-            assertEquals(9, multiPartCount);
+            assertEquals(8, multiPartCount);
 
-            testMessageBody((MimeBodyPart) multiPart.getBodyPart(0));
-            htmlMessageBody((MimeBodyPart) multiPart.getBodyPart(1));
-            testAttachment1((MimeBodyPart) multiPart.getBodyPart(2));
-            testAttachment2((MimeBodyPart) multiPart.getBodyPart(3));
-            testAttachment3((MimeBodyPart) multiPart.getBodyPart(4));
-            testAttachment4((MimeBodyPart) multiPart.getBodyPart(5));
-            testAttachment5((MimeBodyPart) multiPart.getBodyPart(6));
-            testAttachment6((MimeBodyPart) multiPart.getBodyPart(7));
-            testAttachment7((MimeBodyPart) multiPart.getBodyPart(8));
+            testMessageBody((MimeBodyPart)
+                    ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(0));
+            htmlMessageBody((MimeBodyPart)
+                    ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(1));
+            testAttachment1((MimeBodyPart) multiPart.getBodyPart(1));
+            testAttachment2((MimeBodyPart) multiPart.getBodyPart(2));
+            testAttachment3((MimeBodyPart) multiPart.getBodyPart(3));
+            testAttachment4((MimeBodyPart) multiPart.getBodyPart(4));
+            testAttachment5((MimeBodyPart) multiPart.getBodyPart(5));
+            testAttachment6((MimeBodyPart) multiPart.getBodyPart(6));
+            testAttachment7((MimeBodyPart) multiPart.getBodyPart(7));
 
             assertEquals(HEADER1_VALUE, message.getHeader(HEADER1_NAME)[0]);
             assertEquals(EMAIL_FROM, message.getFrom()[0].toString());

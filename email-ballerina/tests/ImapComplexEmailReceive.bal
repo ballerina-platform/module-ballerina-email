@@ -37,9 +37,8 @@ function testReceiveComplexEmailImap() returns @tainted error? {
     }
 
     ImapConfig imapConfig = {
-         port: 31430, // This is an incorrect value. Later the correct value, 3143 will be set via a property.
-         security: START_TLS_AUTO,
-         properties: {"mail.imap.port":"3143"}
+         port: 3143,
+         security: START_TLS_AUTO
     };
     string[] returnArray = [];
     ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
@@ -50,13 +49,16 @@ function testReceiveComplexEmailImap() returns @tainted error? {
     Message|Error? emailResponse = imapClient->receiveEmailMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
-        returnArray[1] = <string>emailResponse.body;
+        string? emailBody = <string>emailResponse?.body;
+        if (emailBody is string) {
+            returnArray[1] = emailBody;
+        }
         returnArray[2] = emailResponse.'from;
         returnArray[3] = getNonNilString(emailResponse?.sender);
         returnArray[4] = concatStrings(emailResponse.to);
         returnArray[5] = concatStrings(emailResponse?.cc);
         returnArray[6] = concatStrings(emailResponse?.replyTo);
-        Attachment|(mime:Entity|Attachment)[]? attachments = emailResponse?.attachments;
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]? attachments = emailResponse?.attachments;
         if (attachments is (mime:Entity|Attachment)[]) {
             var att0 = attachments[0];
             if (att0 is mime:Entity) {
