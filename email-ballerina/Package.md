@@ -1,10 +1,10 @@
-## Module Overview
+## Package Overview
 
-This module contains functions to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
+This package contains functions to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
 ### Client
 
-This module supports the following three client types.
+This package supports the following three client types.
 
 - `email:SmtpClient` - The client, which supports sending an email using the SMTP protocol.
 - `email:PopClient` - The client, which supports receiving an email using the POP3 protocol.
@@ -64,7 +64,7 @@ email:Error? response = smtpClient->sendEmail(
     ["receiver1@email.com", "receiver2@email.com"],
     "Sample Email",
     "author@email.com",
-    "This is a sample email.",
+    body="This is a sample email.",
     cc=["receiver3@email.com", "receiver4@email.com"],
     bcc=["receiver5@email.com"],
     sender="sender@email.com",
@@ -175,4 +175,7 @@ service "emailObserver" on emailListener {
 }
 ```
 
-For information on the operations, which you can perform with this module, see the below **Functions**. For examples on the usage of the operation, see the [Send and Receive Emails Example](https://ballerina.io/learn/by-example/send-and-receive-emails.html).
+For information on the operations, which you can perform with this package, see the below **Functions**. For examples on the usage of the operation, see the following.
+  * [Send Emails Example](https://ballerina.io/learn/by-example/send-email.html)
+  * [Receive Emails using a client Example](https://ballerina.io/learn/by-example/receive-email-using-client.html)
+  * [Receive Emails using a listener Example](https://ballerina.io/learn/by-example/receive-email-using-listener.html)
