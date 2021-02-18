@@ -107,7 +107,7 @@ task copyStdlibs(type: Copy) {
     }
 }
 
-task updateTomlVersions {
+task updateTomlFile {
     doLast {
         def stdlibDependentTaskVersion = project.stdlibTaskVersion.replace("-SNAPSHOT", "")
         def stdlibDependentMimeVersion = project.stdlibMimeVersion.replace("-SNAPSHOT", "")
@@ -158,8 +158,12 @@ task initializeVariables {
         balJavaDebugParam = "BAL_JAVA_DEBUG=${project.findProperty("balJavaDebug")}"
     }
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(":${packageName}-ballerina:build") || graph.hasTask(":${packageName}-ballerina:publish"))  {
+        if (graph.hasTask(":${packageName}-ballerina:build") ||
+                graph.hasTask(":${packageName}-ballerina:publish") ||
+                graph.hasTask(":${packageName}-ballerina:publishToMavenLocal")) {
             ballerinaTest.enabled = false
+        } else {
+            ballerinaTest.enabled = true
         }
 
         if (graph.hasTask(":${packageName}-ballerina:test")) {
@@ -180,7 +184,7 @@ task ballerinaTest {
     dependsOn(copyStdlibs)
     dependsOn(":email-native:build")
     dependsOn(":email-test-utils:build")
-    dependsOn(updateTomlVersions)
+    dependsOn(updateTomlFile)
     dependsOn(initializeVariables)
     finalizedBy(revertTomlFile)
 
@@ -262,6 +266,9 @@ build {
 
 task ballerinaPublish {
     doLast {
+        if (project.version.endsWith('-SNAPSHOT')) {
+            return
+        }
         if (ballerinaCentralAccessToken != null) {
             println("Publishing to the ballerina central..")
             exec {
@@ -273,6 +280,8 @@ task ballerinaPublish {
                     commandLine 'sh', '-c', "$distributionBinPath/bal push"
                 }
             }
+        } else {
+            throw new InvalidUserDataException("Central Access Token is Not Present")
         }
     }
 }
@@ -310,10 +319,14 @@ ballerinaBuild.dependsOn ":${packageName}-native:build"
 ballerinaBuild.dependsOn ":${packageName}-test-utils:build"
 unpackStdLibs.dependsOn unpackJballerinaTools
 copyStdlibs.dependsOn unpackStdLibs
-updateTomlVersions.dependsOn copyStdlibs
-ballerinaBuild.dependsOn updateTomlVersions
+updateTomlFile.dependsOn copyStdlibs
+ballerinaBuild.dependsOn updateTomlFile
 unpackJballerinaTools.dependsOn copyPackingJarsToLib
 build.dependsOn ballerinaBuild
 
+ballerinaPublish.dependsOn ":${packageName}-native:build"
 ballerinaPublish.dependsOn ballerinaBuild
+ballerinaPublish.dependsOn updateTomlFile
+ballerinaPublish.dependsOn initializeVariables
+ballerinaPublish.finalizedBy revertTomlFile
 publish.dependsOn ballerinaPublish
