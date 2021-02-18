@@ -28,7 +28,6 @@ def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
 def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
 def artifactLibParent = file("$project.projectDir/build/lib_parent/")
 def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def artifactTestableJar = file("$project.projectDir/target/cache/${packageOrg}/${packageName}/${tomlVersion}/java11/")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def originalConfig = ballerinaConfigFile.text
 def originalDependencyConfig = ballerinaDependencyFile.text
@@ -288,14 +287,6 @@ task createArtifactZip(type: Zip) {
     from ballerinaBuild
 }
 
-task createTestableJarZip(type: Zip) {
-    archiveName("${packageOrg}-${packageName}-${project.version}-testable-jars.zip")
-    destinationDir(file("${buildDir}/distributions"))
-    from("${artifactTestableJar}") {
-        include '**/*-testable.jar'
-    }
-}
-
 def getCheckedOutGitCommitHash() {
     'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
@@ -320,19 +311,6 @@ publishing {
     }
 }
 
-task extractBallerinaClassFiles(type: Copy) {
-    def jars = fileTree(artifactTestableJar).findAll {
-        it.name.endsWith("-testable.jar")
-    }
-
-    jars.forEach { file ->
-        from zipTree(file).matching {
-            exclude '**/tests/*'
-            include '**/*.class'
-        }
-        into "${project.rootDir.absolutePath}/build/classes"
-    }
-}
 
 ballerinaBuild.dependsOn ":${packageName}-native:build"
 ballerinaBuild.dependsOn ":${packageName}-test-utils:build"
