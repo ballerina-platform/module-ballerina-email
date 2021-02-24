@@ -43,6 +43,16 @@ public client class PopClient {
         return popRead(self, folder);
     }
 
+    # Close the client.
+    # ```ballerina
+    # email:Error? closeResponse = popClient->close();
+    # ```
+    #
+    # + return - An `email:Error` if the recipient failed to close the client or else `()`
+    remote isolated function close() returns Error? {
+        return popClose(self);
+    }
+
 }
 
 isolated function initPopClientEndpoint(PopClient clientEndpoint, string host, string username, string password,
@@ -53,6 +63,11 @@ isolated function initPopClientEndpoint(PopClient clientEndpoint, string host, s
 
 isolated function popRead(PopClient clientEndpoint, string folder) returns Message|Error? = @java:Method {
     name : "readMessage",
+    'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
+} external;
+
+isolated function popClose(PopClient clientEndpoint) returns Error? = @java:Method {
+    name : "close",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 

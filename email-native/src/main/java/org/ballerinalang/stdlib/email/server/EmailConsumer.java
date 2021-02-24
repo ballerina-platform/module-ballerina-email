@@ -106,6 +106,24 @@ public class EmailConsumer {
 
     }
 
+    /**
+     * Close email polling job from the Email client and pass to the listener.
+     */
+    public void close() {
+        if (log.isDebugEnabled()) {
+            log.debug("Close thread name: " + Thread.currentThread().getName());
+            log.debug("Close hashcode: " + this.hashCode());
+            log.debug("Polling for closing...");
+        }
+        Object message = EmailAccessClient.close(client);
+        if (message instanceof BError) {
+            emailListener.onClose(message);
+        } else {
+            emailListener.onClose(null);
+        }
+
+    }
+
     protected EmailListener getEmailListener() {
         return emailListener;
     }

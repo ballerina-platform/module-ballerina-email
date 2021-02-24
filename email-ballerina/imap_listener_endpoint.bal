@@ -50,16 +50,6 @@ public class ImapListener {
         return self.internalStart();
     }
 
-    # Stops the `email:ImapListener`.
-    # ```ballerina
-    # email:Error? result = emailListener.__stop();
-    # ```
-    #
-    # + return - () or else error upon failure to stop the listener
-    public isolated function __stop() returns error? {
-        check self.stop();
-    }
-
     # Binds a service to the `email:ImapListener`.
     # ```ballerina
     # email:Error? result = emailListener.attach(helloService, hello);
@@ -119,7 +109,7 @@ public class ImapListener {
             check appointment.attach(imapAppointmentService, self);
             check appointment.start();
         }
-        //log:print("User " + self.config.username.to + " is listening to remote server at " + self.config.host + "...");
+        log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
@@ -143,6 +133,17 @@ public class ImapListener {
     # + name - Service name
     public isolated function register(service object {} emailService, string? name) {
         register(self, emailService);
+    }
+
+    # Close the IMAP server connection.
+    # ```ballerina
+    # email:Error? closeResult = emailClient->close();
+    # ```
+    #
+    # + return - A `email:Error` if it can't close the connection or else `()`
+    isolated function close() returns Error? {
+        error? stopResult = self.stop();
+        return externListenerClose(self);
     }
 }
 

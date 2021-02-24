@@ -112,7 +112,20 @@ public class EmailListenerHelper {
             connector.poll();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
+        }
+    }
 
+    /**
+     * Closes the POP3/IMAP server endpoint.
+     * @param emailListener Ballerina listener for closing the POP3/IMAP server endpoint
+     * @throws Exception If an error occurs during the polling operations
+     */
+    public static void close(BObject emailListener) throws Exception {
+        EmailConnector connector = (EmailConnector) emailListener.getNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR);
+        try {
+            connector.close();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 }

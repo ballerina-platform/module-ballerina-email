@@ -35,7 +35,6 @@ import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.search.FlagTerm;
@@ -75,15 +74,16 @@ public class EmailAccessClient {
         Session session = Session.getInstance(properties, null);
         try {
             Store store = session.getStore(EmailConstants.POP_PROTOCOL);
+            store.connect(host.getValue(), username.getValue(), password.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_STORE, store);
             clientEndpoint.addNativeData(EmailConstants.PROPS_HOST.getValue(), host.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
-            return null;
-        } catch (NoSuchProviderException e) {
+        } catch (MessagingException e) {
             log.error("Failed initialize client properties : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
         }
+        return null;
     }
 
     /**
@@ -107,54 +107,65 @@ public class EmailAccessClient {
         Session session = Session.getInstance(properties, null);
         try {
             Store store = session.getStore(EmailConstants.IMAP_PROTOCOL);
+            store.connect(host.getValue(), username.getValue(), password.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_STORE, store);
             clientEndpoint.addNativeData(EmailConstants.PROPS_HOST.getValue(), host.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
-            return null;
-        } catch (NoSuchProviderException e) {
+        } catch (MessagingException e) {
             log.error("Failed initialize client properties : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
         }
+        return null;
     }
 
     /**
      * Read emails from the server.
      * @param clientConnector Represents the POP or IMAP client class
-     * @param folder Name of the folder to read emails
+     * @param folderName Name of the folder to read emails
      * @return If successful return the received email, otherwise an error
      */
-    public static Object readMessage(BObject clientConnector, BString folder) {
-        String host = (String) clientConnector.getNativeData(EmailConstants.PROPS_HOST.getValue());
-        String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
-        String password = (String) clientConnector.getNativeData(EmailConstants.PROPS_PASSWORD.getValue());
-        try (Store store = (Store) clientConnector.getNativeData(EmailConstants.PROPS_STORE)) {
-            log.debug("Access email server with properties, host: " + host + " username: " + username
-                    + " folder: " + folder.getValue());
-            store.connect(host, username, password);
-            Folder emailFolder = store.getFolder(folder.getValue());
-            BMap<BString, Object> mapValue = null;
-            if (emailFolder == null) {
-                log.error("Email store folder, " + folder.getValue() + " is not found.");
+    public static Object readMessage(BObject clientConnector, BString folderName) {
+        BMap<BString, Object> mapValue = null;
+        try {
+            Store store = (Store) clientConnector.getNativeData(EmailConstants.PROPS_STORE);
+            Folder folder = store.getFolder(folderName.getValue());
+            if (folder == null) {
+                log.error("Email store folder, " + folderName + " is not found.");
             } else {
-                emailFolder.open(Folder.READ_WRITE);
-                Message[] messages = emailFolder.search(UNSEEN_FLAG);
+                if (!folder.isOpen()) {
+                    folder.open(Folder.READ_WRITE);
+                }
+                clientConnector.addNativeData(EmailConstants.PROPS_FOLDER, folder);
+                Message[] messages = folder.search(UNSEEN_FLAG);
                 if (messages.length > 0) {
                     mapValue = EmailAccessUtil.getMapValue(messages[0]);
                     Flags flags = new Flags();
                     flags.add(Flags.Flag.SEEN);
-                    emailFolder.setFlags(new int[] {messages[0].getMessageNumber()}, flags, true);
+                    folder.setFlags(new int[]{messages[0].getMessageNumber()}, flags, true);
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("Got the messages. Email count = " + messages.length);
                 }
-                emailFolder.close(false);
             }
             return mapValue;
         } catch (MessagingException | IOException e) {
             log.error("Failed to read message : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.READ_ERROR, e.getMessage());
         }
+    }
+
+    public static Object close(BObject clientConnector) {
+        try {
+            Store store = (Store) clientConnector.getNativeData(EmailConstants.PROPS_STORE);
+            Folder folder = (Folder) clientConnector.getNativeData(EmailConstants.PROPS_FOLDER);
+            folder.close(false);
+            store.close();
+        } catch (MessagingException e) {
+            log.error("Failed to close client : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.CLOSE_ERROR, e.getMessage());
+        }
+        return null;
     }
 
 }

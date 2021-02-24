@@ -67,6 +67,11 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
     }
 
+    Error? closeStatus = imapClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing secure POP server.");
+    }
+
     serverStatus = stopSimpleSecureImapServer();
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping secure IMAP server.");

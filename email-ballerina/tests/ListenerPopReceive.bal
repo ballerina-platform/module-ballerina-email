@@ -21,8 +21,10 @@ import ballerina/test;
 
 boolean onEmailMessageInvokedPop = false;
 boolean onErrorInvokedPop = false;
+boolean onCloseInvokedPop = false;
 string receivedMessagePop = "";
 string receivedErrorPop = "";
+string receivedClosePop = "";
 
 function isOnEmailInvokedPop() returns boolean {
     int i = 0;
@@ -33,7 +35,7 @@ function isOnEmailInvokedPop() returns boolean {
     return onEmailMessageInvokedPop;
 }
 
-function isonErrorInvokedPop() returns boolean {
+function isOnErrorInvokedPop() returns boolean {
     int i = 0;
     while ((!onErrorInvokedPop) && (i < 10)) {
          runtime:sleep(1);
@@ -42,7 +44,16 @@ function isonErrorInvokedPop() returns boolean {
     return onErrorInvokedPop;
 }
 
-function getreceivedMessagePop() returns string {
+function isOnCloseInvokedPop() returns boolean {
+    int i = 0;
+    while ((!onCloseInvokedPop) && (i < 10)) {
+         runtime:sleep(1);
+         i += 1;
+    }
+    return onCloseInvokedPop;
+}
+
+function getReceivedMessagePop() returns string {
     int i = 0;
     while ((!onEmailMessageInvokedPop) && (i < 10)) {
          runtime:sleep(1);
@@ -51,13 +62,22 @@ function getreceivedMessagePop() returns string {
     return receivedMessagePop;
 }
 
-function getreceivedErrorPop() returns string {
+function getReceivedErrorPop() returns string {
     int i = 0;
     while ((!onErrorInvokedPop) && (i < 10)) {
          runtime:sleep(1);
          i += 1;
     }
     return receivedErrorPop;
+}
+
+function getReceivedClosePop() returns string {
+    int i = 0;
+    while ((!onCloseInvokedPop) && (i < 10)) {
+         runtime:sleep(1);
+         i += 1;
+    }
+    return receivedClosePop;
 }
 
 @test:Config {
@@ -103,6 +123,14 @@ function testListenEmailPop() returns @tainted error? {
             receivedErrorPop = emailError.message();
             onErrorInvokedPop = true;
         }
+
+        remote function onClose(Error? closeError) {
+            if (closeError is Error) {
+                receivedClosePop = closeError.message();
+            }
+            onCloseInvokedPop = true;
+        }
+
     };
 
     error? attachStatus = emailServer.attach(emailObserver, "");
@@ -112,18 +140,29 @@ function testListenEmailPop() returns @tainted error? {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for POP listener.");
     }
-    test:assertTrue(onEmailMessageInvokedPop, msg = "Email is not received with method, onEmailMessage with POP.");
-    test:assertFalse(onErrorInvokedPop, msg = "An error occurred while listening and invoked method, onError with POP.");
-    test:assertEquals(receivedMessagePop, "Test E-Mail", msg = "Listened email subject is not matched with POP.");
+
+    test:assertTrue(isOnEmailInvokedPop(), msg = "Email is not received with method, onEmailMessage with POP.");
+    test:assertFalse(isOnErrorInvokedPop(),
+        msg = "An error occurred while listening and invoked method, onError with POP.");
+    test:assertEquals(getReceivedMessagePop(), "Test E-Mail", msg = "Listened email subject is not matched with POP.");
 
     listenerStatus = stopPopListener();
     if (listenerStatus is error) {
         test:assertFail(msg = "Error while stopping POP listener.");
     }
 
-    test:assertTrue(onErrorInvokedPop, msg = "Error was not listened by method, onError with POP.");
-    test:assertTrue(strings:includes(receivedErrorPop, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(isOnErrorInvokedPop(), msg = "Error was not listened by method, onError with POP.");
+    test:assertTrue(strings:includes(getReceivedErrorPop(), "Open failed"),
         msg = "Listened error message is not matched with POP.");
+
+    Error? closeStatus = emailServer.close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing POP listener.");
+    }
+
+    test:assertTrue(isOnCloseInvokedPop(), msg = "Close event was not listened by method, onClose with POP.");
+    test:assertTrue(getReceivedClosePop() == "",
+        msg = "Error occurred while getting the error while closing the connection with POP.");
 
 }
 

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_CLOSE_METADATA;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_EMAIL_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR_METADATA;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE_METADATA;
@@ -103,6 +104,34 @@ public class EmailListener {
                         log.error("Error while invoking email onEmailMessage method.");
                     }
                 }, error, true);
+            }
+        } else {
+            log.error("Runtime should not be null.");
+        }
+    }
+
+    /**
+     * Place an error in Ballerina if error has occurred while closing.
+     * @param error Email object to be received
+     */
+    public void onClose(Object error) {
+        if (error != null) {
+            log.error(((BError) error).getMessage());
+        }
+        if (runtime != null) {
+            Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
+            for (Map.Entry<String, BObject> service : services) {
+                runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_CLOSE, null, ON_CLOSE_METADATA,
+                        new Callback() {
+                            @Override
+                            public void notifySuccess(Object o) {
+                            }
+
+                            @Override
+                            public void notifyFailure(BError error) {
+                                log.error("Error while closing the POP3/IMAP connection.");
+                            }
+                        }, error, true);
             }
         } else {
             log.error("Runtime should not be null.");
