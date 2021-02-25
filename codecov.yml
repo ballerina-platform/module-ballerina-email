@@ -3,4 +3,4 @@ fixes:
 
 ignore:
   - "**/tests"
-  - "/email-test-utils"
+  - "email-test-utils"
