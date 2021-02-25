@@ -1,6 +1,6 @@
 fixes:
-  - "ballerina/mime/*/::mime-ballerina/"
+  - "ballerina/email/*/::email-ballerina/"
 
 ignore:
   - "**/tests"
-  - "**/email-test-utils"
+  - "/email-test-utils"
