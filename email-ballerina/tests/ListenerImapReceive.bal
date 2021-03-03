@@ -21,8 +21,10 @@ import ballerina/test;
 
 boolean onEmailMessageInvokedImap = false;
 boolean onErrorInvokedImap = false;
+boolean onCloseInvokedImap = false;
 string receivedMessageImap = "";
 string receivedErrorImap = "";
+string receivedCloseImap = "";
 
 function isOnEmailInvokedImap() returns boolean {
     int i = 0;
@@ -33,7 +35,7 @@ function isOnEmailInvokedImap() returns boolean {
     return onEmailMessageInvokedImap;
 }
 
-function isonErrorInvokedImap() returns boolean {
+function isOnErrorInvokedImap() returns boolean {
     int i = 0;
     while ((!onErrorInvokedImap) && (i < 10)) {
          runtime:sleep(1);
@@ -42,7 +44,16 @@ function isonErrorInvokedImap() returns boolean {
     return onErrorInvokedImap;
 }
 
-function getreceivedMessageImap() returns string {
+function isOnCloseInvokedImap() returns boolean {
+    int i = 0;
+    while ((!onCloseInvokedImap) && (i < 10)) {
+         runtime:sleep(1);
+         i += 1;
+    }
+    return onCloseInvokedImap;
+}
+
+function getReceivedMessageImap() returns string {
     int i = 0;
     while ((!onEmailMessageInvokedImap) && (i < 10)) {
          runtime:sleep(1);
@@ -51,13 +62,22 @@ function getreceivedMessageImap() returns string {
     return receivedMessageImap;
 }
 
-function getreceivedErrorImap() returns string {
+function getReceivedErrorImap() returns string {
     int i = 0;
     while ((!onErrorInvokedImap) && (i < 10)) {
          runtime:sleep(1);
          i += 1;
     }
     return receivedErrorImap;
+}
+
+function getReceivedCloseImap() returns string {
+    int i = 0;
+    while ((!onCloseInvokedImap) && (i < 10)) {
+         runtime:sleep(1);
+         i += 1;
+    }
+    return receivedCloseImap;
 }
 
 @test:Config {
@@ -103,6 +123,14 @@ function testListenEmailImap() returns @tainted error? {
             receivedErrorImap = emailError.message();
             onErrorInvokedImap = true;
         }
+
+        remote function onClose(Error? closeError) {
+            if (closeError is Error) {
+                receivedCloseImap = closeError.message();
+            }
+            onCloseInvokedImap = true;
+        }
+
     };
 
     error? attachStatus = emailServer.attach(emailObserver, "");
@@ -112,19 +140,29 @@ function testListenEmailImap() returns @tainted error? {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for IMAP listener.");
     }
-    test:assertTrue(onEmailMessageInvokedImap, msg = "Email is not received with method, onEmailMessage with IMAP.");
-    test:assertFalse(onErrorInvokedImap,
+    test:assertTrue(isOnEmailInvokedImap(), msg = "Email is not received with method, onEmailMessage with IMAP.");
+    test:assertFalse(isOnErrorInvokedImap(),
         msg = "An error occurred while listening and invoked method, onError with IMAP.");
-    test:assertEquals(receivedMessageImap, "Test E-Mail", msg = "Listened email subject is not matched with IMAP.");
+    test:assertEquals(getReceivedMessageImap(), "Test E-Mail",
+        msg = "Listened email subject is not matched with IMAP.");
 
     listenerStatus = stopImapListener();
     if (listenerStatus is error) {
         test:assertFail(msg = "Error while stopping IMAP listener.");
     }
 
-    test:assertTrue(onErrorInvokedImap, msg = "Error was not listened by method, onError with IMAP.");
-    test:assertTrue(strings:includes(receivedErrorImap, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(isOnErrorInvokedImap(), msg = "Error was not listened by method, onError with IMAP.");
+    test:assertTrue(strings:includes(getReceivedErrorImap(), "connection failure"),
         msg = "Listened error message is not matched with IMAP.");
+
+    Error? closeStatus = emailServer.close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing IMAP listener.");
+    }
+
+    test:assertTrue(isOnCloseInvokedImap(), msg = "Close event was not listened by method, onClose with IMAP.");
+    test:assertTrue(getReceivedCloseImap() == "",
+        msg = "Error occurred while getting the error while closing the connection with IMAP.");
 
 }
 

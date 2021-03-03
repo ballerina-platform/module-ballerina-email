@@ -135,6 +135,11 @@ function testReceiveComplexEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while reading emails in complex IMAP test.");
     }
 
+    Error? closeStatus = imapClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing secure IMAP server.");
+    }
+
     serverStatus = stopComplexImapServer();
     if (serverStatus is Error) {
         test:assertFail(msg = "Error while stopping complex IMAP server.");

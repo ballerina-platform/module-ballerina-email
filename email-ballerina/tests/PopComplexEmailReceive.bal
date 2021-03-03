@@ -136,6 +136,11 @@ function testReceiveComplexEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while reading emails in complex POP test.");
     }
 
+    Error? closeStatus = popClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing complex POP server.");
+    }
+
     serverStatus = stopComplexPopServer();
     if (serverStatus is Error) {
         test:assertFail(msg = "Error while stopping complex POP server.");

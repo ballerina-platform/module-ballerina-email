@@ -51,16 +51,6 @@ public class PopListener {
         return self.internalStart();
     }
 
-    # Stops the `email:PopListener`.
-    # ```ballerina
-    # email:Error? result = emailListener.__stop();
-    # ```
-    #
-    # + return - () or else error upon failure to stop the listener
-    public isolated function __stop() returns error? {
-        check self.stop();
-    }
-
     # Binds a service to the `email:PopListener`.
     # ```ballerina
     # email:Error? result = emailListener.attach(helloService, hello);
@@ -112,7 +102,8 @@ public class PopListener {
             task:AppointmentConfiguration config = {cronExpression: scheduler};
             self.appointment = check new(config);
         } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
+            task:TimerConfiguration config
+                = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
             self.appointment = check new (config);
         }
         var appointment = self.appointment;
@@ -120,7 +111,7 @@ public class PopListener {
             check appointment.attach(popAppointmentService, self);
             check appointment.start();
         }
-        //log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
+        log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
@@ -145,6 +136,18 @@ public class PopListener {
     public isolated function register(service object {} emailService, string? name) {
         register(self, emailService);
     }
+
+    # Close the POP server connection.
+    # ```ballerina
+    # email:Error? closeResult = emailClient->close();
+    # ```
+    #
+    # + return - A `email:Error` if it can't close the connection or else `()`
+    isolated function close() returns Error? {
+        error? stopResult = self.stop();
+        return externListenerClose(self);
+    }
+
 }
 
 final service isolated object{} popAppointmentService = service object {
@@ -176,6 +179,11 @@ public type PopListenerConfig record {|
     string? cronExpression = ();
     SecureSocket secureSocket?;
 |};
+
+isolated function externListenerClose(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{
+    name: "close",
+    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
+} external;
 
 isolated function poll(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{
     name: "poll",
