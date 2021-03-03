@@ -61,17 +61,14 @@ public client class SmtpClient {
     # + from - From address
     # + options - Optional parameters of the email
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function sendEmail(string|string[] to, string subject, string 'from, *Options options)
+    remote isolated function sendEmail(string|string[] to, string subject, string 'from, string body, *Options options)
             returns Error? {
         Message email = {
             to: to,
             subject: subject,
-            'from: 'from
+            'from: 'from,
+            body: body
         };
-        string? body = options?.body;
-        if (!(body is ())) {
-            email.body = <string>body;
-        }
         string? htmlBody = options?.htmlBody;
         if (!(htmlBody is ())) {
             email.htmlBody = <string>htmlBody;
