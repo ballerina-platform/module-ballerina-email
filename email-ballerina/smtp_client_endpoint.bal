@@ -35,12 +35,12 @@ public client class SmtpClient {
 
     # Sends an email message.
     # ```ballerina
-    # email:Error? response = smtpClient->sendEmailMessage(email);
+    # email:Error? response = smtpClient->sendMessage(email);
     # ```
     #
     # + email - An `email:Message` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function sendEmailMessage(Message email) returns Error? {
+    remote isolated function sendMessage(Message email) returns Error? {
         if (email?.contentType == ()) {
             email.contentType = "text/plain";
         } else if (!self.containsType(email?.contentType, "text")) {
@@ -52,7 +52,7 @@ public client class SmtpClient {
 
     # Sends an email message with optional parameters.
     # ```ballerina
-    # email:Error? response = smtpClient->sendEmail(toAddress, subject, fromAddress,
+    # email:Error? response = smtpClient->send(toAddress, subject, fromAddress,
     #   emailBody, sender="eve@abc.com");
     # ```
     #
@@ -61,7 +61,7 @@ public client class SmtpClient {
     # + from - From address
     # + options - Optional parameters of the email
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function sendEmail(string|string[] to, string subject, string 'from, string body, *Options options)
+    remote isolated function send(string|string[] to, string subject, string 'from, string body, *Options options)
             returns Error? {
         Message email = {
             to: to,

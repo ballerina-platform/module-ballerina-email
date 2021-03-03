@@ -56,7 +56,7 @@ function testSendSimpleEmail() returns @tainted error? {
         body: body,
         'from: fromAddress
     };
-    Error? response = smtpClient->sendEmailMessage(email);
+    Error? response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertFail(msg = "Error while sending an email.");
     }
@@ -72,7 +72,7 @@ function testSendSimpleEmail() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
     smtpClient = check smtpClientOrError;
-    response = smtpClient->sendEmailMessage(email);
+    response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertTrue(strings:includes(response.message(), "Authentication credentials invalid"),
             msg = "Error while authentication failure.");

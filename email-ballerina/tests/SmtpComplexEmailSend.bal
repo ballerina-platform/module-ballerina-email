@@ -106,7 +106,7 @@ function testSendComplexEmail() returns @tainted error? {
         attachments: bodyParts
     };
 
-    Error? response = smtpClient->sendEmailMessage(email);
+    Error? response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertFail(msg = "Error while sending an email.");
     }

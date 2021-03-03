@@ -53,14 +53,14 @@ email:Message email = {
     replyTo: ["replyTo1@email.com", "replyTo2@email.com"]
 };
 
-email:Error? response = smtpClient->sendEmailMessage(email);
+email:Error? response = smtpClient->sendMessage(email);
 ```
 
 An email can be sent directly by calling the client, specifying optional parameters as named parameters, as well.
 Samples for this operation can be found below.
 
 ```ballerina
-email:Error? response = smtpClient->sendEmail(
+email:Error? response = smtpClient->send(
     ["receiver1@email.com", "receiver2@email.com"],
     "Sample Email",
     "author@email.com",
