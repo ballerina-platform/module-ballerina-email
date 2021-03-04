@@ -22,7 +22,7 @@ import ballerina/test;
 }
 function testSendSimpleEmail() returns @tainted error? {
     string host = "127.0.0.1";
-    string username = "hascode";
+    string username = "someone@localhost.com";
     string password = "abcdef123";
     string toAddress = "hascode@localhost";
     string subject = "Test E-Mail";
@@ -53,8 +53,7 @@ function testSendSimpleEmail() returns @tainted error? {
     Message email = {
         to: toAddress,
         subject: subject,
-        body: body,
-        'from: fromAddress
+        body: body
     };
     Error? response = smtpClient->sendMessage(email);
     if (response is Error) {

@@ -33,7 +33,7 @@ import ballerina/mime;
 public type Message record {|
     string|string[] to;
     string subject;
-    string 'from;
+    string 'from?;
     string body?;
     string htmlBody?;
     string|string[] cc?;

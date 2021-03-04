@@ -149,7 +149,7 @@ public class SmtpUtil {
         String messageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY));
         String htmlMessageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_HTML_MESSAGE_BODY));
         String bodyContentType = message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE).getValue();
-        String fromAddress = message.getStringValue(EmailConstants.MESSAGE_FROM).getValue();
+        String fromAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_FROM));
         if (fromAddress == null || fromAddress.isEmpty()) {
             fromAddress = username;
         }

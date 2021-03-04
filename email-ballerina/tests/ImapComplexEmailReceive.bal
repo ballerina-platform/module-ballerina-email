@@ -53,7 +53,10 @@ function testReceiveComplexEmailImap() returns @tainted error? {
         if (emailBody is string) {
             returnArray[1] = emailBody;
         }
-        returnArray[2] = emailResponse.'from;
+        string? emailFrom= <string>emailResponse?.'from;
+        if (emailFrom is string) {
+            returnArray[2] = emailFrom;
+        }
         returnArray[3] = getNonNilString(emailResponse?.sender);
         returnArray[4] = concatStrings(emailResponse.to);
         returnArray[5] = concatStrings(emailResponse?.cc);
