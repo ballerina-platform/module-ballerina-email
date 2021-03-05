@@ -101,7 +101,8 @@ public class ImapListener {
             task:AppointmentConfiguration config = {cronExpression: scheduler};
             self.appointment = check new(config);
         } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
+            task:TimerConfiguration config =
+                {intervalInMillis: <int>(self.config.pollingInterval * 1000), initialDelayInMillis: 100};
             self.appointment = check new (config);
         }
         var appointment = self.appointment;
@@ -161,7 +162,7 @@ final service isolated object{} imapAppointmentService = service object {
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + pollingIntervalInMillis - Periodic time interval to check new update
+# + pollingInterval - Periodic time interval to check new update
 # + port - Port number of the IMAP server
 # + security - Type of security channel
 # + cronExpression - Cron expression to check new update
@@ -170,7 +171,7 @@ public type ImapListenerConfig record {|
     string host;
     string username;
     string password;
-    int pollingIntervalInMillis = 60000;
+    decimal pollingInterval = 60;
     int port = 993;
     Security security = SSL;
     string? cronExpression = ();

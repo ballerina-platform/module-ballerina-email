@@ -152,7 +152,7 @@ listener email:PopListener emailListener = check new ({
     host: "pop.email.com",
     username: "reader@email.com",
     password: "pass456",
-    pollingIntervalInMillis: 2000,
+    pollingInterval: 2,
     port: 995
 });
 ```

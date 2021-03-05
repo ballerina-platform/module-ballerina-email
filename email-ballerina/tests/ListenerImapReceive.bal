@@ -94,7 +94,7 @@ function testListenEmailImap() returns @tainted error? {
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               pollingIntervalInMillis: 2000,
+                               pollingInterval: 2,
                                port: 3993,
                                secureSocket: {
                                     certificate: {
