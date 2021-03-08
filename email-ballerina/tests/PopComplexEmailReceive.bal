@@ -47,7 +47,7 @@ function testReceiveComplexEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
     PopClient popClient = check popClientOrError;
-    Message|Error? emailResponse = popClient->receiveEmailMessage();
+    Message|Error? emailResponse = popClient->receiveMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
         string? emailBody = <string>emailResponse?.body;

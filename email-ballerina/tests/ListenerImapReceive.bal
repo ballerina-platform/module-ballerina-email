@@ -19,7 +19,7 @@ import ballerina/lang.runtime as runtime;
 import ballerina/lang.'string as strings;
 import ballerina/test;
 
-boolean onEmailMessageInvokedImap = false;
+boolean onMessageInvokedImap = false;
 boolean onErrorInvokedImap = false;
 boolean onCloseInvokedImap = false;
 string receivedMessageImap = "";
@@ -28,11 +28,11 @@ string receivedCloseImap = "";
 
 function isOnEmailInvokedImap() returns boolean {
     int i = 0;
-    while ((!onEmailMessageInvokedImap) && (i < 10)) {
+    while ((!onMessageInvokedImap) && (i < 10)) {
     	 runtime:sleep(1);
     	 i += 1;
     }
-    return onEmailMessageInvokedImap;
+    return onMessageInvokedImap;
 }
 
 function isOnErrorInvokedImap() returns boolean {
@@ -55,7 +55,7 @@ function isOnCloseInvokedImap() returns boolean {
 
 function getReceivedMessageImap() returns string {
     int i = 0;
-    while ((!onEmailMessageInvokedImap) && (i < 10)) {
+    while ((!onMessageInvokedImap) && (i < 10)) {
          runtime:sleep(1);
          i += 1;
     }
@@ -114,9 +114,9 @@ function testListenEmailImap() returns @tainted error? {
     ImapListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
-        remote function onEmailMessage(Message emailMessage) {
+        remote function onMessage(Message emailMessage) {
             receivedMessageImap = emailMessage.subject;
-            onEmailMessageInvokedImap = true;
+            onMessageInvokedImap = true;
         }
 
         remote function onError(Error emailError) {
@@ -140,7 +140,7 @@ function testListenEmailImap() returns @tainted error? {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for IMAP listener.");
     }
-    test:assertTrue(isOnEmailInvokedImap(), msg = "Email is not received with method, onEmailMessage with IMAP.");
+    test:assertTrue(isOnEmailInvokedImap(), msg = "Email is not received with method, onMessage with IMAP.");
     test:assertFalse(isOnErrorInvokedImap(),
         msg = "An error occurred while listening and invoked method, onError with IMAP.");
     test:assertEquals(getReceivedMessageImap(), "Test E-Mail",

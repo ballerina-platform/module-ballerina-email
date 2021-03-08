@@ -47,7 +47,7 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
     ImapClient imapClient = check imapClientOrError;
-    Message|Error? email = imapClient->receiveEmailMessage();
+    Message|Error? email = imapClient->receiveMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");
     } else if (email is Message) {
@@ -58,7 +58,7 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to secure IMAP server.");
     }
 
-    email = imapClient->receiveEmailMessage();
+    email = imapClient->receiveMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple IMAP test.");
     } else if (email is ()) {

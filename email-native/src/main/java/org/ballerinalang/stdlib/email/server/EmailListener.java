@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_CLOSE_METADATA;
-import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_EMAIL_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR_METADATA;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE_METADATA;
 
 /**
@@ -61,12 +61,12 @@ public class EmailListener {
      * @param emailEvent Email object to be received
      * @return If successful return true
      */
-    public boolean onEmailMessage(EmailEvent emailEvent) {
+    public boolean onMessage(EmailEvent emailEvent) {
         Object email = emailEvent.getEmailObject();
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.invokeMethodAsync(service.getValue(), ON_EMAIL_MESSAGE, null, ON_MESSAGE_METADATA,
+                runtime.invokeMethodAsync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA,
                                           new Callback() {
                     @Override
                     public void notifySuccess(Object o) {
@@ -74,7 +74,7 @@ public class EmailListener {
 
                     @Override
                     public void notifyFailure(BError error) {
-                        log.error("Error while invoking email onEmailMessage method.");
+                        log.error("Error while invoking email onMessage method.");
                     }
                 }, email, true);
             }
@@ -101,7 +101,7 @@ public class EmailListener {
 
                     @Override
                     public void notifyFailure(BError error) {
-                        log.error("Error while invoking email onEmailMessage method.");
+                        log.error("Error while invoking email onMessage method.");
                     }
                 }, error, true);
             }

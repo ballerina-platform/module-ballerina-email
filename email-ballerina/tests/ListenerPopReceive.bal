@@ -19,7 +19,7 @@ import ballerina/lang.runtime as runtime;
 import ballerina/lang.'string as strings;
 import ballerina/test;
 
-boolean onEmailMessageInvokedPop = false;
+boolean onMessageInvokedPop = false;
 boolean onErrorInvokedPop = false;
 boolean onCloseInvokedPop = false;
 string receivedMessagePop = "";
@@ -28,11 +28,11 @@ string receivedClosePop = "";
 
 function isOnEmailInvokedPop() returns boolean {
     int i = 0;
-    while ((!onEmailMessageInvokedPop) && (i < 10)) {
+    while ((!onMessageInvokedPop) && (i < 10)) {
     	 runtime:sleep(1);
     	 i += 1;
     }
-    return onEmailMessageInvokedPop;
+    return onMessageInvokedPop;
 }
 
 function isOnErrorInvokedPop() returns boolean {
@@ -55,7 +55,7 @@ function isOnCloseInvokedPop() returns boolean {
 
 function getReceivedMessagePop() returns string {
     int i = 0;
-    while ((!onEmailMessageInvokedPop) && (i < 10)) {
+    while ((!onMessageInvokedPop) && (i < 10)) {
          runtime:sleep(1);
          i += 1;
     }
@@ -114,9 +114,9 @@ function testListenEmailPop() returns @tainted error? {
     PopListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
-        remote function onEmailMessage(Message emailMessage) {
+        remote function onMessage(Message emailMessage) {
             receivedMessagePop = emailMessage.subject;
-            onEmailMessageInvokedPop = true;
+            onMessageInvokedPop = true;
         }
 
         remote function onError(Error emailError) {
@@ -141,7 +141,7 @@ function testListenEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while sending email for POP listener.");
     }
 
-    test:assertTrue(isOnEmailInvokedPop(), msg = "Email is not received with method, onEmailMessage with POP.");
+    test:assertTrue(isOnEmailInvokedPop(), msg = "Email is not received with method, onMessage with POP.");
     test:assertFalse(isOnErrorInvokedPop(),
         msg = "An error occurred while listening and invoked method, onError with POP.");
     test:assertEquals(getReceivedMessagePop(), "Test E-Mail", msg = "Listened email subject is not matched with POP.");

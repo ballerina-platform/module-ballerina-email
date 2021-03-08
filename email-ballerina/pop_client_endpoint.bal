@@ -33,13 +33,13 @@ public client class PopClient {
 
     # Reads a message.
     # ```ballerina
-    # email:Message|email:Error? emailResponse = popClient->receiveEmailMessage();
+    # email:Message|email:Error? emailResponse = popClient->receiveMessage();
     # ```
     #
     # + folder - Folder to read emails. The default value is `INBOX`
     # + return - An`email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    remote isolated function receiveEmailMessage(string folder = DEFAULT_FOLDER) returns Message|Error? {
+    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER) returns Message|Error? {
         return popRead(self, folder);
     }
 

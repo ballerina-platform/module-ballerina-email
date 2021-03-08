@@ -103,7 +103,7 @@ Once the `email:PopClient` is created, emails can be received using the POP3 pro
 Samples for this operation can be found below.
 
 ```ballerina
-email:Message|email:Error? emailResponse = popClient->receiveEmailMessage();
+email:Message|email:Error? emailResponse = popClient->receiveMessage();
 ```
 
 #### IMAP4 Client
@@ -138,7 +138,7 @@ Once the `email:ImapClient` is created, emails can be received using the IMAP4 p
 Samples for this operation can be found below.
 
 ```ballerina
-email:Message|email:Error emailResponse = imapClient->receiveEmailMessage();
+email:Message|email:Error emailResponse = imapClient->receiveMessage();
 ```
 
 #### POP3 and IMAP Listeners
@@ -157,13 +157,13 @@ listener email:PopListener emailListener = check new ({
 });
 ```
 
-Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onEmailMessage`
+Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onMessage`
 method and when errors happen `onError` method get called.
 
 ```ballerina
 service "emailObserver" on emailListener {
 
-    remote function onEmailMessage(email:Message emailMessage) {
+    remote function onMessage(email:Message emailMessage) {
         io:println("Email Subject: ", emailMessage.subject);
         io:println("Email Body: ", emailMessage.body);
     }
