@@ -17,12 +17,13 @@
 import ballerina/jballerina.java;
 import ballerina/log;
 import ballerina/task;
+//import ballerina/time;
 
 # Represents a service listener that monitors the email server location.
 public class PopListener {
 
     private PopListenerConfig config;
-    private task:JobId jobId;
+    private task:JobId? jobId = ();
 
     # Gets invoked during the `email:PopListener` initialization.
     #
@@ -107,17 +108,16 @@ public class PopListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        time:Utc currentUtc = time:utcNow();
-        time:Utc newTime = time:utcAddSeconds(currentUtc, 0.1);
-        time:Civil time = time:utcToCivil(newTime);
-        self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval,
-                                            startTime = time);
+        self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval);
         //log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        task:UnscheduleJob(self.jobId);
-        log:print("Stopped listening to remote server at " + self.config.host);
+        var id = self.jobId;
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
+        }
     }
 
     isolated function poll() returns error? {
@@ -136,7 +136,7 @@ public class PopListener {
     }
 }
 
-Class PopJob {
+class PopJob {
 
     *task:Job;
     private PopListener popListener;
@@ -144,11 +144,11 @@ Class PopJob {
     public function execute() {
         var result = self.popListener.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", err = result);
+            log:printError("Error while executing poll function", 'error = result);
         }
     }
 
-    isolated function init(PopListener l) {
+    public isolated function init(PopListener popListener) {
         self.popListener = popListener;
     }
 }

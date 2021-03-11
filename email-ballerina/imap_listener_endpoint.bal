@@ -21,7 +21,7 @@ import ballerina/task;
 public class ImapListener {
 
     private ImapListenerConfig config;
-    private task:JobId jobId;
+    private task:JobId? jobId = ();
 
     # Gets invoked during the `email:ImapListener` initialization.
     #
@@ -106,17 +106,16 @@ public class ImapListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        time:Utc currentUtc = time:utcNow();
-        time:Utc newTime = time:utcAddSeconds(currentUtc, 0.1);
-        time:Civil time = time:utcToCivil(newTime);
-        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval,
-                                            startTime = time);
+        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
         //log:print("User " + self.config.username.to + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        task:UnscheduleJob(self.jobId);
-        log:print("Stopped listening to remote server at " + self.config.host);
+        var id = self.jobId;
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
+        }
     }
 
     isolated function poll() returns error? {
@@ -135,7 +134,7 @@ public class ImapListener {
     }
 }
 
-Class Job {
+class Job {
 
     *task:Job;
     private ImapListener imapListener;
@@ -143,11 +142,11 @@ Class Job {
     public function execute() {
         var result = self.imapListener.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", err = result);
+            log:printError("Error while executing poll function", 'error = result);
         }
     }
 
-    isolated function init(ImapListener imapListener) {
+    public isolated function init(ImapListener imapListener) {
         self.imapListener = imapListener;
     }
 }
