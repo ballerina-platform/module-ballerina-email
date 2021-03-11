@@ -22,7 +22,7 @@ import ballerina/task;
 public class PopListener {
 
     private PopListenerConfig config;
-    private task:Scheduler? appointment = ();
+    private task:JobId? jobId = ();
 
     # Gets invoked during the `email:PopListener` initialization.
     #
@@ -97,29 +97,16 @@ public class PopListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        var scheduler = self.config.cronExpression;
-        if (scheduler is string) {
-            task:AppointmentConfiguration config = {cronExpression: scheduler};
-            self.appointment = check new(config);
-        } else {
-            task:TimerConfiguration config =
-                {intervalInMillis: <int>(self.config.pollingInterval * 1000), initialDelayInMillis: 100};
-            self.appointment = check new (config);
-        }
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.attach(popAppointmentService, self);
-            check appointment.start();
-        }
+        self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval);
         log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.stop();
+        var id = self.jobId;
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
-        log:printInfo("Stopped listening to remote server at " + self.config.host);
     }
 
     isolated function poll() returns error? {
@@ -150,24 +137,31 @@ public class PopListener {
 
 }
 
-final service isolated object{} popAppointmentService = service object {
-    remote isolated function onTrigger(PopListener l) {
-        var result = l.poll();
+class PopJob {
+
+    *task:Job;
+    private PopListener popListener;
+
+    public function execute() {
+        var result = self.popListener.poll();
         if (result is error) {
             log:printError("Error while executing poll function", 'error = result);
         }
     }
-};
+
+    public isolated function init(PopListener popListener) {
+        self.popListener = popListener;
+    }
+}
 
 # Configuration for Email listener endpoint.
 #
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + pollingInterval - Periodic time interval to check new update
+# + pollingInterval - Periodic time interval (in seconds) to check new update
 # + port - Port number of the POP server
 # + security - Type of security channel
-# + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
 public type PopListenerConfig record {|
     string host;
@@ -176,7 +170,6 @@ public type PopListenerConfig record {|
     decimal pollingInterval = 60;
     int port = 995;
     Security security = SSL;
-    string? cronExpression = ();
     SecureSocket secureSocket?;
 |};
 

@@ -21,7 +21,7 @@ import ballerina/task;
 public class ImapListener {
 
     private ImapListenerConfig config;
-    private task:Scheduler? appointment = ();
+    private task:JobId? jobId = ();
 
     # Gets invoked during the `email:ImapListener` initialization.
     #
@@ -96,29 +96,16 @@ public class ImapListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        var scheduler = self.config.cronExpression;
-        if (scheduler is string) {
-            task:AppointmentConfiguration config = {cronExpression: scheduler};
-            self.appointment = check new(config);
-        } else {
-            task:TimerConfiguration config =
-                {intervalInMillis: <int>(self.config.pollingInterval * 1000), initialDelayInMillis: 100};
-            self.appointment = check new (config);
-        }
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.attach(imapAppointmentService, self);
-            check appointment.start();
-        }
+        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
         log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.stop();
+        var id = self.jobId;
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
-        log:printInfo("Stopped listening to remote server at " + self.config.host);
     }
 
     isolated function poll() returns error? {
@@ -148,24 +135,31 @@ public class ImapListener {
     }
 }
 
-final service isolated object{} imapAppointmentService = service object {
-    remote isolated function onTrigger(ImapListener l) {
-        var result = l.poll();
+class Job {
+
+    *task:Job;
+    private ImapListener imapListener;
+
+    public function execute() {
+        var result = self.imapListener.poll();
         if (result is error) {
             log:printError("Error while executing poll function", 'error = result);
         }
     }
-};
+
+    public isolated function init(ImapListener imapListener) {
+        self.imapListener = imapListener;
+    }
+}
 
 # Configuration for Email listener endpoint.
 #
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + pollingInterval - Periodic time interval to check new update
+# + pollingInterval - Periodic time interval (in seconds) to check new update
 # + port - Port number of the IMAP server
 # + security - Type of security channel
-# + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
 public type ImapListenerConfig record {|
     string host;
@@ -174,6 +168,5 @@ public type ImapListenerConfig record {|
     decimal pollingInterval = 60;
     int port = 993;
     Security security = SSL;
-    string? cronExpression = ();
     SecureSocket secureSocket?;
 |};
