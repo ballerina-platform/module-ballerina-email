@@ -69,7 +69,7 @@ public class EmailConstants {
     public static final BString MESSAGE_ATTACHMENTS = StringUtils.fromString("attachments");
     public static final BString MESSAGE_HEADERS = StringUtils.fromString("headers");
     public static final BString PROPS_SECURE_SOCKET = StringUtils.fromString("secureSocket");
-    public static final BString PROPS_CERTIFICATE = StringUtils.fromString("certificate");
+    public static final BString PROPS_CERTIFICATE = StringUtils.fromString("cert");
     public static final BString PROPS_CERT_PROTOCOL = StringUtils.fromString("protocol");
     public static final BString PROPS_CERT_PROTOCOL_NAME = StringUtils.fromString("name");
     public static final BString PROPS_CERT_PROTOCOL_VERSIONS = StringUtils.fromString("versions");

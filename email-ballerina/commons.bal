@@ -77,12 +77,12 @@ public type Attachment record {|
 
 # Secure Socket configuration.
 #
-# + certificate - Server certificate
+# + cert - Server certificate
 # + protocol - SSL or TLS protocol
 # + ciphers - Ciper used
 # + verifyHostname - Enable hostname verification
 public type SecureSocket record {|
-    Certificate certificate;
+    Certificate cert;
     Protocol? protocol = ();
     string[]? ciphers = ();
     boolean verifyHostname = true;
@@ -115,6 +115,11 @@ public enum Security {
   START_TLS_ALWAYS,
   START_TLS_NEVER,
   SSL
+}
+
+# Represents protocol options.
+public enum ProtocolName {
+   TLS
 }
 
 # Default folder to read emails.
