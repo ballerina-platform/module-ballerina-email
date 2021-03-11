@@ -32,9 +32,7 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
     PopConfig popConfig = {
          port: 3995,
          secureSocket: {
-             cert: {
-                 path: "tests/resources/certsandkeys/greenmail.crt"
-             },
+             cert: "tests/resources/certsandkeys/greenmail.crt",
              protocol: {
                  name: TLS,
                  versions: ["TLSv1.2", "TLSv1.1"]

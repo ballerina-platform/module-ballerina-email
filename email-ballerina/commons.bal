@@ -77,22 +77,15 @@ public type Attachment record {|
 
 # Secure Socket configuration.
 #
-# + cert - Server certificate
+# + cert - Server certificate path
 # + protocol - SSL or TLS protocol
 # + ciphers - Ciper used
 # + verifyHostname - Enable hostname verification
-public type SecureSocket record {|
-    Certificate cert;
+public type ClientSecureSocket record {|
+    string cert;
     Protocol? protocol = ();
     string[]? ciphers = ();
     boolean verifyHostname = true;
-|};
-
-# Certificate configuration.
-#
-# + path - Certificate file location
-public type Certificate record {|
-    string path;
 |};
 
 # Transport security protocol.

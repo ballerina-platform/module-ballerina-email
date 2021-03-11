@@ -34,7 +34,7 @@ public class PopListener {
              port: listenerConfig.port,
              security: listenerConfig.security
         };
-        SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
+        ClientSecureSocket? secureSocketParam = listenerConfig?.secureSocket;
         if (!(secureSocketParam is ())) {
             popConfig.secureSocket = secureSocketParam;
         }
@@ -170,7 +170,7 @@ public type PopListenerConfig record {|
     decimal pollingInterval = 60;
     int port = 995;
     Security security = SSL;
-    SecureSocket secureSocket?;
+    ClientSecureSocket secureSocket?;
 |};
 
 isolated function externListenerClose(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{

@@ -33,9 +33,7 @@ function testSendSimpleEmail() returns @tainted error? {
     SmtpConfig smtpConfig = {
         port: 3465,
         secureSocket: {
-            cert: {
-                path: "tests/resources/certsandkeys/greenmail.crt"
-            },
+            cert: "tests/resources/certsandkeys/greenmail.crt",
             protocol: {
                 name: TLS,
                 versions: ["TLSv1.2", "TLSv1.1"]

@@ -81,5 +81,5 @@ isolated function popClose(PopClient clientEndpoint) returns Error? = @java:Meth
 public type PopConfig record {|
     int port = 995;
     Security security = SSL;
-    SecureSocket secureSocket?;
+    ClientSecureSocket secureSocket?;
 |};

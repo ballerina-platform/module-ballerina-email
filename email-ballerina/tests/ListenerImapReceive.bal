@@ -97,9 +97,7 @@ function testListenEmailImap() returns @tainted error? {
                                pollingInterval: 2,
                                port: 3993,
                                secureSocket: {
-                                    cert: {
-                                        path: "tests/resources/certsandkeys/greenmail.crt"
-                                    },
+                                    cert: "tests/resources/certsandkeys/greenmail.crt",
                                     protocol: {
                                         name: TLS,
                                         versions: ["TLSv1.2", "TLSv1.1"]
