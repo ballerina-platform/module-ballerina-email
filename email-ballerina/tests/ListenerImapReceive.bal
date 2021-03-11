@@ -81,7 +81,7 @@ function getReceivedCloseImap() returns string {
 }
 
 @test:Config {
-    dependsOn: [testReceiveSimpleEmailImap]
+    dependsOn: [testReceiveSimpleEmailImap], enable: false
 }
 function testListenEmailImap() returns @tainted error? {
 
