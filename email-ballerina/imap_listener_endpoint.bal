@@ -138,17 +138,17 @@ public class ImapListener {
 Class Job {
 
     *task:Job;
-    Listener l;
+    private ImapListener imapListener;
 
     public function execute() {
-        var result = self.l.poll();
+        var result = self.imapListener.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", result);
+            log:printError("Error while executing poll function", err = result);
         }
     }
 
-    isolated function init(Listener l) {
-        self.l = l;
+    isolated function init(ImapListener imapListener) {
+        self.imapListener = imapListener;
     }
 }
 
@@ -160,7 +160,6 @@ Class Job {
 # + pollingInterval - Periodic time interval (in seconds) to check new update
 # + port - Port number of the IMAP server
 # + security - Type of security channel
-# + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
 public type ImapListenerConfig record {|
     string host;

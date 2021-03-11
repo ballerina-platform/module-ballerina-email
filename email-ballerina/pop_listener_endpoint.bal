@@ -139,17 +139,17 @@ public class PopListener {
 Class PopJob {
 
     *task:Job;
-    Listener l;
+    private PopListener popListener;
 
     public function execute() {
-        var result = self.l.poll();
+        var result = self.popListener.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", result);
+            log:printError("Error while executing poll function", err = result);
         }
     }
 
-    isolated function init(Listener l) {
-        self.l = l;
+    isolated function init(PopListener l) {
+        self.popListener = popListener;
     }
 }
 
@@ -161,7 +161,6 @@ Class PopJob {
 # + pollingInterval - Periodic time interval (in seconds) to check new update
 # + port - Port number of the POP server
 # + security - Type of security channel
-# + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
 public type PopListenerConfig record {|
     string host;
@@ -170,7 +169,6 @@ public type PopListenerConfig record {|
     decimal pollingInterval = 60;
     int port = 995;
     Security security = SSL;
-    string? cronExpression = ();
     SecureSocket secureSocket?;
 |};
 
