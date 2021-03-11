@@ -22,7 +22,7 @@ import ballerina/task;
 public class Listener {
 
     private ListenerConfig config;
-    private task:Scheduler? appointment = ();
+    private task:JobId id;
 
     # Gets invoked during the `email:Listener` initialization.
     #
@@ -98,27 +98,15 @@ public class Listener {
     }
 
     isolated function internalStart() returns error? {
-        var scheduler = self.config.cronExpression;
-        if (scheduler is string) {
-            task:AppointmentConfiguration config = {cronExpression: scheduler};
-            self.appointment = new(config);
-        } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingInterval, initialDelayInMillis: 100};
-            self.appointment = new (config);
-        }
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.attach(appointmentService, self);
-            check appointment.start();
-        }
+        time:Utc currentUtc = time:utcNow();
+        time:Utc newTime = time:utcAddSeconds(currentUtc, 0.1);
+        time:Civil time = time:utcToCivil(newTime);
+        task:JobId id = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval, startTime = time);
         log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.stop();
-        }
+        task:UnscheduleJob(id);
         log:printInfo("Stopped listening to remote server at " + self.config.host);
     }
 
@@ -138,14 +126,22 @@ public class Listener {
     }
 }
 
-final service isolated object{} appointmentService = service object {
-    remote isolated function onTrigger(Listener l) {
-        var result = l.poll();
+Class Job {
+
+    *task:Job;
+    Listener l;
+
+    public function execute() {
+        var result = self.l.poll();
         if (result is error) {
             log:printError("Error while executing poll function", result);
         }
     }
-};
+
+    isolated function init(Listener l) {
+        self.l = l;
+    }
+}
 
 # Configuration for Email listener endpoint.
 #
@@ -155,15 +151,13 @@ final service isolated object{} appointmentService = service object {
 # + protocol - Email server access protocol, "IMAP" or "POP"
 # + protocolConfig - POP3 or IMAP4 protocol configuration
 # + pollingInterval - Periodic time interval to check new update
-# + cronExpression - Cron expression to check new update
 public type ListenerConfig record {|
     string host;
     string username;
     string password;
     string protocol = "IMAP";
     PopConfig|ImapConfig? protocolConfig = ();
-    int pollingInterval = 60000;
-    string? cronExpression = ();
+    decimal pollingInterval = 60000;
 |};
 
 isolated function poll(Listener listenerEndpoint) returns error? = @java:Method{
