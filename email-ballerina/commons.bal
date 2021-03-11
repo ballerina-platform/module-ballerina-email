@@ -19,29 +19,105 @@ import ballerina/mime;
 # Email message properties.
 #
 # + to - TO address list
+# + subject - Subject of email
+# + from - From address
+# + body - Text typed body of the email message
+# + htmlBody - HTML typed body of the email message
 # + cc - CC address list
 # + bcc - BCC address list
-# + subject - Subject of email
-# + body - Body of the email message
+# + replyTo - Reply To addresses
 # + contentType - Content Type of the Body
 # + headers - Header list
-# + from - From address
 # + sender - Sender's address
-# + replyTo - Reply To addresses
 # + attachments - Email attachements
-public type Email record {|
-    string[] to;
-    string[] cc?;
-    string[] bcc?;
+public type Message record {|
+    string|string[] to;
     string subject;
-    string|xml|json body;
+    string 'from;
+    string body?;
+    string htmlBody?;
+    string|string[] cc?;
+    string|string[] bcc?;
+    string|string[] replyTo?;
     string contentType?;
     map<string> headers?;
-    string 'from;
     string sender?;
-    string[] replyTo?;
-    mime:Entity[] attachments?;
+    mime:Entity|Attachment|(mime:Entity|Attachment)[] attachments?;
 |};
+
+# Optional parameters for an Email message.
+#
+# + body - Text-type body of the email message
+# + htmlBody - HTML typed body of the email message
+# + contentType - Content Type of the Body
+# + headers - Header list
+# + cc - CC address list
+# + bcc - BCC address list
+# + replyTo - Reply To addresses
+# + sender - Sender's address
+# + attachments - Email attachements
+public type Options record {|
+    string body?;
+    string htmlBody?;
+    string contentType?;
+    map<string> headers?;
+    string|string[] cc?;
+    string|string[] bcc?;
+    string|string[] replyTo?;
+    string sender?;
+    mime:Entity|Attachment|(mime:Entity|Attachment)[] attachments?;
+|};
+
+# Email attachment.
+#
+# + filePath - File path of the attachment
+# + contentType - Content Type of the attachment
+public type Attachment record {|
+  string filePath;
+  string contentType;
+|};
+
+# Secure Socket configuration.
+#
+# + certificate - Server certificate
+# + protocol - SSL or TLS protocol
+# + ciphers - Ciper used
+# + verifyHostname - Enable hostname verification
+public type SecureSocket record {|
+    Certificate certificate;
+    Protocol? protocol = ();
+    string[]? ciphers = ();
+    boolean verifyHostname = true;
+|};
+
+# Certificate configuration.
+#
+# + path - Certificate file location
+public type Certificate record {|
+    string path;
+|};
+
+# Transport security protocol.
+#
+# + name - Protocol name
+# + versions - Protocol versions
+public type Protocol record {|
+    string name;
+    string[] versions;
+|};
+
+# Security type.
+#
+# + START_TLS_AUTO - If STARTTLS exists use it else use plaintext
+# + START_TLS_ALWAYS - Use STARTTLS if not available throw error
+# + START_TLS_NEVER - Use plaintext
+# + SSL - Use SSL
+public enum Security {
+  START_TLS_AUTO,
+  START_TLS_ALWAYS,
+  START_TLS_NEVER,
+  SSL
+}
 
 # Default folder to read emails.
 public const DEFAULT_FOLDER = "INBOX";

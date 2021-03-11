@@ -14,29 +14,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
-import ballerina/runtime;
-import ballerina/stringutils;
+import ballerina/jballerina.java;
+import ballerina/lang.runtime as runtime;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
-boolean onMessageInvokedImap = false;
+boolean onEmailMessageInvokedImap = false;
 boolean onErrorInvokedImap = false;
 string receivedMessageImap = "";
 string receivedErrorImap = "";
 
-function isonMessageInvokedImap() returns boolean {
+function isOnEmailInvokedImap() returns boolean {
     int i = 0;
-    while ((!onMessageInvokedImap) && (i < 10)) {
-    	 runtime:sleep(1000);
+    while ((!onEmailMessageInvokedImap) && (i < 10)) {
+    	 runtime:sleep(1);
     	 i += 1;
     }
-    return onMessageInvokedImap;
+    return onEmailMessageInvokedImap;
 }
 
 function isonErrorInvokedImap() returns boolean {
     int i = 0;
     while ((!onErrorInvokedImap) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
     return onErrorInvokedImap;
@@ -44,53 +44,63 @@ function isonErrorInvokedImap() returns boolean {
 
 function getreceivedMessageImap() returns string {
     int i = 0;
-    while ((!onMessageInvokedImap) && (i < 10)) {
-         runtime:sleep(1000);
+    while ((!onEmailMessageInvokedImap) && (i < 10)) {
+         runtime:sleep(1);
          i += 1;
     }
-    return <@untainted>receivedMessageImap;
+    return receivedMessageImap;
 }
 
 function getreceivedErrorImap() returns string {
     int i = 0;
     while ((!onErrorInvokedImap) && (i < 10)) {
-         runtime:sleep(1000);
+         runtime:sleep(1);
          i += 1;
     }
-    return <@untainted>receivedErrorImap;
+    return receivedErrorImap;
 }
 
 @test:Config {
-    dependsOn: ["testReceiveSimpleEmailImap"]
+    dependsOn: [testReceiveSimpleEmailImap]
 }
-function testListenEmailImap() {
+function testListenEmailImap() returns @tainted error? {
 
     Error? listenerStatus = startImapListener();
     if (listenerStatus is Error) {
         test:assertFail(msg = "Error while starting IMAP listener.");
     }
 
-    ImapConfig imapConfig = {
-         port: 3993,
-         enableSsl: true
-    };
-    Listener emailServer = new ({
+    ImapListener|Error emailServerOrError = new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               protocol: "IMAP",
-                               protocolConfig: imapConfig,
-                               pollingInterval: 2000
+                               pollingIntervalInMillis: 2000,
+                               port: 3993,
+                               secureSocket: {
+                                    certificate: {
+                                        path: "tests/resources/certsandkeys/greenmail.crt"
+                                    },
+                                    protocol: {
+                                        name: "TLS",
+                                        versions: ["TLSv1.2", "TLSv1.1"]
+                                    },
+                                    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+                                    verifyHostname: false
+                               }
                            });
+    if (emailServerOrError is Error) {
+        test:assertFail(msg = "Error while initializing the IMAP4 listener.");
+    }
+    ImapListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
-        remote function onMessage(Email emailMessage) {
-            receivedMessageImap = <@untainted>emailMessage.subject;
-            onMessageInvokedImap = true;
+        remote function onEmailMessage(Message emailMessage) {
+            receivedMessageImap = emailMessage.subject;
+            onEmailMessageInvokedImap = true;
         }
 
         remote function onError(Error emailError) {
-            receivedErrorImap = <@untainted>emailError.message();
+            receivedErrorImap = emailError.message();
             onErrorInvokedImap = true;
         }
     };
@@ -102,7 +112,7 @@ function testListenEmailImap() {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for IMAP listener.");
     }
-    test:assertTrue(onMessageInvokedImap, msg = "Email is not received with method, onMessage with IMAP.");
+    test:assertTrue(onEmailMessageInvokedImap, msg = "Email is not received with method, onEmailMessage with IMAP.");
     test:assertFalse(onErrorInvokedImap,
         msg = "An error occurred while listening and invoked method, onError with IMAP.");
     test:assertEquals(receivedMessageImap, "Test E-Mail", msg = "Listened email subject is not matched with IMAP.");
@@ -113,7 +123,7 @@ function testListenEmailImap() {
     }
 
     test:assertTrue(onErrorInvokedImap, msg = "Error was not listened by method, onError with IMAP.");
-    test:assertTrue(stringutils:contains(receivedErrorImap, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(strings:includes(receivedErrorImap, "Couldn't connect to host, port: 127.0.0.1,"),
         msg = "Listened error message is not matched with IMAP.");
 
 }

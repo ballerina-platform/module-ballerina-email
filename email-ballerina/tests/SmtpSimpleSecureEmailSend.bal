@@ -14,13 +14,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
-import ballerina/stringutils;
+import ballerina/jballerina.java;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 @test:Config {
 }
-function testSendSimpleEmail() {
+function testSendSimpleEmail() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -32,17 +32,31 @@ function testSendSimpleEmail() {
     error? serverStatus = startSimpleSecureSmtpServer();
     SmtpConfig smtpConfig = {
         port: 3465,
-        enableSsl: true
+        secureSocket: {
+            certificate: {
+                path: "tests/resources/certsandkeys/greenmail.crt"
+            },
+            protocol: {
+                name: "TLS",
+                versions: ["TLSv1.2", "TLSv1.1"]
+            },
+            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+            verifyHostname: false
+        }
     };
 
-    SmtpClient smtpClient = new (host, username,  password, smtpConfig);
-    Email email = {
-        to: [toAddress],
+    SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
+    if (smtpClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the SMTP client.");
+    }
+    SmtpClient smtpClient = check smtpClientOrError;
+    Message email = {
+        to: toAddress,
         subject: subject,
         body: body,
         'from: fromAddress
     };
-    Error? response = smtpClient->send(email);
+    Error? response = smtpClient->sendEmailMessage(email);
     if (response is Error) {
         test:assertFail(msg = "Error while sending an email.");
     }
@@ -53,10 +67,14 @@ function testSendSimpleEmail() {
         test:assertFail(msg = "Error while validating the received email.");
     }
 
-    smtpClient = new (host, username,  "wrongPassword", smtpConfig);
-    response = smtpClient->send(email);
+    smtpClientOrError = new (host, username,  "wrongPassword", smtpConfig);
+    if (smtpClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the SMTP client.");
+    }
+    smtpClient = check smtpClientOrError;
+    response = smtpClient->sendEmailMessage(email);
     if (response is Error) {
-        test:assertTrue(stringutils:contains(response.message(), "Authentication credentials invalid"),
+        test:assertTrue(strings:includes(response.message(), "Authentication credentials invalid"),
             msg = "Error while authentication failure.");
     } else {
         test:assertFail(msg = "No error returned when wrong SMTP password is given.");

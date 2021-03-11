@@ -21,6 +21,8 @@ package org.ballerinalang.stdlib.email.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,7 +44,8 @@ public class EmailConnector {
      * @param emailListener Listener that polls emails from the server
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public EmailConnector(Map<String, Object> properties, EmailListener emailListener) throws EmailConnectorException {
+    public EmailConnector(Map<String, Object> properties, EmailListener emailListener)
+            throws EmailConnectorException, GeneralSecurityException, IOException {
         log.debug("Email listener configurations: " + properties.keySet());
         consumer = new EmailConsumer(properties, emailListener);
     }

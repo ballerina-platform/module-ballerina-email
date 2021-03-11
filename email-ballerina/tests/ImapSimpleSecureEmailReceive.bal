@@ -14,11 +14,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
 import ballerina/test;
 
 @test:Config {}
-function testReceiveSimpleEmailImap() {
+function testReceiveSimpleEmailImap() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -30,13 +30,27 @@ function testReceiveSimpleEmailImap() {
 
     ImapConfig imapConfig = {
          port: 3993,
-         enableSsl: true
+         secureSocket: {
+             certificate: {
+                 path: "tests/resources/certsandkeys/greenmail.crt"
+             },
+             protocol: {
+                 name: "TLS",
+                 versions: ["TLSv1.2", "TLSv1.1"]
+             },
+             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+             verifyHostname: false
+         }
     };
-    ImapClient imapClient = new (host, username, password, imapConfig);
-    Email|Error? email = imapClient->read();
+    ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
+    if (imapClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the IMAP4 client.");
+    }
+    ImapClient imapClient = check imapClientOrError;
+    Message|Error? email = imapClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");
-    } else if (email is Email) {
+    } else if (email is Message) {
         test:assertFail(msg = "Non zero emails received in zero read IMAP test.");
     }
     Error? emailSendStatus = sendEmailSimpleSecureImapServer();
@@ -44,7 +58,7 @@ function testReceiveSimpleEmailImap() {
         test:assertFail(msg = "Error while sending email to secure IMAP server.");
     }
 
-    email = imapClient->read();
+    email = imapClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple IMAP test.");
     } else if (email is ()) {

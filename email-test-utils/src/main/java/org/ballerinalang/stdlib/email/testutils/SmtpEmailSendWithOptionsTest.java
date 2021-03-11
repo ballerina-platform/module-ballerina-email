@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -46,9 +46,9 @@ import static org.testng.AssertJUnit.fail;
 /**
  * Test class for email send using SMTP with all the parameters.
  *
- * @since slp4
+ * @since slp9
  */
-public class SmtpComplexEmailSendTest {
+public class SmtpEmailSendWithOptionsTest {
 
     private static final String USER_PASSWORD = "abcdef123";
     private static final String USER_NAME = "hascode";
@@ -76,7 +76,7 @@ public class SmtpComplexEmailSendTest {
     private static final String[] EMAIL_REPLY_TO_ADDRESSES = {"reply1@abc.com", "reply2@abc.com"};
     private static GreenMail mailServer;
 
-    public static Object startComplexSmtpServer() {
+    public static Object startSendWithOptionsSmtpServer() {
         mailServer = new GreenMail(ServerSetupTest.SMTP);
         mailServer.start();
         mailServer.setUser(EMAIL_USER_ADDRESS_1, USER_NAME, USER_PASSWORD);
@@ -88,12 +88,12 @@ public class SmtpComplexEmailSendTest {
         return null;
     }
 
-    public static Object stopComplexSmtpServer() {
+    public static Object stopSendWithOptionsSmtpServer() {
         mailServer.stop();
         return null;
     }
 
-    public static Object validateComplexEmails() throws IOException, MessagingException {
+    public static Object validateSendWithOptionsEmails() throws IOException, MessagingException {
         MimeMessage[] messages = mailServer.getReceivedMessages();
         assertNotNull(messages);
         assertEquals(6, messages.length);

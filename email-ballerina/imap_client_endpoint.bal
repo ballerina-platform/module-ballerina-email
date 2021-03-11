@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
 
 # Represents an IMAP Client, which interacts with an IMAP Server.
 public client class ImapClient {
@@ -26,20 +26,20 @@ public client class ImapClient {
     # + password - Password of the IMAP Client
     # + clientConfig - Configurations for the IMAP Client
     # + return - An `email:Error` if failed while creating the client or else `()`
-    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
-            ImapConfig clientConfig = {}) {
-        return checkpanic initImapClientEndpoint(self, host, username, password, clientConfig);
+    public isolated function init(string host, string username, string password,
+            ImapConfig clientConfig = {}) returns Error? {
+        return initImapClientEndpoint(self, host, username, password, clientConfig);
     }
 
     # Reads a message.
     # ```ballerina
-    # email:Email|email:Error emailResponse = imapClient->read();
+    # email:Message|email:Error emailResponse = imapClient->receiveEmailMessage();
     # ```
     #
     # + folder - Folder to read emails. The default value is `INBOX`
-    # + return - An`email:Email` if reading the message is successful, `()` if there are no emails in the specified
+    # + return - An`email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    remote isolated function read(string folder = DEFAULT_FOLDER) returns Email|Error? {
+    remote isolated function receiveEmailMessage(string folder = DEFAULT_FOLDER) returns Message|Error? {
         return imapRead(self, folder);
     }
 
@@ -51,7 +51,7 @@ isolated function initImapClientEndpoint(ImapClient clientEndpoint, string host,
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
-isolated function imapRead(ImapClient clientEndpoint, string folder) returns Email|Error? = @java:Method {
+isolated function imapRead(ImapClient clientEndpoint, string folder) returns Message|Error? = @java:Method {
     name : "readMessage",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
@@ -59,11 +59,10 @@ isolated function imapRead(ImapClient clientEndpoint, string folder) returns Ema
 # Configuration of the IMAP Endpoint.
 #
 # + port - Port number of the IMAP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "imaps" protocol and false for the "imap" protocol
-# + properties - IMAP properties to override the existing configuration
+# + security - Type of security channel
+# + secureSocket - Secure socket configuration
 public type ImapConfig record {|
     int port = 993;
-    boolean enableSsl = true;
-    map<string>? properties = ();
+    Security security = SSL;
+    SecureSocket secureSocket?;
 |};

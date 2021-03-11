@@ -14,7 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
+import ballerina/mime;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
 public client class SmtpClient {
@@ -25,40 +26,83 @@ public client class SmtpClient {
     # + username - Username of the SMTP Client
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
-    public isolated function init(@untainted string host, @untainted string username, @untainted string password,
-            SmtpConfig clientConfig = {}) {
-        initSmtpClientEndpoint(self, host, username, password, clientConfig);
+    # + return - An `email:Error` if failed to initialize or else `()`
+    public isolated function init(string host, string username, string password, SmtpConfig clientConfig = {})
+            returns Error? {
+        return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
-    # Sends a message.
+
+    # Sends an email message.
     # ```ballerina
-    # email:Error? response = smtpClient->send(email);
+    # email:Error? response = smtpClient->sendEmailMessage(email);
     # ```
     #
-    # + email - An `email:Email` message, which needs to be sent to the recipient
+    # + email - An `email:Message` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function send(Email email) returns Error? {
-        var body = email.body;
-        if (body is xml) {
-            if (email?.contentType == ()) {
-                email.contentType = "application/xml";
-            } else if (!self.containsType(email?.contentType, "xml")) {
-                return SendError("Content type of the email should be XML.");
-            }
-            body = body.toString();
-        } else if (body is string) {
-            if (email?.contentType == ()) {
-                email.contentType = "text/plain";
-            } else if (!self.containsType(email?.contentType, "text")) {
-                return SendError("Content type of the email should be text.");
-            }
-        } else {
-            if (email?.contentType == ()) {
-                email.contentType = "application/json";
-            } else if (!self.containsType(email?.contentType, "json")) {
-                return SendError("Content type of the email should be json.");
-            }
-            body = body.toJsonString();
+    remote isolated function sendEmailMessage(Message email) returns Error? {
+        if (email?.contentType == ()) {
+            email.contentType = "text/plain";
+        } else if (!self.containsType(email?.contentType, "text")) {
+            return error SendError("Content type of the email should be text.");
+        }
+        self.putAttachmentToArray(email);
+        return send(self, email);
+    }
+
+    # Sends an email message with optional parameters.
+    # ```ballerina
+    # email:Error? response = smtpClient->sendEmail(toAddress, subject, fromAddress,
+    #   emailBody, sender="eve@abc.com");
+    # ```
+    #
+    # + to - TO address list
+    # + subject - Subject of email
+    # + from - From address
+    # + options - Optional parameters of the email
+    # + return - An `email:Error` if failed to send the message to the recipient or else `()`
+    remote isolated function sendEmail(string|string[] to, string subject, string 'from, *Options options)
+            returns Error? {
+        Message email = {
+            to: to,
+            subject: subject,
+            'from: 'from
+        };
+        string? body = options?.body;
+        if (!(body is ())) {
+            email.body = <string>body;
+        }
+        string? htmlBody = options?.htmlBody;
+        if (!(htmlBody is ())) {
+            email.htmlBody = <string>htmlBody;
+        }
+        string? contentType = options?.contentType;
+        if (!(contentType is ())) {
+            email.contentType = <string>contentType;
+        }
+        map<string>? headers = options?.headers;
+        if (!(headers is ())) {
+            email.headers = <map<string>>headers;
+        }
+        string|string[]? cc = options?.cc;
+        if (!(cc is ())) {
+            email.cc = <string|string[]>cc;
+        }
+        string|string[]? bcc = options?.bcc;
+        if (!(bcc is ())) {
+            email.bcc = <string|string[]>bcc;
+        }
+        string|string[]? replyTo = options?.replyTo;
+        if (!(replyTo is ())) {
+            email.replyTo = <string|string[]>replyTo;
+        }
+        string? sender = options?.sender;
+        if (!(sender is ())) {
+            email.sender = <string>sender;
+        }
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]? attachments = options?.attachments;
+        if (!(attachments is ())) {
+            email.attachments = <mime:Entity|Attachment|(mime:Entity|Attachment)[]>attachments;
         }
         return send(self, email);
     }
@@ -72,15 +116,22 @@ public client class SmtpClient {
         return false;
     }
 
+    private isolated function putAttachmentToArray(Message email) {
+        mime:Entity|Attachment|(mime:Entity|Attachment)[]|() attachments = email?.attachments;
+        if (attachments is Attachment || attachments is mime:Entity) {
+            email.attachments = [attachments];
+        }
+    }
+
 }
 
 isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
-        SmtpConfig config) = @java:Method {
+        SmtpConfig config) returns Error? = @java:Method {
     name : "initClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
 
-isolated function send(SmtpClient clientEndpoint, Email email) returns Error? = @java:Method {
+isolated function send(SmtpClient clientEndpoint, Message email) returns Error? = @java:Method {
     name : "sendMessage",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
@@ -88,11 +139,10 @@ isolated function send(SmtpClient clientEndpoint, Email email) returns Error? = 
 # Configuration of the SMTP Endpoint.
 #
 # + port - Port number of the SMTP server
-# + enableSsl - If set to true, use SSL to connect and use the SSL port by default.
-#               The default value is true for the "smtps" protocol and false for the "smtp" protocol
-# + properties - SMTP properties to override the existing configuration
+# + security - Type of security channel
+# + secureSocket - Secure socket configuration
 public type SmtpConfig record {|
     int port = 465;
-    boolean enableSsl = true;
-    map<string>? properties = ();
+    Security security = SSL;
+    SecureSocket secureSocket?;
 |};

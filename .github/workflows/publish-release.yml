@@ -3,13 +3,12 @@ name: Publish release
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [stdlib-release-pipeline]
+    types: [ stdlib-release-pipeline ]
 
 jobs:
   publish-release:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'ballerina-platform'
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -17,7 +16,7 @@ jobs:
         with:
           java-version: 11
       - name: Set version env variable
-        run: echo "VERSION=$((grep -w 'version' | cut -d= -f2) < gradle.properties | cut -d- -f1)" >> $GITHUB_ENV
+        run: echo "VERSION=$((grep -w 'version' | cut -d= -f2) < gradle.properties | rev | cut --complement -d- -f1 | rev)" >> $GITHUB_ENV
       - name: Pre release depenency version update
         env:
           GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
@@ -34,10 +33,10 @@ jobs:
         run: chmod +x gradlew
       - name: Publish artifact
         env:
+          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
           BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_ACCESS_TOKEN }}
           packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
           packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
         run: |
           ./gradlew release -Prelease.useAutomaticVersion=true
           ./gradlew -Pversion=${VERSION} publish -x test
@@ -48,8 +47,8 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
           --header 'Content-Type: application/json' \
           --data-raw '{
-              "tag_name": "v'"$VERSION"'",
-              "name": "module-ballerina-email-v'"$VERSION"'"
+          "tag_name": "v'"$VERSION"'",
+          "name": "module-ballerina-email-v'"$VERSION"'"
           }'
       - name: Post release PR
         env:

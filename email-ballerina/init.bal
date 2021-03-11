@@ -14,20 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-isolated function getNonNilString(string? nilableString) returns string {
-    return nilableString ?: "";
+import ballerina/jballerina.java;
+
+function init() {
+    setModule();
 }
 
-isolated function concatStrings(string|string[]? addresses) returns string {
-    string result = "";
-    int i = 0;
-    if addresses is string[] {
-        while (i < addresses.length()) {
-            result = result + addresses[i];
-            i = i + 1;
-        }
-    } else if addresses is string {
-        return addresses;
-    }
-    return result;
-}
+function setModule() = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.util.ModuleUtils"
+} external;

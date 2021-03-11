@@ -1,4 +1,4 @@
-// Copyright (c) 2020 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -18,8 +18,8 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 import ballerina/test;
 
-@test:Config {dependsOn: [testSendEmailWithOptions]}
-function testSendComplexEmail() returns @tainted error? {
+@test:Config {dependsOn: [testSendSimpleEmail]}
+function testSendEmailWithOptions() returns @tainted error? {
 
     string host = "127.0.0.1";
     string username = "hascode";
@@ -35,7 +35,7 @@ function testSendComplexEmail() returns @tainted error? {
     string[] bccAddresses = ["hascode5@localhost", "hascode6@localhost"];
     string[] replyToAddresses = ["reply1@abc.com", "reply2@abc.com"];
 
-    error? serverStatus = startComplexSmtpServer();
+    error? serverStatus = startSendWithOptionsSmtpServer();
 
     SmtpConfig smtpConfig = {
         port: 3025,
@@ -91,44 +91,31 @@ function testSendComplexEmail() returns @tainted error? {
     //Create an array to hold all the body parts.
     (mime:Entity|Attachment)[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, att7];
 
-    Message email = {
-        to: toAddresses,
-        cc: ccAddresses,
-        bcc: bccAddresses,
-        subject: subject,
-        body: body,
-        htmlBody: htmlBody,
-        contentType: contentType,
-        headers: {header1_name: "header1_value"},
-        'from: fromAddress,
-        sender: sender,
-        replyTo: replyToAddresses,
-        attachments: bodyParts
-    };
-
-    Error? response = smtpClient->sendEmailMessage(email);
+    Error? response = smtpClient->sendEmail(toAddresses, subject, fromAddress, body=body, cc=ccAddresses, bcc=bccAddresses,
+        htmlBody=htmlBody, contentType=contentType, headers={header1_name: "header1_value"}, sender=sender,
+        replyTo=replyToAddresses, attachments=bodyParts);
     if (response is Error) {
-        test:assertFail(msg = "Error while sending an email.");
+        test:assertFail(msg = "Error while sending an send-with-options email.");
     }
-    Error? emailValidation = validateComplexEmails();
+    Error? emailValidation = validateSendWithOptionsEmails();
 
     if (emailValidation is Error) {
         test:assertFail(msg = "Error while validating the received email.");
     }
-    serverStatus = stopComplexSmtpServer();
+    serverStatus = stopSendWithOptionsSmtpServer();
     if (serverStatus is error) {
-        test:assertFail(msg = "Error while stopping complex SMTP server.");
+        test:assertFail(msg = "Error while stopping send-with-options SMTP server.");
     }
 }
 
-public function startComplexSmtpServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.SmtpComplexEmailSendTest"
+public function startSendWithOptionsSmtpServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.SmtpEmailSendWithOptionsTest"
 } external;
 
-public function stopComplexSmtpServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.SmtpComplexEmailSendTest"
+public function stopSendWithOptionsSmtpServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.SmtpEmailSendWithOptionsTest"
 } external;
 
-public function validateComplexEmails() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.SmtpComplexEmailSendTest"
+public function validateSendWithOptionsEmails() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.SmtpEmailSendWithOptionsTest"
 } external;

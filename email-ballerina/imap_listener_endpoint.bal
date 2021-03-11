@@ -14,35 +14,43 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
 import ballerina/log;
 import ballerina/task;
 
 # Represents a service listener that monitors the email server location.
-public class Listener {
+public class ImapListener {
 
-    private ListenerConfig config;
-    private task:JobId id;
+    private ImapListenerConfig config;
+    private task:JobId jobId;
 
-    # Gets invoked during the `email:Listener` initialization.
+    # Gets invoked during the `email:ImapListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
-    public isolated function init(ListenerConfig listenerConfig) {
+    # + return - () or else error upon failure to initialize the listener
+    public isolated function init(ImapListenerConfig listenerConfig) returns Error? {
         self.config = listenerConfig;
-        checkpanic externalInit(self, self.config);
+        ImapConfig imapConfig = {
+             port: listenerConfig.port,
+             security: listenerConfig.security
+        };
+        SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
+        if (!(secureSocketParam is ())) {
+            imapConfig.secureSocket = secureSocketParam;
+        }
+        return externalInit(self, self.config, imapConfig, "IMAP");
     }
 
-    # Starts the `email:Listener`.
+    # Starts the `email:ImapListener`.
     # ```ballerina
     # email:Error? result = emailListener.start();
     # ```
     #
     # + return - () or else error upon failure to start the listener
-    public isolated function 'start() returns error? {
+    public isolated function 'start() returns @tainted error? {
         return self.internalStart();
     }
 
-    # Stops the `email:Listener`.
+    # Stops the `email:ImapListener`.
     # ```ballerina
     # email:Error? result = emailListener.__stop();
     # ```
@@ -52,7 +60,7 @@ public class Listener {
         check self.stop();
     }
 
-    # Binds a service to the `email:Listener`.
+    # Binds a service to the `email:ImapListener`.
     # ```ballerina
     # email:Error? result = emailListener.attach(helloService, hello);
     # ```
@@ -66,7 +74,7 @@ public class Listener {
         }
     }
 
-    # Stops consuming messages and detaches the service from the `email:Listener`.
+    # Stops consuming messages and detaches the service from the `email:ImapListener`.
     # ```ballerina
     # email:Error? result = emailListener.detach(helloService);
     # ```
@@ -77,7 +85,7 @@ public class Listener {
 
     }
 
-    # Stops the `email:Listener` forcefully.
+    # Stops the `email:ImapListener` forcefully.
     # ```ballerina
     # email:Error? result = emailListener.immediateStop();
     # ```
@@ -87,7 +95,7 @@ public class Listener {
         check self.stop();
     }
 
-    # Stops the `email:Listener` gracefully.
+    # Stops the `email:ImapListener` gracefully.
     # ```ballerina
     # email:Error? result = emailListener.gracefulStop();
     # ```
@@ -97,17 +105,18 @@ public class Listener {
         check self.stop();
     }
 
-    isolated function internalStart() returns error? {
+    isolated function internalStart() returns @tainted error? {
         time:Utc currentUtc = time:utcNow();
         time:Utc newTime = time:utcAddSeconds(currentUtc, 0.1);
         time:Civil time = time:utcToCivil(newTime);
-        task:JobId id = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval, startTime = time);
-        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
+        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval,
+                                            startTime = time);
+        //log:print("User " + self.config.username.to + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        task:UnscheduleJob(id);
-        log:printInfo("Stopped listening to remote server at " + self.config.host);
+        task:UnscheduleJob(self.jobId);
+        log:print("Stopped listening to remote server at " + self.config.host);
     }
 
     isolated function poll() returns error? {
@@ -148,29 +157,17 @@ Class Job {
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + protocol - Email server access protocol, "IMAP" or "POP"
-# + protocolConfig - POP3 or IMAP4 protocol configuration
-# + pollingInterval - Periodic time interval to check new update
-public type ListenerConfig record {|
+# + pollingInterval - Periodic time interval (in seconds) to check new update
+# + port - Port number of the IMAP server
+# + security - Type of security channel
+# + cronExpression - Cron expression to check new update
+# + secureSocket - Secure socket configuration
+public type ImapListenerConfig record {|
     string host;
     string username;
     string password;
-    string protocol = "IMAP";
-    PopConfig|ImapConfig? protocolConfig = ();
-    decimal pollingInterval = 60000;
+    decimal pollingInterval = 60;
+    int port = 993;
+    Security security = SSL;
+    SecureSocket secureSocket?;
 |};
-
-isolated function poll(Listener listenerEndpoint) returns error? = @java:Method{
-    name: "poll",
-    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
-} external;
-
-isolated function externalInit(Listener listenerEndpoint, ListenerConfig config) returns error? = @java:Method{
-    name: "init",
-    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
-} external;
-
-isolated function register(Listener listenerEndpoint, service object {} emailService) = @java:Method{
-    name: "register",
-    'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
-} external;

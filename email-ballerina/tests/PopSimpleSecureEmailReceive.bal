@@ -14,12 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
 import ballerina/test;
 
 @test:Config {
 }
-function testReceiveSimpleEmailPop() {
+function testReceiveSimpleEmailPop() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -31,13 +31,27 @@ function testReceiveSimpleEmailPop() {
 
     PopConfig popConfig = {
          port: 3995,
-         enableSsl: true
+         secureSocket: {
+             certificate: {
+                 path: "tests/resources/certsandkeys/greenmail.crt"
+             },
+             protocol: {
+                 name: "TLS",
+                 versions: ["TLSv1.2", "TLSv1.1"]
+             },
+             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+             verifyHostname: false
+         }
     };
-    PopClient popClient = new (host, username, password, popConfig);
-    Email|Error? email = popClient->read();
+    PopClient|Error popClientOrError = new (host, username, password, popConfig);
+    if (popClientOrError is Error) {
+        test:assertFail(msg = "Error while initializing the POP3 client.");
+    }
+    PopClient popClient = check popClientOrError;
+    Message|Error? email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");
-    } else if (email is Email) {
+    } else if (email is Message) {
         test:assertFail(msg = "Non zero emails received in zero read POP test.");
     }
     Error? emailSendStatus = sendEmailSimpleSecurePopServer();
@@ -45,7 +59,7 @@ function testReceiveSimpleEmailPop() {
         test:assertFail(msg = "Error while sending email to secure POP server.");
     }
 
-    email = popClient->read();
+    email = popClient->receiveEmailMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple POP test.");
     } else if (email is ()) {

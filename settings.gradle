@@ -14,8 +14,6 @@ plugins {
 rootProject.name = 'email'
 include(':build-config:checkstyle')
 include ':email-native', ':email-test-utils', ':email-ballerina'
-include 'email-test-utils'
-include 'email-native'
 
 gradleEnterprise {
     buildScan {

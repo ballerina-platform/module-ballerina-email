@@ -27,6 +27,7 @@ import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.email.client.EmailAccessClient;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
+import org.ballerinalang.stdlib.email.util.EmailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,14 +61,14 @@ public class EmailConsumer {
         BMap<BString, Object> protocolConfig = (BMap<BString, Object>) emailProperties.get(
                 EmailConstants.PROTOCOL_CONFIG.getValue());
         if (protocol.equals(EmailConstants.IMAP)) {
-            client = ValueCreator.createObjectValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.IMAP_CLIENT,
+            client = ValueCreator.createObjectValue(EmailUtils.getEmailPackage(), EmailConstants.IMAP_CLIENT,
                                                        StringUtils.fromString(host), StringUtils.fromString(username),
                                                        StringUtils.fromString(password), protocolConfig);
             EmailAccessClient.initImapClientEndpoint(client, StringUtils.fromString(host),
                                                      StringUtils.fromString(username),
                                                      StringUtils.fromString(password), protocolConfig);
         } else if (protocol.equals(EmailConstants.POP)) {
-            client = ValueCreator.createObjectValue(EmailConstants.EMAIL_PACKAGE_ID, EmailConstants.POP_CLIENT,
+            client = ValueCreator.createObjectValue(EmailUtils.getEmailPackage(), EmailConstants.POP_CLIENT,
                                                        StringUtils.fromString(host), StringUtils.fromString(username),
                                                        StringUtils.fromString(password), protocolConfig);
             EmailAccessClient.initPopClientEndpoint(client, StringUtils.fromString(host),
@@ -92,7 +93,7 @@ public class EmailConsumer {
                 StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION));
         if (message != null) {
             if (message instanceof BMap) {
-                emailListener.onMessage(new EmailEvent(message));
+                emailListener.onEmailMessage(new EmailEvent(message));
             } else if (message instanceof BError) {
                 emailListener.onError(message);
             } else {

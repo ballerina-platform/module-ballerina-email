@@ -21,12 +21,14 @@ package org.ballerinalang.stdlib.email.client;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import org.ballerinalang.stdlib.email.util.CommonUtil;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.ballerinalang.stdlib.email.util.SmtpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -54,10 +56,20 @@ public class SmtpClient {
      * @param username Represents the username of the SMTP server
      * @param password Represents the password of the SMTP server
      * @param config Properties required to configure the SMTP Session
+     * @return If an error occurs in the SMTP client, error
      */
-    public static void initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
+    public static Object initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
                                           BMap<BString, Object> config) {
-        Properties properties = SmtpUtil.getProperties(config, host.getValue());
+        if (config.size() == 0) {
+            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, "SmtpConfig should not be empty.");
+        }
+        Properties properties;
+        try {
+            properties = SmtpUtil.getProperties(config, host.getValue());
+        } catch (IOException | GeneralSecurityException e) {
+            log.error("Failed to initialize SMTP server : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, e.getMessage());
+        }
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
@@ -66,6 +78,7 @@ public class SmtpClient {
                 });
         clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
         clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        return null;
     }
 
     /**
@@ -82,7 +95,7 @@ public class SmtpClient {
             return null;
         } catch (MessagingException | IOException e) {
             log.error("Failed to send message to SMTP server : ", e);
-            return SmtpUtil.getBallerinaError(EmailConstants.SEND_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.SEND_ERROR, e.getMessage());
         }
     }
 

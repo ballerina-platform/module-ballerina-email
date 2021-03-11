@@ -1,10 +1,10 @@
-## Module Overview
+## Package Overview
 
-This module contains functions to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
+This package contains functions to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
 ### Client
 
-This module supports the following three client types.
+This package supports the following three client types.
 
 - `email:SmtpClient` - The client, which supports sending an email using the SMTP protocol.
 - `email:PopClient` - The client, which supports receiving an email using the POP3 protocol.
@@ -23,12 +23,11 @@ email:SmtpClient smtpClient = new ("smtp.email.com",
                                    "sender@email.com",
                                    "pass123");
 ```
-The port number of the server and/or the SSL support can also be configured by passing the following configurations.
+The port number of the server can be configured by passing the following configurations.
 
 ```ballerina
 email:SmtpConfig smtpConfig = {
-    port: 465, // Can use ports, 465, 587 or 25
-    enableSsl: true // Set true to enable SSL (SMTPS connections)
+    port: 465 // Can use ports, 465, 587 or 25
 };
 
 email:SmtpClient smtpClient = new ("smtp.email.com",
@@ -43,7 +42,7 @@ Once the `email:SmtpClient` is created, an email can be sent using the SMTP prot
 Samples for this operation can be found below.
 
 ```ballerina
-email:Email email = {
+email:Message email = {
     to: ["receiver1@email.com", "receiver2@email.com"],
     cc: ["receiver3@email.com", "receiver4@email.com"],
     bcc: ["receiver5@email.com"],
@@ -54,7 +53,23 @@ email:Email email = {
     replyTo: ["replyTo1@email.com", "replyTo2@email.com"]
 };
 
-email:Error? response = smtpClient->send(email);
+email:Error? response = smtpClient->sendEmailMessage(email);
+```
+
+An email can be sent directly by calling the client, specifying optional parameters as named parameters, as well.
+Samples for this operation can be found below.
+
+```ballerina
+email:Error? response = smtpClient->sendEmail(
+    ["receiver1@email.com", "receiver2@email.com"],
+    "Sample Email",
+    "author@email.com",
+    body="This is a sample email.",
+    cc=["receiver3@email.com", "receiver4@email.com"],
+    bcc=["receiver5@email.com"],
+    sender="sender@email.com",
+    replyTo=["replyTo1@email.com", "replyTo2@email.com"]
+);
 ```
 
 #### POP3 Client
@@ -71,11 +86,10 @@ email:PopClient|email:Error popClient = new ("pop.email.com",
                                              "pass456");
 ```
 
-The port number of the server and/or the SSL support can also be configured by passing the following configurations.
+The port number of the server can be configured by passing the following configurations.
 ```ballerina
 email:PopConfig popConfig = {
-    port: 995,
-    enableSsl: true
+    port: 995
 };
 
 email:PopClient|email:Error popClient = new ("pop.email.com",
@@ -89,7 +103,7 @@ Once the `email:PopClient` is created, emails can be received using the POP3 pro
 Samples for this operation can be found below.
 
 ```ballerina
-email:Email|email:Error? emailResponse = popClient->read();
+email:Message|email:Error? emailResponse = popClient->receiveEmailMessage();
 ```
 
 #### IMAP4 Client
@@ -124,7 +138,44 @@ Once the `email:ImapClient` is created, emails can be received using the IMAP4 p
 Samples for this operation can be found below.
 
 ```ballerina
-email:Email|email:Error emailResponse = imapClient->read();
+email:Message|email:Error emailResponse = imapClient->receiveEmailMessage();
 ```
 
-For information on the operations, which you can perform with this module, see the below **Functions**. For examples on the usage of the operation, see the [Send and Receive Emails Example](https://ballerina.io/swan-lake/learn/by-example/send-and-receive-emails.html).
+#### POP3 and IMAP Listeners
+
+As POP3 and IMAP4 protocols are similar in the listener use cases, lets consider POP3.
+In order to receive emails one-by-one from a POP3 server, you must first create an `email:PopListener` object.
+The code for creating an `email:PopListener` can be found below.
+
+```ballerina
+listener email:PopListener emailListener = check new ({
+    host: "pop.email.com",
+    username: "reader@email.com",
+    password: "pass456",
+    pollingIntervalInMillis: 2000,
+    port: 995
+});
+```
+
+Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onEmailMessage`
+method and when errors happen `onError` method get called.
+
+```ballerina
+service "emailObserver" on emailListener {
+
+    remote function onEmailMessage(email:Message emailMessage) {
+        io:println("Email Subject: ", emailMessage.subject);
+        io:println("Email Body: ", emailMessage.body);
+    }
+
+    remote function onError(email:Error emailError) {
+        io:println("Error while polling for the emails: " + emailError.message());
+    }
+
+}
+```
+
+For information on the operations, which you can perform with this package, see the **Functions**  below. For examples of the usage of the operation, see the following.
+  * [Send Emails Example](https://ballerina.io/learn/by-example/send-email.html)
+  * [Receive Emails using a client Example](https://ballerina.io/learn/by-example/receive-email-using-client.html)
+  * [Receive Emails using a listener Example](https://ballerina.io/learn/by-example/receive-email-using-listener.html)
