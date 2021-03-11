@@ -110,7 +110,7 @@ public class PopListener {
         time:Utc currentUtc = time:utcNow();
         time:Utc newTime = time:utcAddSeconds(currentUtc, 0.1);
         time:Civil time = time:utcToCivil(newTime);
-        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval,
+        self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval,
                                             startTime = time);
         //log:print("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
