@@ -48,7 +48,7 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
     PopClient popClient = check popClientOrError;
-    Message|Error? email = popClient->receiveMessage();
+    Message|Error? email = popClient->receiveMessage(timeout = 2);
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");
     } else if (email is Message) {

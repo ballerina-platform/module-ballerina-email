@@ -39,8 +39,9 @@ public client class ImapClient {
     # + folder - Folder to read emails. The default value is `INBOX`
     # + return - An`email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER) returns Message|Error? {
-        return imapRead(self, folder);
+    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER, decimal timeout = 0)
+            returns Message|Error? {
+        return imapRead(self, folder, timeout);
     }
 
     # Close the client.
@@ -61,7 +62,8 @@ isolated function initImapClientEndpoint(ImapClient clientEndpoint, string host,
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
-isolated function imapRead(ImapClient clientEndpoint, string folder) returns Message|Error? = @java:Method {
+isolated function imapRead(ImapClient clientEndpoint, string folder, decimal timeout)
+        returns Message|Error? = @java:Method {
     name : "readMessage",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;

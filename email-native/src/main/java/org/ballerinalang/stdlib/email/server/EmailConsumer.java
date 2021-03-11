@@ -21,6 +21,7 @@ package org.ballerinalang.stdlib.email.server;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
@@ -90,7 +91,7 @@ public class EmailConsumer {
             log.debug("Polling for an email...");
         }
         Object message = EmailAccessClient.readMessage(client,
-                StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION));
+                StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION), BDecimal.valueOf(0));
         if (message != null) {
             if (message instanceof BMap) {
                 emailListener.onMessage(new EmailEvent(message));

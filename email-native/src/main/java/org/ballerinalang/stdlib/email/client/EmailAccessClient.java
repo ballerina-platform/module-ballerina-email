@@ -18,6 +18,7 @@
 
 package org.ballerinalang.stdlib.email.client;
 
+import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -123,12 +124,73 @@ public class EmailAccessClient {
      * Read emails from the server.
      * @param clientConnector Represents the POP or IMAP client class
      * @param folderName Name of the folder to read emails
+     * @param timeout Timeout interval in seconds
      * @return If successful return the received email, otherwise an error
      */
-    public static Object readMessage(BObject clientConnector, BString folderName) {
+    public static Object readMessage(BObject clientConnector, BString folderName, BDecimal timeout) {
+        if (timeout.intValue() == 0) {
+            return readMessageFromFolder(clientConnector, folderName);
+        }
+        BDecimal polling = BDecimal.valueOf(100);
+        double pollingInterval = polling.floatValue();
+        double timeoutInterval = timeout.floatValue();
+        int timeoutIntervalInMs = (int) (timeoutInterval * 1000);
+        int pollingIntervalInMs = (int) (pollingInterval * 1000);
+        // Minimum polling interval is set to 1 ms to avoid dividing by zero
+        if (pollingIntervalInMs == 0) {
+            pollingIntervalInMs = 1;
+        }
+        // maxPollingCount is the maximum number of polls possible when the email read operation time is negligible
+        int maxPollingCount = timeoutIntervalInMs / pollingIntervalInMs + 1;
+        long startTimeInMs = System.currentTimeMillis();
+        long endTimeInMs = startTimeInMs + timeoutIntervalInMs;
+        long estimatedLastReadTimeInMs;
+
+        Object message = readMessageFromFolder(clientConnector, folderName);
+        if (message != null) {
+            return message;
+        }
+        try {
+            for (int i = 0; i < maxPollingCount; i++) {
+                long currentTimeInMs = System.currentTimeMillis();
+                long elapsedTimeInMs = currentTimeInMs - startTimeInMs;
+                long remainingTimeInMs = endTimeInMs - currentTimeInMs;
+                if (remainingTimeInMs > 0) {
+                    if ((i < maxPollingCount - 1) && (remainingTimeInMs > pollingIntervalInMs)) {
+                        Thread.sleep(pollingIntervalInMs);
+                    } else {
+                        // Take the average of past read operation times as the estimate
+                        estimatedLastReadTimeInMs = (elapsedTimeInMs - i * pollingIntervalInMs) / (i + 1);
+                        long lastSleepTimeInMs = remainingTimeInMs - estimatedLastReadTimeInMs;
+                        if (lastSleepTimeInMs > 0) {
+                            Thread.sleep(lastSleepTimeInMs);
+                        } else {
+                            break;
+                        }
+                    }
+                    message = readMessageFromFolder(clientConnector, folderName);
+                    if (message != null) {
+                        return message;
+                    }
+                } else {
+                    break;
+                }
+            }
+        } catch (InterruptedException e) {
+            log.error("Interrupted during the thread sleep : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.READ_ERROR, e.getMessage());
+        }
+        return null;
+    }
+
+    private static Object readMessageFromFolder(BObject clientConnector, BString folderName) {
         BMap<BString, Object> mapValue = null;
         try {
             Store store = (Store) clientConnector.getNativeData(EmailConstants.PROPS_STORE);
+            Object folderObj = clientConnector.getNativeData(EmailConstants.PROPS_FOLDER);
+            if (folderObj instanceof Folder && ((Folder) folderObj).isOpen()) {
+                ((Folder) folderObj).close();
+            }
             Folder folder = store.getFolder(folderName.getValue());
             if (folder == null) {
                 log.error("Email store folder, " + folderName + " is not found.");
@@ -159,7 +221,9 @@ public class EmailAccessClient {
         try {
             Store store = (Store) clientConnector.getNativeData(EmailConstants.PROPS_STORE);
             Folder folder = (Folder) clientConnector.getNativeData(EmailConstants.PROPS_FOLDER);
-            folder.close(false);
+            if (folder.isOpen()) {
+                folder.close(false);
+            }
             store.close();
         } catch (MessagingException e) {
             log.error("Failed to close client : ", e);
