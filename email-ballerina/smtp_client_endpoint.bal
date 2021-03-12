@@ -141,5 +141,5 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 public type SmtpConfig record {|
     int port = 465;
     Security security = SSL;
-    ClientSecureSocket secureSocket?;
+    SecureSocket secureSocket?;
 |};

@@ -81,5 +81,5 @@ isolated function imapClose(ImapClient clientEndpoint) returns Error? = @java:Me
 public type ImapConfig record {|
     int port = 993;
     Security security = SSL;
-    ClientSecureSocket secureSocket?;
+    SecureSocket secureSocket?;
 |};

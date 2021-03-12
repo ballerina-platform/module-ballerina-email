@@ -81,20 +81,14 @@ public type Attachment record {|
 # + protocol - SSL or TLS protocol
 # + ciphers - Ciper used
 # + verifyHostname - Enable hostname verification
-public type ClientSecureSocket record {|
+public type SecureSocket record {|
     string cert;
-    Protocol? protocol = ();
-    string[]? ciphers = ();
+    record {|
+        Protocol name;
+        string[] versions = [];
+    |} protocol?;
+    string[] ciphers?;
     boolean verifyHostname = true;
-|};
-
-# Transport security protocol.
-#
-# + name - Protocol name
-# + versions - Protocol versions
-public type Protocol record {|
-    string name;
-    string[] versions;
 |};
 
 # Security type.
@@ -111,7 +105,7 @@ public enum Security {
 }
 
 # Represents protocol options.
-public enum ProtocolName {
+public enum Protocol {
    TLS
 }
 
