@@ -158,10 +158,6 @@ function testListenEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while closing POP listener.");
     }
 
-    test:assertTrue(isOnCloseInvokedPop(), msg = "Close event was not listened by method, onClose with POP.");
-    test:assertTrue(getReceivedClosePop() == "",
-        msg = "Error occurred while getting the error while closing the connection with POP.");
-
 }
 
 public function startPopListener() returns Error? = @java:Method {
