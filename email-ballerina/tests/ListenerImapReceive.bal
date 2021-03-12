@@ -81,7 +81,7 @@ function getReceivedCloseImap() returns string {
 }
 
 @test:Config {
-    dependsOn: [testReceiveSimpleEmailImap], enable: false
+    dependsOn: [testReceiveSimpleEmailImap]
 }
 function testListenEmailImap() returns @tainted error? {
 
@@ -152,15 +152,6 @@ function testListenEmailImap() returns @tainted error? {
     test:assertTrue(isOnErrorInvokedImap(), msg = "Error was not listened by method, onError with IMAP.");
     test:assertTrue(strings:includes(getReceivedErrorImap(), "connection failure"),
         msg = "Listened error message is not matched with IMAP.");
-
-    Error? closeStatus = emailServer.close();
-    if (closeStatus is Error) {
-        test:assertFail(msg = "Error while closing IMAP listener.");
-    }
-
-    test:assertTrue(isOnCloseInvokedImap(), msg = "Close event was not listened by method, onClose with IMAP.");
-    test:assertTrue(getReceivedCloseImap() == "",
-        msg = "Error occurred while getting the error while closing the connection with IMAP.");
 
 }
 
