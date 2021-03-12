@@ -37,7 +37,7 @@ function testSendComplexEmail() returns @tainted error? {
 
     error? serverStatus = startComplexSmtpServer();
 
-    SmtpConfig smtpConfig = {
+    SmtpConfiguration smtpConfig = {
         port: 3025,
         security: START_TLS_AUTO
     };
@@ -106,7 +106,7 @@ function testSendComplexEmail() returns @tainted error? {
         attachments: bodyParts
     };
 
-    Error? response = smtpClient->sendEmailMessage(email);
+    Error? response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertFail(msg = "Error while sending an email.");
     }

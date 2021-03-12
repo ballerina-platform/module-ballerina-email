@@ -27,32 +27,49 @@ public client class PopClient {
     # + clientConfig - Configurations for the POP Client
     # + return - An `email:Error` if creating the client failed or else `()`
     public isolated function init(string host, string username, string password,
-            PopConfig clientConfig = {}) returns Error? {
+            PopConfiguration clientConfig = {}) returns Error? {
         return initPopClientEndpoint(self, host, username, password, clientConfig);
     }
 
     # Reads a message.
     # ```ballerina
-    # email:Message|email:Error? emailResponse = popClient->receiveEmailMessage();
+    # email:Message|email:Error? emailResponse = popClient->receiveMessage();
     # ```
     #
     # + folder - Folder to read emails. The default value is `INBOX`
     # + return - An`email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    remote isolated function receiveEmailMessage(string folder = DEFAULT_FOLDER) returns Message|Error? {
-        return popRead(self, folder);
+    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER, decimal timeout = 0)
+            returns Message|Error? {
+        return popRead(self, folder, timeout);
+    }
+
+    # Close the client.
+    # ```ballerina
+    # email:Error? closeResponse = popClient->close();
+    # ```
+    #
+    # + return - An `email:Error` if the recipient failed to close the client or else `()`
+    remote isolated function close() returns Error? {
+        return popClose(self);
     }
 
 }
 
 isolated function initPopClientEndpoint(PopClient clientEndpoint, string host, string username, string password,
-        PopConfig config) returns Error? = @java:Method {
+        PopConfiguration config) returns Error? = @java:Method {
     name : "initPopClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
-isolated function popRead(PopClient clientEndpoint, string folder) returns Message|Error? = @java:Method {
+isolated function popRead(PopClient clientEndpoint, string folder, decimal timeout)
+        returns Message|Error? = @java:Method {
     name : "readMessage",
+    'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
+} external;
+
+isolated function popClose(PopClient clientEndpoint) returns Error? = @java:Method {
+    name : "close",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
@@ -61,7 +78,7 @@ isolated function popRead(PopClient clientEndpoint, string folder) returns Messa
 # + port - Port number of the POP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type PopConfig record {|
+public type PopConfiguration record {|
     int port = 995;
     Security security = SSL;
     SecureSocket secureSocket?;

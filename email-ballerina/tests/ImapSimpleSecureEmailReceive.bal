@@ -28,18 +28,16 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while starting secure IMAP server.");
     }
 
-    ImapConfig imapConfig = {
+    ImapConfiguration imapConfig = {
          port: 3993,
          secureSocket: {
-             certificate: {
-                 path: "tests/resources/certsandkeys/greenmail.crt"
-             },
+             cert: "tests/resources/certsandkeys/greenmail.crt",
              protocol: {
-                 name: "TLS",
+                 name: TLS,
                  versions: ["TLSv1.2", "TLSv1.1"]
              },
              ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-             verifyHostname: false
+             verifyHostName: false
          }
     };
     ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
@@ -47,7 +45,7 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
     ImapClient imapClient = check imapClientOrError;
-    Message|Error? email = imapClient->receiveEmailMessage();
+    Message|Error? email = imapClient->receiveMessage(timeout = 2);
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");
     } else if (email is Message) {
@@ -58,13 +56,18 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to secure IMAP server.");
     }
 
-    email = imapClient->receiveEmailMessage();
+    email = imapClient->receiveMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple IMAP test.");
     } else if (email is ()) {
         test:assertFail(msg = "No emails were read in IMAP test.");
     } else {
         test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
+    }
+
+    Error? closeStatus = imapClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing secure POP server.");
     }
 
     serverStatus = stopSimpleSecureImapServer();

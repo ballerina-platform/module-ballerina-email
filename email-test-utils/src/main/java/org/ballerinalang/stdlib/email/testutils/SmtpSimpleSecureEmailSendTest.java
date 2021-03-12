@@ -41,7 +41,7 @@ public class SmtpSimpleSecureEmailSendTest {
 
     private static final int PORT_NUMBER = 3465;
     private static final String USER_PASSWORD = "abcdef123";
-    private static final String USER_NAME = "hascode";
+    private static final String USER_NAME = "someone@localhost.com";
     private static final String EMAIL_USER_ADDRESS = "hascode@localhost";
     private static final String EMAIL_FROM = "someone@localhost.com";
     private static final String EMAIL_SUBJECT = "Test E-Mail";

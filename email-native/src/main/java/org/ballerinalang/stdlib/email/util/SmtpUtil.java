@@ -60,7 +60,6 @@ import static org.ballerinalang.mime.util.MimeConstants.TEXT_PLAIN;
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
-import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PATH;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_NAME;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_VERSIONS;
@@ -149,7 +148,7 @@ public class SmtpUtil {
         String messageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY));
         String htmlMessageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_HTML_MESSAGE_BODY));
         String bodyContentType = message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE).getValue();
-        String fromAddress = message.getStringValue(EmailConstants.MESSAGE_FROM).getValue();
+        String fromAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_FROM));
         if (fromAddress == null || fromAddress.isEmpty()) {
             fromAddress = username;
         }
@@ -207,18 +206,15 @@ public class SmtpUtil {
             if (ciphers != null) {
                 supportedCiphers = ciphers.getStringArray();
             }
-            BMap<BString, Object> certificate = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERTIFICATE);
-            if (certificate != null) {
-                certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
-                SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
-                        protocolName);
-                addBasicTransportSecurityProperties(sslSocketFactory, properties);
-                if (protocolVersions != null) {
-                    properties.put(EmailConstants.PROPS_SMTP_PROTOCOLS, String.join(" ", protocolVersions));
-                }
-                if (supportedCiphers != null) {
-                    properties.put(EmailConstants.PROPS_SMTP_CIPHERSUITES, String.join(" ", supportedCiphers));
-                }
+            certificatePath = secureSocket.getStringValue(PROPS_CERTIFICATE).getValue();
+            SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
+                    protocolName);
+            addBasicTransportSecurityProperties(sslSocketFactory, properties);
+            if (protocolVersions != null) {
+                properties.put(EmailConstants.PROPS_SMTP_PROTOCOLS, String.join(" ", protocolVersions));
+            }
+            if (supportedCiphers != null) {
+                properties.put(EmailConstants.PROPS_SMTP_CIPHERSUITES, String.join(" ", supportedCiphers));
             }
             if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
                 Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);

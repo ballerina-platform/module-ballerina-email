@@ -26,7 +26,7 @@ email:SmtpClient smtpClient = new ("smtp.email.com",
 The port number of the server can be configured by passing the following configurations.
 
 ```ballerina
-email:SmtpConfig smtpConfig = {
+email:SmtpConfiguration smtpConfig = {
     port: 465 // Can use ports, 465, 587 or 25
 };
 
@@ -53,14 +53,14 @@ email:Message email = {
     replyTo: ["replyTo1@email.com", "replyTo2@email.com"]
 };
 
-email:Error? response = smtpClient->sendEmailMessage(email);
+email:Error? response = smtpClient->sendMessage(email);
 ```
 
 An email can be sent directly by calling the client, specifying optional parameters as named parameters, as well.
 Samples for this operation can be found below.
 
 ```ballerina
-email:Error? response = smtpClient->sendEmail(
+email:Error? response = smtpClient->send(
     ["receiver1@email.com", "receiver2@email.com"],
     "Sample Email",
     "author@email.com",
@@ -88,7 +88,7 @@ email:PopClient|email:Error popClient = new ("pop.email.com",
 
 The port number of the server can be configured by passing the following configurations.
 ```ballerina
-email:PopConfig popConfig = {
+email:PopConfiguration popConfig = {
     port: 995
 };
 
@@ -103,7 +103,7 @@ Once the `email:PopClient` is created, emails can be received using the POP3 pro
 Samples for this operation can be found below.
 
 ```ballerina
-email:Message|email:Error? emailResponse = popClient->receiveEmailMessage();
+email:Message|email:Error? emailResponse = popClient->receiveMessage();
 ```
 
 #### IMAP4 Client
@@ -122,7 +122,7 @@ email:ImapClient|email:Error imapClient = new ("imap.email.com",
 
 The port number of the server and/or the SSL support can also be configured by passing the following configurations.
 ```ballerina
-email:ImapConfig imapConfig = {
+email:ImapConfiguration imapConfig = {
     port: 993,
     enableSsl: true
 };
@@ -138,7 +138,7 @@ Once the `email:ImapClient` is created, emails can be received using the IMAP4 p
 Samples for this operation can be found below.
 
 ```ballerina
-email:Message|email:Error emailResponse = imapClient->receiveEmailMessage();
+email:Message|email:Error emailResponse = imapClient->receiveMessage();
 ```
 
 #### POP3 and IMAP Listeners
@@ -152,18 +152,18 @@ listener email:PopListener emailListener = check new ({
     host: "pop.email.com",
     username: "reader@email.com",
     password: "pass456",
-    pollingIntervalInMillis: 2000,
+    pollingInterval: 2,
     port: 995
 });
 ```
 
-Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onEmailMessage`
+Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onMessage`
 method and when errors happen `onError` method get called.
 
 ```ballerina
 service "emailObserver" on emailListener {
 
-    remote function onEmailMessage(email:Message emailMessage) {
+    remote function onMessage(email:Message emailMessage) {
         io:println("Email Subject: ", emailMessage.subject);
         io:println("Email Body: ", emailMessage.body);
     }

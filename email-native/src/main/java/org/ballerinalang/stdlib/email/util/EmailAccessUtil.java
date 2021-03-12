@@ -70,7 +70,6 @@ import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
-import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PATH;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_NAME;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL_VERSIONS;
@@ -259,23 +258,20 @@ public class EmailAccessUtil {
             if (ciphers != null) {
                 supportedCiphers = ciphers.getStringArray();
             }
-            BMap<BString, Object> certificate = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERTIFICATE);
-            if (certificate != null) {
-                certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
-                SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
-                        protocolName);
-                properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY, sslSocketFactory);
-                properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
-                properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
-                properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
-                properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
-                properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
-                if (protocolVersions != null) {
-                    properties.put(EmailConstants.PROPS_POP_PROTOCOLS, String.join(" ", protocolVersions));
-                }
-                if (supportedCiphers != null) {
-                    properties.put(EmailConstants.PROPS_POP_CIPHERSUITES, String.join(" ", supportedCiphers));
-                }
+            certificatePath = secureSocket.getStringValue(PROPS_CERTIFICATE).getValue();
+            SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
+                    protocolName);
+            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY, sslSocketFactory);
+            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+            properties.put(EmailConstants.PROPS_POP_SOCKET_FACTORY_FALLBACK, "false");
+            properties.put(EmailConstants.PROPS_POP_CHECK_SERVER_IDENTITY, "true");
+            properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
+            properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+            if (protocolVersions != null) {
+                properties.put(EmailConstants.PROPS_POP_PROTOCOLS, String.join(" ", protocolVersions));
+            }
+            if (supportedCiphers != null) {
+                properties.put(EmailConstants.PROPS_POP_CIPHERSUITES, String.join(" ", supportedCiphers));
             }
             if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
                 Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);
@@ -307,23 +303,20 @@ public class EmailAccessUtil {
             if (ciphers != null) {
                 supportedCiphers = ciphers.getStringArray();
             }
-            BMap<BString, Object> certificate = (BMap<BString, Object>) secureSocket.getMapValue(PROPS_CERTIFICATE);
-            if (certificate != null) {
-                certificatePath = certificate.getStringValue(PROPS_CERT_PATH).getValue();
-                SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
-                        protocolName);
-                properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY, sslSocketFactory);
-                properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
-                properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
-                properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
-                properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
-                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
-                if (protocolVersions != null) {
-                    properties.put(EmailConstants.PROPS_IMAP_PROTOCOLS, String.join(" ", protocolVersions));
-                }
-                if (supportedCiphers != null) {
-                    properties.put(EmailConstants.PROPS_IMAP_CIPHERSUITES, String.join(" ", supportedCiphers));
-                }
+            certificatePath = secureSocket.getStringValue(PROPS_CERTIFICATE).getValue();
+            SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
+                    protocolName);
+            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY, sslSocketFactory);
+            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_CLASS, EmailConstants.SSL_SOCKET_FACTORY_CLASS);
+            properties.put(EmailConstants.PROPS_IMAP_SOCKET_FACTORY_FALLBACK, "false");
+            properties.put(EmailConstants.PROPS_IMAP_CHECK_SERVER_IDENTITY, "true");
+            properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "true");
+            properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+            if (protocolVersions != null) {
+                properties.put(EmailConstants.PROPS_IMAP_PROTOCOLS, String.join(" ", protocolVersions));
+            }
+            if (supportedCiphers != null) {
+                properties.put(EmailConstants.PROPS_IMAP_CIPHERSUITES, String.join(" ", supportedCiphers));
             }
             if (secureSocket.containsKey(PROPS_VERIFY_HOSTNAME)) {
                 Boolean verifyHostname = secureSocket.getBooleanValue(PROPS_VERIFY_HOSTNAME);

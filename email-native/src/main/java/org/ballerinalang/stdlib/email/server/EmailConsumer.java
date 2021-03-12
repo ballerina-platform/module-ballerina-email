@@ -21,6 +21,7 @@ package org.ballerinalang.stdlib.email.server;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
@@ -90,10 +91,10 @@ public class EmailConsumer {
             log.debug("Polling for an email...");
         }
         Object message = EmailAccessClient.readMessage(client,
-                StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION));
+                StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION), BDecimal.valueOf(0));
         if (message != null) {
             if (message instanceof BMap) {
-                emailListener.onEmailMessage(new EmailEvent(message));
+                emailListener.onMessage(new EmailEvent(message));
             } else if (message instanceof BError) {
                 emailListener.onError(message);
             } else {
@@ -102,6 +103,24 @@ public class EmailConsumer {
             }
         } else {
             log.debug("No emails found in the inbox.");
+        }
+
+    }
+
+    /**
+     * Close email polling job from the Email client and pass to the listener.
+     */
+    public void close() {
+        if (log.isDebugEnabled()) {
+            log.debug("Close thread name: " + Thread.currentThread().getName());
+            log.debug("Close hashcode: " + this.hashCode());
+            log.debug("Polling for closing...");
+        }
+        Object message = EmailAccessClient.close(client);
+        if (message instanceof BError) {
+            emailListener.onClose(message);
+        } else {
+            emailListener.onClose(null);
         }
 
     }

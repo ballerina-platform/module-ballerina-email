@@ -22,7 +22,7 @@ import ballerina/test;
 }
 function testSendSimpleEmail() returns @tainted error? {
     string host = "127.0.0.1";
-    string username = "hascode";
+    string username = "someone@localhost.com";
     string password = "abcdef123";
     string toAddress = "hascode@localhost";
     string subject = "Test E-Mail";
@@ -30,18 +30,16 @@ function testSendSimpleEmail() returns @tainted error? {
     string fromAddress = "someone@localhost.com";
 
     error? serverStatus = startSimpleSecureSmtpServer();
-    SmtpConfig smtpConfig = {
+    SmtpConfiguration smtpConfig = {
         port: 3465,
         secureSocket: {
-            certificate: {
-                path: "tests/resources/certsandkeys/greenmail.crt"
-            },
+            cert: "tests/resources/certsandkeys/greenmail.crt",
             protocol: {
-                name: "TLS",
+                name: TLS,
                 versions: ["TLSv1.2", "TLSv1.1"]
             },
             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-            verifyHostname: false
+            verifyHostName: false
         }
     };
 
@@ -53,10 +51,9 @@ function testSendSimpleEmail() returns @tainted error? {
     Message email = {
         to: toAddress,
         subject: subject,
-        body: body,
-        'from: fromAddress
+        body: body
     };
-    Error? response = smtpClient->sendEmailMessage(email);
+    Error? response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertFail(msg = "Error while sending an email.");
     }
@@ -72,7 +69,7 @@ function testSendSimpleEmail() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the SMTP client.");
     }
     smtpClient = check smtpClientOrError;
-    response = smtpClient->sendEmailMessage(email);
+    response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertTrue(strings:includes(response.message(), "Authentication credentials invalid"),
             msg = "Error while authentication failure.");

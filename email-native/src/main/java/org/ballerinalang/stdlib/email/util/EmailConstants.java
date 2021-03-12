@@ -69,16 +69,15 @@ public class EmailConstants {
     public static final BString MESSAGE_ATTACHMENTS = StringUtils.fromString("attachments");
     public static final BString MESSAGE_HEADERS = StringUtils.fromString("headers");
     public static final BString PROPS_SECURE_SOCKET = StringUtils.fromString("secureSocket");
-    public static final BString PROPS_CERTIFICATE = StringUtils.fromString("certificate");
+    public static final BString PROPS_CERTIFICATE = StringUtils.fromString("cert");
     public static final BString PROPS_CERT_PROTOCOL = StringUtils.fromString("protocol");
     public static final BString PROPS_CERT_PROTOCOL_NAME = StringUtils.fromString("name");
     public static final BString PROPS_CERT_PROTOCOL_VERSIONS = StringUtils.fromString("versions");
     public static final BString PROPS_CERT_CIPHERS = StringUtils.fromString("ciphers");
     public static final BString PROPS_CERT_PATH = StringUtils.fromString("path");
-    public static final BString PROPS_VERIFY_HOSTNAME = StringUtils.fromString("verifyHostname");
+    public static final BString PROPS_VERIFY_HOSTNAME = StringUtils.fromString("verifyHostName");
 
     // Common constants to POP and IMAP
-    public static final BString PROPS_PROPERTIES = StringUtils.fromString("properties");
     public static final BString PROPS_SECURITY = StringUtils.fromString("security");
     public static final BString PROPS_HOST = StringUtils.fromString("host");
     public static final BString PROPS_PASSWORD = StringUtils.fromString("password");
@@ -88,10 +87,12 @@ public class EmailConstants {
     public static final String PROPS_START_TLS_NEVER = "START_TLS_NEVER";
 
     public static final String PROPS_STORE = "store";
+    public static final String PROPS_FOLDER = "folder";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
     public static final String MIME_CONTENT_TYPE_PATTERN = "multipart/*";
     public static final String READ_CLIENT_INIT_ERROR = "ReadClientInitError";
     public static final String READ_ERROR = "ReadError";
+    public static final String CLOSE_ERROR = "CloseError";
     public static final BString ENDPOINT_CONFIG_SECURE_SOCKET = StringUtils.fromString("secureSocket");
     public static final BString ENDPOINT_CONFIG_PRIVATE_KEY = StringUtils.fromString("privateKey");
     public static final BString ENDPOINT_CONFIG_PATH = StringUtils.fromString("path");
@@ -101,8 +102,9 @@ public class EmailConstants {
     public static final String EMAIL_SERVER_CONNECTOR = "serverConnector";
     public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocolConfig");
     public static final String DEFAULT_STORE_LOCATION = "INBOX";
-    public static final String ON_EMAIL_MESSAGE = "onEmailMessage";
+    public static final String ON_MESSAGE = "onMessage";
     public static final String ON_ERROR = "onError";
+    public static final String ON_CLOSE = "onClose";
     public static final String LISTENER = "Listener";
 
     // POP related constants
@@ -161,10 +163,13 @@ public class EmailConstants {
 
     // Strand meta data
     public static final StrandMetadata ON_MESSAGE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_EMAIL_MESSAGE);
+            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_MESSAGE);
 
     public static final StrandMetadata ON_ERROR_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
             MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_ERROR);
+
+    public static final StrandMetadata ON_CLOSE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
+            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_CLOSE);
 
     private EmailConstants() {
         // private constructor

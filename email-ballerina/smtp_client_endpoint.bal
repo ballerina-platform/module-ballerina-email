@@ -27,7 +27,7 @@ public client class SmtpClient {
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
-    public isolated function init(string host, string username, string password, SmtpConfig clientConfig = {})
+    public isolated function init(string host, string username, string password, SmtpConfiguration clientConfig = {})
             returns Error? {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
@@ -35,12 +35,12 @@ public client class SmtpClient {
 
     # Sends an email message.
     # ```ballerina
-    # email:Error? response = smtpClient->sendEmailMessage(email);
+    # email:Error? response = smtpClient->sendMessage(email);
     # ```
     #
     # + email - An `email:Message` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function sendEmailMessage(Message email) returns Error? {
+    remote isolated function sendMessage(Message email) returns Error? {
         if (email?.contentType == ()) {
             email.contentType = "text/plain";
         } else if (!self.containsType(email?.contentType, "text")) {
@@ -52,7 +52,7 @@ public client class SmtpClient {
 
     # Sends an email message with optional parameters.
     # ```ballerina
-    # email:Error? response = smtpClient->sendEmail(toAddress, subject, fromAddress,
+    # email:Error? response = smtpClient->send(toAddress, subject, fromAddress,
     #   emailBody, sender="eve@abc.com");
     # ```
     #
@@ -61,17 +61,14 @@ public client class SmtpClient {
     # + from - From address
     # + options - Optional parameters of the email
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
-    remote isolated function sendEmail(string|string[] to, string subject, string 'from, *Options options)
+    remote isolated function send(string|string[] to, string subject, string 'from, string body, *Options options)
             returns Error? {
         Message email = {
             to: to,
             subject: subject,
-            'from: 'from
+            'from: 'from,
+            body: body
         };
-        string? body = options?.body;
-        if (!(body is ())) {
-            email.body = <string>body;
-        }
         string? htmlBody = options?.htmlBody;
         if (!(htmlBody is ())) {
             email.htmlBody = <string>htmlBody;
@@ -126,7 +123,7 @@ public client class SmtpClient {
 }
 
 isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
-        SmtpConfig config) returns Error? = @java:Method {
+        SmtpConfiguration config) returns Error? = @java:Method {
     name : "initClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.SmtpClient"
 } external;
@@ -141,7 +138,7 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
 # + port - Port number of the SMTP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type SmtpConfig record {|
+public type SmtpConfiguration record {|
     int port = 465;
     Security security = SSL;
     SecureSocket secureSocket?;

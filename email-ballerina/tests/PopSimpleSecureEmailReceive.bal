@@ -29,18 +29,16 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while starting secure POP server.");
     }
 
-    PopConfig popConfig = {
+    PopConfiguration popConfig = {
          port: 3995,
          secureSocket: {
-             certificate: {
-                 path: "tests/resources/certsandkeys/greenmail.crt"
-             },
+             cert: "tests/resources/certsandkeys/greenmail.crt",
              protocol: {
-                 name: "TLS",
+                 name: TLS,
                  versions: ["TLSv1.2", "TLSv1.1"]
              },
              ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-             verifyHostname: false
+             verifyHostName: false
          }
     };
     PopClient|Error popClientOrError = new (host, username, password, popConfig);
@@ -48,7 +46,7 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
     PopClient popClient = check popClientOrError;
-    Message|Error? email = popClient->receiveEmailMessage();
+    Message|Error? email = popClient->receiveMessage(timeout = 2);
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");
     } else if (email is Message) {
@@ -59,13 +57,18 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to secure POP server.");
     }
 
-    email = popClient->receiveEmailMessage();
+    email = popClient->receiveMessage();
     if (email is Error) {
         test:assertFail(msg = "Error while reading email in simple POP test.");
     } else if (email is ()) {
         test:assertFail(msg = "No emails were read in POP test.");
     } else {
         test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
+    }
+
+    Error? closeStatus = popClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing secure POP server.");
     }
 
     serverStatus = stopSimpleSecurePopServer();

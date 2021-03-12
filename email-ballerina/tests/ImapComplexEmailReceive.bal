@@ -36,7 +36,7 @@ function testReceiveComplexEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to complex IMAP server.");
     }
 
-    ImapConfig imapConfig = {
+    ImapConfiguration imapConfig = {
          port: 3143,
          security: START_TLS_AUTO
     };
@@ -46,14 +46,17 @@ function testReceiveComplexEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }
     ImapClient imapClient = check imapClientOrError;
-    Message|Error? emailResponse = imapClient->receiveEmailMessage();
+    Message|Error? emailResponse = imapClient->receiveMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
         string? emailBody = <string>emailResponse?.body;
         if (emailBody is string) {
             returnArray[1] = emailBody;
         }
-        returnArray[2] = emailResponse.'from;
+        string? emailFrom= <string>emailResponse?.'from;
+        if (emailFrom is string) {
+            returnArray[2] = emailFrom;
+        }
         returnArray[3] = getNonNilString(emailResponse?.sender);
         returnArray[4] = concatStrings(emailResponse.to);
         returnArray[5] = concatStrings(emailResponse?.cc);
@@ -133,6 +136,11 @@ function testReceiveComplexEmailImap() returns @tainted error? {
 
     } else {
         test:assertFail(msg = "Error while reading emails in complex IMAP test.");
+    }
+
+    Error? closeStatus = imapClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing secure IMAP server.");
     }
 
     serverStatus = stopComplexImapServer();

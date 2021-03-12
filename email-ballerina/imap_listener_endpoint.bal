@@ -20,16 +20,16 @@ import ballerina/task;
 # Represents a service listener that monitors the email server location.
 public class ImapListener {
 
-    private ImapListenerConfig config;
-    private task:Scheduler? appointment = ();
+    private ImapListenerConfiguration config;
+    private task:JobId? jobId = ();
 
     # Gets invoked during the `email:ImapListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
     # + return - () or else error upon failure to initialize the listener
-    public isolated function init(ImapListenerConfig listenerConfig) returns Error? {
+    public isolated function init(ImapListenerConfiguration listenerConfig) returns Error? {
         self.config = listenerConfig;
-        ImapConfig imapConfig = {
+        ImapConfiguration imapConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
         };
@@ -48,16 +48,6 @@ public class ImapListener {
     # + return - () or else error upon failure to start the listener
     public isolated function 'start() returns @tainted error? {
         return self.internalStart();
-    }
-
-    # Stops the `email:ImapListener`.
-    # ```ballerina
-    # email:Error? result = emailListener.__stop();
-    # ```
-    #
-    # + return - () or else error upon failure to stop the listener
-    public isolated function __stop() returns error? {
-        check self.stop();
     }
 
     # Binds a service to the `email:ImapListener`.
@@ -106,28 +96,16 @@ public class ImapListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        var scheduler = self.config.cronExpression;
-        if (scheduler is string) {
-            task:AppointmentConfiguration config = {cronExpression: scheduler};
-            self.appointment = check new(config);
-        } else {
-            task:TimerConfiguration config = {intervalInMillis: self.config.pollingIntervalInMillis, initialDelayInMillis: 100};
-            self.appointment = check new (config);
-        }
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.attach(imapAppointmentService, self);
-            check appointment.start();
-        }
-        //log:print("User " + self.config.username.to + " is listening to remote server at " + self.config.host + "...");
+        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
+        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        var appointment = self.appointment;
-        if (appointment is task:Scheduler) {
-            check appointment.stop();
+        var id = self.jobId;
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
-        log:print("Stopped listening to remote server at " + self.config.host);
     }
 
     isolated function poll() returns error? {
@@ -144,34 +122,51 @@ public class ImapListener {
     public isolated function register(service object {} emailService, string? name) {
         register(self, emailService);
     }
+
+    # Close the IMAP server connection.
+    # ```ballerina
+    # email:Error? closeResult = emailClient->close();
+    # ```
+    #
+    # + return - A `email:Error` if it can't close the connection or else `()`
+    isolated function close() returns Error? {
+        error? stopResult = self.stop();
+        return externListenerClose(self);
+    }
 }
 
-final service isolated object{} imapAppointmentService = service object {
-    remote isolated function onTrigger(ImapListener l) {
-        var result = l.poll();
+class Job {
+
+    *task:Job;
+    private ImapListener imapListener;
+
+    public function execute() {
+        var result = self.imapListener.poll();
         if (result is error) {
-            log:printError("Error while executing poll function", err = result);
+            log:printError("Error while executing poll function", 'error = result);
         }
     }
-};
+
+    public isolated function init(ImapListener imapListener) {
+        self.imapListener = imapListener;
+    }
+}
 
 # Configuration for Email listener endpoint.
 #
 # + host - Email server host
 # + username - Email server access username
 # + password - Email server access password
-# + pollingIntervalInMillis - Periodic time interval to check new update
+# + pollingInterval - Periodic time interval (in seconds) to check new update
 # + port - Port number of the IMAP server
 # + security - Type of security channel
-# + cronExpression - Cron expression to check new update
 # + secureSocket - Secure socket configuration
-public type ImapListenerConfig record {|
+public type ImapListenerConfiguration record {|
     string host;
     string username;
     string password;
-    int pollingIntervalInMillis = 60000;
+    decimal pollingInterval = 60;
     int port = 993;
     Security security = SSL;
-    string? cronExpression = ();
     SecureSocket secureSocket?;
 |};

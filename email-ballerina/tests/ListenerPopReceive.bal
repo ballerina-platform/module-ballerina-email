@@ -19,21 +19,23 @@ import ballerina/lang.runtime as runtime;
 import ballerina/lang.'string as strings;
 import ballerina/test;
 
-boolean onEmailMessageInvokedPop = false;
+boolean onMessageInvokedPop = false;
 boolean onErrorInvokedPop = false;
+boolean onCloseInvokedPop = false;
 string receivedMessagePop = "";
 string receivedErrorPop = "";
+string receivedClosePop = "";
 
 function isOnEmailInvokedPop() returns boolean {
     int i = 0;
-    while ((!onEmailMessageInvokedPop) && (i < 10)) {
+    while ((!onMessageInvokedPop) && (i < 10)) {
     	 runtime:sleep(1);
     	 i += 1;
     }
-    return onEmailMessageInvokedPop;
+    return onMessageInvokedPop;
 }
 
-function isonErrorInvokedPop() returns boolean {
+function isOnErrorInvokedPop() returns boolean {
     int i = 0;
     while ((!onErrorInvokedPop) && (i < 10)) {
          runtime:sleep(1);
@@ -42,16 +44,25 @@ function isonErrorInvokedPop() returns boolean {
     return onErrorInvokedPop;
 }
 
-function getreceivedMessagePop() returns string {
+function isOnCloseInvokedPop() returns boolean {
     int i = 0;
-    while ((!onEmailMessageInvokedPop) && (i < 10)) {
+    while ((!onCloseInvokedPop) && (i < 10)) {
+         runtime:sleep(1);
+         i += 1;
+    }
+    return onCloseInvokedPop;
+}
+
+function getReceivedMessagePop() returns string {
+    int i = 0;
+    while ((!onMessageInvokedPop) && (i < 10)) {
          runtime:sleep(1);
          i += 1;
     }
     return receivedMessagePop;
 }
 
-function getreceivedErrorPop() returns string {
+function getReceivedErrorPop() returns string {
     int i = 0;
     while ((!onErrorInvokedPop) && (i < 10)) {
          runtime:sleep(1);
@@ -60,8 +71,17 @@ function getreceivedErrorPop() returns string {
     return receivedErrorPop;
 }
 
+function getReceivedClosePop() returns string {
+    int i = 0;
+    while ((!onCloseInvokedPop) && (i < 10)) {
+         runtime:sleep(1);
+         i += 1;
+    }
+    return receivedClosePop;
+}
+
 @test:Config {
-    dependsOn: [testReceiveSimpleEmailPop]
+    dependsOn: [testReceiveSimpleEmailPop], enable: false
 }
 function testListenEmailPop() returns @tainted error? {
 
@@ -74,18 +94,16 @@ function testListenEmailPop() returns @tainted error? {
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
-                               pollingIntervalInMillis: 2000,
+                               pollingInterval: 2,
                                port: 3995,
                                secureSocket: {
-                                    certificate: {
-                                        path: "tests/resources/certsandkeys/greenmail.crt"
-                                    },
+                                    cert: "tests/resources/certsandkeys/greenmail.crt",
                                     protocol: {
-                                        name: "TLS",
+                                        name: TLS,
                                         versions: ["TLSv1.2", "TLSv1.1"]
                                     },
                                     ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-                                    verifyHostname: false
+                                    verifyHostName: false
                                }
                            });
     if (emailServerOrError is Error) {
@@ -94,15 +112,23 @@ function testListenEmailPop() returns @tainted error? {
     PopListener emailServer = check emailServerOrError;
 
     service object {} emailObserver = service object {
-        remote function onEmailMessage(Message emailMessage) {
+        remote function onMessage(Message emailMessage) {
             receivedMessagePop = emailMessage.subject;
-            onEmailMessageInvokedPop = true;
+            onMessageInvokedPop = true;
         }
 
         remote function onError(Error emailError) {
             receivedErrorPop = emailError.message();
             onErrorInvokedPop = true;
         }
+
+        remote function onClose(Error? closeError) {
+            if (closeError is Error) {
+                receivedClosePop = closeError.message();
+            }
+            onCloseInvokedPop = true;
+        }
+
     };
 
     error? attachStatus = emailServer.attach(emailObserver, "");
@@ -112,18 +138,29 @@ function testListenEmailPop() returns @tainted error? {
     if (emailSentStatus is Error) {
         test:assertFail(msg = "Error while sending email for POP listener.");
     }
-    test:assertTrue(onEmailMessageInvokedPop, msg = "Email is not received with method, onEmailMessage with POP.");
-    test:assertFalse(onErrorInvokedPop, msg = "An error occurred while listening and invoked method, onError with POP.");
-    test:assertEquals(receivedMessagePop, "Test E-Mail", msg = "Listened email subject is not matched with POP.");
+
+    test:assertTrue(isOnEmailInvokedPop(), msg = "Email is not received with method, onMessage with POP.");
+    test:assertFalse(isOnErrorInvokedPop(),
+        msg = "An error occurred while listening and invoked method, onError with POP.");
+    test:assertEquals(getReceivedMessagePop(), "Test E-Mail", msg = "Listened email subject is not matched with POP.");
 
     listenerStatus = stopPopListener();
     if (listenerStatus is error) {
         test:assertFail(msg = "Error while stopping POP listener.");
     }
 
-    test:assertTrue(onErrorInvokedPop, msg = "Error was not listened by method, onError with POP.");
-    test:assertTrue(strings:includes(receivedErrorPop, "Couldn't connect to host, port: 127.0.0.1,"),
+    test:assertTrue(isOnErrorInvokedPop(), msg = "Error was not listened by method, onError with POP.");
+    test:assertTrue(strings:includes(getReceivedErrorPop(), "Open failed"),
         msg = "Listened error message is not matched with POP.");
+
+    Error? closeStatus = emailServer.close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing POP listener.");
+    }
+
+    test:assertTrue(isOnCloseInvokedPop(), msg = "Close event was not listened by method, onClose with POP.");
+    test:assertTrue(getReceivedClosePop() == "",
+        msg = "Error occurred while getting the error while closing the connection with POP.");
 
 }
 

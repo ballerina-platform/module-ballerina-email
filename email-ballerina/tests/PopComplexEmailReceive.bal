@@ -37,7 +37,7 @@ function testReceiveComplexEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to complex POP server.");
     }
 
-    PopConfig popConfig = {
+    PopConfiguration popConfig = {
          port: 3110,
          security: START_TLS_AUTO
     };
@@ -47,14 +47,17 @@ function testReceiveComplexEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }
     PopClient popClient = check popClientOrError;
-    Message|Error? emailResponse = popClient->receiveEmailMessage();
+    Message|Error? emailResponse = popClient->receiveMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;
         string? emailBody = <string>emailResponse?.body;
         if (emailBody is string) {
             returnArray[1] = emailBody;
         }
-        returnArray[2] = emailResponse.'from;
+        string? emailFrom= <string>emailResponse?.'from;
+        if (emailFrom is string) {
+            returnArray[2] = emailFrom;
+        }
         returnArray[3] = getNonNilString(emailResponse?.sender);
         returnArray[4] = concatStrings(emailResponse.to);
         returnArray[5] = concatStrings(emailResponse?.cc);
@@ -134,6 +137,11 @@ function testReceiveComplexEmailPop() returns @tainted error? {
 
     } else {
         test:assertFail(msg = "Error while reading emails in complex POP test.");
+    }
+
+    Error? closeStatus = popClient->close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing complex POP server.");
     }
 
     serverStatus = stopComplexPopServer();

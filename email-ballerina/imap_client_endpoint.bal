@@ -27,32 +27,49 @@ public client class ImapClient {
     # + clientConfig - Configurations for the IMAP Client
     # + return - An `email:Error` if failed while creating the client or else `()`
     public isolated function init(string host, string username, string password,
-            ImapConfig clientConfig = {}) returns Error? {
+            ImapConfiguration clientConfig = {}) returns Error? {
         return initImapClientEndpoint(self, host, username, password, clientConfig);
     }
 
     # Reads a message.
     # ```ballerina
-    # email:Message|email:Error emailResponse = imapClient->receiveEmailMessage();
+    # email:Message|email:Error emailResponse = imapClient->receiveMessage();
     # ```
     #
     # + folder - Folder to read emails. The default value is `INBOX`
     # + return - An`email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    remote isolated function receiveEmailMessage(string folder = DEFAULT_FOLDER) returns Message|Error? {
-        return imapRead(self, folder);
+    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER, decimal timeout = 0)
+            returns Message|Error? {
+        return imapRead(self, folder, timeout);
+    }
+
+    # Close the client.
+    # ```ballerina
+    # email:Error? closeResponse = imapClient->close();
+    # ```
+    #
+    # + return - An `email:Error` if the recipient failed to close the client or else `()`
+    remote isolated function close() returns Error? {
+        return imapClose(self);
     }
 
 }
 
 isolated function initImapClientEndpoint(ImapClient clientEndpoint, string host, string username, string password,
-        ImapConfig config) returns Error? = @java:Method {
+        ImapConfiguration config) returns Error? = @java:Method {
     name : "initImapClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
-isolated function imapRead(ImapClient clientEndpoint, string folder) returns Message|Error? = @java:Method {
+isolated function imapRead(ImapClient clientEndpoint, string folder, decimal timeout)
+        returns Message|Error? = @java:Method {
     name : "readMessage",
+    'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
+} external;
+
+isolated function imapClose(ImapClient clientEndpoint) returns Error? = @java:Method {
+    name : "close",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
 
@@ -61,7 +78,7 @@ isolated function imapRead(ImapClient clientEndpoint, string folder) returns Mes
 # + port - Port number of the IMAP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type ImapConfig record {|
+public type ImapConfiguration record {|
     int port = 993;
     Security security = SSL;
     SecureSocket secureSocket?;

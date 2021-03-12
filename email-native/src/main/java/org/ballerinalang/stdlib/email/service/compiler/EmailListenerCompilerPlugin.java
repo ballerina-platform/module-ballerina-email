@@ -34,8 +34,8 @@ import org.wso2.ballerinalang.compiler.tree.BLangSimpleVariable;
 
 import java.util.List;
 
-import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_EMAIL_MESSAGE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_ERROR;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.ON_MESSAGE;
 
 /**
  * Compiler plugin for validating Email Listener.
@@ -70,14 +70,14 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
     public void validate(String serviceName, BLangFunction resource, DiagnosticLog dlog) {
         final List<BLangSimpleVariable> parameters = resource.getParameters();
         switch (resource.getName().getValue()) {
-            case ON_EMAIL_MESSAGE:
-                String onEmailMessageErrorMessage = "Invalid resource signature for %s in service %s. "
+            case ON_MESSAGE:
+                String onMessageErrorMessage = "Invalid resource signature for %s in service %s. "
                         + "The parameter should be a " + EmailConstants.MODULE_NAME + ":"
                         + EmailConstants.EMAIL_MESSAGE + " with no returns.";
-                onEmailMessageErrorMessage = String.format(onEmailMessageErrorMessage, resource.getName().getValue(),
+                onMessageErrorMessage = String.format(onMessageErrorMessage, resource.getName().getValue(),
                         serviceName);
                 if (parameters.size() != 1) {
-                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onEmailMessageErrorMessage);
+                    dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(), onMessageErrorMessage);
                     return;
                 }
                 BType emailEvent = parameters.get(0).getTypeNode().type;
@@ -87,7 +87,7 @@ public class EmailListenerCompilerPlugin extends AbstractCompilerPlugin {
                         if (!EmailConstants.MODULE_NAME.equals(event.getPackage().getName()) ||
                                 !EmailConstants.EMAIL_MESSAGE.equals(event.getName())) {
                             dlog.logDiagnostic(DiagnosticSeverity.ERROR, resource.getPosition(),
-                                    onEmailMessageErrorMessage);
+                                    onMessageErrorMessage);
                             return;
                         }
                     }
