@@ -20,16 +20,16 @@ import ballerina/task;
 # Represents a service listener that monitors the email server location.
 public class ImapListener {
 
-    private ImapListenerConfig config;
+    private ImapListenerConfiguration config;
     private task:JobId? jobId = ();
 
     # Gets invoked during the `email:ImapListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
     # + return - () or else error upon failure to initialize the listener
-    public isolated function init(ImapListenerConfig listenerConfig) returns Error? {
+    public isolated function init(ImapListenerConfiguration listenerConfig) returns Error? {
         self.config = listenerConfig;
-        ImapConfig imapConfig = {
+        ImapConfiguration imapConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
         };
@@ -161,7 +161,7 @@ class Job {
 # + port - Port number of the IMAP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type ImapListenerConfig record {|
+public type ImapListenerConfiguration record {|
     string host;
     string username;
     string password;

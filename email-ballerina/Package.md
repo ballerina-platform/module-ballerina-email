@@ -26,7 +26,7 @@ email:SmtpClient smtpClient = new ("smtp.email.com",
 The port number of the server can be configured by passing the following configurations.
 
 ```ballerina
-email:SmtpConfig smtpConfig = {
+email:SmtpConfiguration smtpConfig = {
     port: 465 // Can use ports, 465, 587 or 25
 };
 
@@ -88,7 +88,7 @@ email:PopClient|email:Error popClient = new ("pop.email.com",
 
 The port number of the server can be configured by passing the following configurations.
 ```ballerina
-email:PopConfig popConfig = {
+email:PopConfiguration popConfig = {
     port: 995
 };
 
@@ -122,7 +122,7 @@ email:ImapClient|email:Error imapClient = new ("imap.email.com",
 
 The port number of the server and/or the SSL support can also be configured by passing the following configurations.
 ```ballerina
-email:ImapConfig imapConfig = {
+email:ImapConfiguration imapConfig = {
     port: 993,
     enableSsl: true
 };

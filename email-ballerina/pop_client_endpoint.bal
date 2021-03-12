@@ -27,7 +27,7 @@ public client class PopClient {
     # + clientConfig - Configurations for the POP Client
     # + return - An `email:Error` if creating the client failed or else `()`
     public isolated function init(string host, string username, string password,
-            PopConfig clientConfig = {}) returns Error? {
+            PopConfiguration clientConfig = {}) returns Error? {
         return initPopClientEndpoint(self, host, username, password, clientConfig);
     }
 
@@ -57,7 +57,7 @@ public client class PopClient {
 }
 
 isolated function initPopClientEndpoint(PopClient clientEndpoint, string host, string username, string password,
-        PopConfig config) returns Error? = @java:Method {
+        PopConfiguration config) returns Error? = @java:Method {
     name : "initPopClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
@@ -78,7 +78,7 @@ isolated function popClose(PopClient clientEndpoint) returns Error? = @java:Meth
 # + port - Port number of the POP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type PopConfig record {|
+public type PopConfiguration record {|
     int port = 995;
     Security security = SSL;
     SecureSocket secureSocket?;

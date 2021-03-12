@@ -30,7 +30,7 @@ function testSendSimpleEmail() returns @tainted error? {
     string fromAddress = "someone@localhost.com";
 
     error? serverStatus = startSimpleSecureSmtpServer();
-    SmtpConfig smtpConfig = {
+    SmtpConfiguration smtpConfig = {
         port: 3465,
         secureSocket: {
             cert: "tests/resources/certsandkeys/greenmail.crt",

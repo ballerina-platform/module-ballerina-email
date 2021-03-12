@@ -39,7 +39,7 @@ function testSendEmailWithOptions() returns @tainted error? {
 
     error? serverStatus = startSendWithOptionsSmtpServer();
 
-    SmtpConfig smtpConfig = {
+    SmtpConfiguration smtpConfig = {
         port: 3025,
         security: START_TLS_AUTO
     };

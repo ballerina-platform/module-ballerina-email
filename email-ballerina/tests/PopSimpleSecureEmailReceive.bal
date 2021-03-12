@@ -29,7 +29,7 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while starting secure POP server.");
     }
 
-    PopConfig popConfig = {
+    PopConfiguration popConfig = {
          port: 3995,
          secureSocket: {
              cert: "tests/resources/certsandkeys/greenmail.crt",

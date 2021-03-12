@@ -37,7 +37,7 @@ function testSendComplexEmail() returns @tainted error? {
 
     error? serverStatus = startComplexSmtpServer();
 
-    SmtpConfig smtpConfig = {
+    SmtpConfiguration smtpConfig = {
         port: 3025,
         security: START_TLS_AUTO
     };

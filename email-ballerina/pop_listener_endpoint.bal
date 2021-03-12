@@ -21,16 +21,16 @@ import ballerina/task;
 # Represents a service listener that monitors the email server location.
 public class PopListener {
 
-    private PopListenerConfig config;
+    private PopListenerConfiguration config;
     private task:JobId? jobId = ();
 
     # Gets invoked during the `email:PopListener` initialization.
     #
     # + ListenerConfig - Configurations for Email endpoint
     # + return - () or else error upon failure to initialize the listener
-    public isolated function init(PopListenerConfig listenerConfig) returns Error? {
+    public isolated function init(PopListenerConfiguration listenerConfig) returns Error? {
         self.config = listenerConfig;
-        PopConfig popConfig = {
+        PopConfiguration popConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
         };
@@ -163,7 +163,7 @@ class PopJob {
 # + port - Port number of the POP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type PopListenerConfig record {|
+public type PopListenerConfiguration record {|
     string host;
     string username;
     string password;
@@ -183,8 +183,9 @@ isolated function poll(PopListener|ImapListener listenerEndpoint) returns error?
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
 
-isolated function externalInit(PopListener|ImapListener listenerEndpoint, PopListenerConfig|ImapListenerConfig config,
-        PopConfig|ImapConfig protocolConfig, string protocol) returns error? = @java:Method{
+isolated function externalInit(PopListener|ImapListener listenerEndpoint,
+    PopListenerConfiguration|ImapListenerConfiguration config, PopConfiguration|ImapConfiguration protocolConfig,
+    string protocol) returns error? = @java:Method{
     name: "init",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;

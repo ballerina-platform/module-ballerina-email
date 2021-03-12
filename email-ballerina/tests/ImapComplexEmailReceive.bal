@@ -36,7 +36,7 @@ function testReceiveComplexEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to complex IMAP server.");
     }
 
-    ImapConfig imapConfig = {
+    ImapConfiguration imapConfig = {
          port: 3143,
          security: START_TLS_AUTO
     };

@@ -28,7 +28,7 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while starting secure IMAP server.");
     }
 
-    ImapConfig imapConfig = {
+    ImapConfiguration imapConfig = {
          port: 3993,
          secureSocket: {
              cert: "tests/resources/certsandkeys/greenmail.crt",

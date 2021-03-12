@@ -27,7 +27,7 @@ public client class ImapClient {
     # + clientConfig - Configurations for the IMAP Client
     # + return - An `email:Error` if failed while creating the client or else `()`
     public isolated function init(string host, string username, string password,
-            ImapConfig clientConfig = {}) returns Error? {
+            ImapConfiguration clientConfig = {}) returns Error? {
         return initImapClientEndpoint(self, host, username, password, clientConfig);
     }
 
@@ -57,7 +57,7 @@ public client class ImapClient {
 }
 
 isolated function initImapClientEndpoint(ImapClient clientEndpoint, string host, string username, string password,
-        ImapConfig config) returns Error? = @java:Method {
+        ImapConfiguration config) returns Error? = @java:Method {
     name : "initImapClientEndpoint",
     'class : "org.ballerinalang.stdlib.email.client.EmailAccessClient"
 } external;
@@ -78,7 +78,7 @@ isolated function imapClose(ImapClient clientEndpoint) returns Error? = @java:Me
 # + port - Port number of the IMAP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
-public type ImapConfig record {|
+public type ImapConfiguration record {|
     int port = 993;
     Security security = SSL;
     SecureSocket secureSocket?;

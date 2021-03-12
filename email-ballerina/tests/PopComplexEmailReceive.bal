@@ -37,7 +37,7 @@ function testReceiveComplexEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while sending email to complex POP server.");
     }
 
-    PopConfig popConfig = {
+    PopConfiguration popConfig = {
          port: 3110,
          security: START_TLS_AUTO
     };
