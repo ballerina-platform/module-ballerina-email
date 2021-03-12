@@ -39,7 +39,7 @@ function testSendSimpleEmail() returns @tainted error? {
                 versions: ["TLSv1.2", "TLSv1.1"]
             },
             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-            verifyHostname: false
+            verifyHostName: false
         }
     };
 

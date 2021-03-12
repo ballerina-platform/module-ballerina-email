@@ -80,7 +80,7 @@ public type Attachment record {|
 # + cert - Server certificate path
 # + protocol - SSL or TLS protocol
 # + ciphers - Ciper used
-# + verifyHostname - Enable hostname verification
+# + verifyHostName - Enable hostname verification
 public type SecureSocket record {|
     string cert;
     record {|
@@ -88,7 +88,7 @@ public type SecureSocket record {|
         string[] versions = [];
     |} protocol?;
     string[] ciphers?;
-    boolean verifyHostname = true;
+    boolean verifyHostName = true;
 |};
 
 # Security type.
