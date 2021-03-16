@@ -173,7 +173,7 @@ public type PopListenerConfiguration record {|
     SecureSocket secureSocket?;
 |};
 
-isolated function externListenerClose(PopListener|ImapListener listenerEndpoint) returns error? = @java:Method{
+isolated function externListenerClose(PopListener|ImapListener listenerEndpoint) returns Error? = @java:Method{
     name: "close",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;
@@ -185,7 +185,7 @@ isolated function poll(PopListener|ImapListener listenerEndpoint) returns error?
 
 isolated function externalInit(PopListener|ImapListener listenerEndpoint,
     PopListenerConfiguration|ImapListenerConfiguration config, PopConfiguration|ImapConfiguration protocolConfig,
-    string protocol) returns error? = @java:Method{
+    string protocol) returns Error? = @java:Method{
     name: "init",
     'class: "org.ballerinalang.stdlib.email.server.EmailListenerHelper"
 } external;

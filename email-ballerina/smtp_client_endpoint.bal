@@ -44,7 +44,7 @@ public client class SmtpClient {
         if (email?.contentType == ()) {
             email.contentType = "text/plain";
         } else if (!self.containsType(email?.contentType, "text")) {
-            return error SendError("Content type of the email should be text.");
+            return error Error("Content type of the email should be text.");
         }
         self.putAttachmentToArray(email);
         return send(self, email);

@@ -70,7 +70,7 @@ public class EmailAccessClient {
             properties = EmailAccessUtil.getPopProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
             log.error("Failed to initialize POP3 server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         Session session = Session.getInstance(properties, null);
         try {
@@ -82,7 +82,7 @@ public class EmailAccessClient {
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
         } catch (MessagingException e) {
             log.error("Failed initialize client properties : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         return null;
     }
@@ -103,7 +103,7 @@ public class EmailAccessClient {
             properties = EmailAccessUtil.getImapProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
             log.error("Failed to initialize IMAP server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         Session session = Session.getInstance(properties, null);
         try {
@@ -115,7 +115,7 @@ public class EmailAccessClient {
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
         } catch (MessagingException e) {
             log.error("Failed initialize client properties : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.READ_CLIENT_INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         return null;
     }
@@ -178,7 +178,7 @@ public class EmailAccessClient {
             }
         } catch (InterruptedException e) {
             log.error("Interrupted during the thread sleep : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.READ_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         return null;
     }
@@ -213,7 +213,7 @@ public class EmailAccessClient {
             return mapValue;
         } catch (MessagingException | IOException e) {
             log.error("Failed to read message : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.READ_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }
 
@@ -227,7 +227,7 @@ public class EmailAccessClient {
             store.close();
         } catch (MessagingException e) {
             log.error("Failed to close client : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.CLOSE_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         return null;
     }

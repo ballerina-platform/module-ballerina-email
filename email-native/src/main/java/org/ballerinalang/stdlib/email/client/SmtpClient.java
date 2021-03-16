@@ -61,14 +61,14 @@ public class SmtpClient {
     public static Object initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
                                           BMap<BString, Object> config) {
         if (config.size() == 0) {
-            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, "SmtpConfiguration should not be empty.");
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, "SmtpConfig should not be empty.");
         }
         Properties properties;
         try {
             properties = SmtpUtil.getProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
             log.error("Failed to initialize SMTP server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.INIT_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
@@ -95,7 +95,7 @@ public class SmtpClient {
             return null;
         } catch (MessagingException | IOException e) {
             log.error("Failed to send message to SMTP server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.SEND_ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }
 

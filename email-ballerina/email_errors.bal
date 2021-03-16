@@ -14,14 +14,5 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents an error that occurs when sending an email fails.
-public type SendError error;
-
-# Represents an error that occurs when the email store access fails.
-public type ReadClientInitError error;
-
-# Represents an error that occurs an email read operation fails.
-public type ReadError error;
-
-# Represents email related errors.
-public type Error SendError|ReadClientInitError|ReadError;
+# Defines the common error type for the module
+public type Error distinct error;
