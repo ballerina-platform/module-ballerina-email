@@ -90,9 +90,6 @@ public class EmailConstants {
     public static final String PROPS_FOLDER = "folder";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
     public static final String MIME_CONTENT_TYPE_PATTERN = "multipart/*";
-    public static final String READ_CLIENT_INIT_ERROR = "ReadClientInitError";
-    public static final String READ_ERROR = "ReadError";
-    public static final String CLOSE_ERROR = "CloseError";
     public static final BString ENDPOINT_CONFIG_SECURE_SOCKET = StringUtils.fromString("secureSocket");
     public static final BString ENDPOINT_CONFIG_PRIVATE_KEY = StringUtils.fromString("privateKey");
     public static final BString ENDPOINT_CONFIG_PATH = StringUtils.fromString("path");
@@ -155,8 +152,6 @@ public class EmailConstants {
     public static final String PROPS_SMTP_AUTH = "mail.smtp.auth";
     public static final String PROPS_SMTP_STARTTLS = "mail.smtp.starttls.enable";
     public static final String PROPS_SMTP_STARTTLS_REQUIRED = "mail.smtp.starttls.required";
-    public static final String SEND_ERROR = "SendError";
-    public static final String INIT_ERROR = "InitializationError";
 
     public static final String EMAIL_MESSAGE = "Message";
     public static final String ERROR = "Error";
