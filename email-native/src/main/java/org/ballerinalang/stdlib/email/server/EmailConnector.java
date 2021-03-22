@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -73,21 +74,26 @@ public class EmailConnector {
     /**
      * Close the connection from the POP3/IMAP server.
      */
-    public void close() {
-        if (isPollOperationOccupied.compareAndSet(false, true)) {
-            try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Close method invoked.");
+    public void close() throws InterruptedException {
+        for (int i = 0; i < 60; i++) {
+            if (isPollOperationOccupied.compareAndSet(false, true)) {
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Close method invoked.");
+                    }
+                    consumer.close();
+                    break;
+                } catch (Exception e) {
+                    log.error("Error executing the closing cycle of RemoteFileSystemServer", e);
+                } finally {
+                    isPollOperationOccupied.set(false);
                 }
-                consumer.close();
-            } catch (Exception e) {
-                log.error("Error executing the closing cycle of RemoteFileSystemServer", e);
-            } finally {
-                isPollOperationOccupied.set(false);
+            } else {
+                log.warn("An email closing job was skipped as the previous poll/close job was still processing.");
             }
-        } else {
-            log.warn("A scheduled email closing job was skipped as the previous poll/close job was still processing.");
+            Thread.sleep(new Random().nextInt(2000));
         }
+
     }
 
     protected EmailListener getEmailListener() {
