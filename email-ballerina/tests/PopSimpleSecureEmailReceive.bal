@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/jballerina.java;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 @test:Config {
@@ -41,7 +42,14 @@ function testReceiveSimpleEmailPop() returns @tainted error? {
              verifyHostName: false
          }
     };
-    PopClient|Error popClientOrError = new (host, username, password, popConfig);
+    PopClient|Error popClientOrError = new (host, username, "wrongPassword", popConfig);
+    if (popClientOrError is PopClient) {
+        test:assertFail(msg = "An error is not generated when an incorrect login password is used in the POP3 client.");
+    } else {
+        test:assertTrue(strings:includes(popClientOrError.message(), "Authentication failed"),
+            msg = "Incorrect error message while incorrect password login attempt with POP3 client.");
+    }
+    popClientOrError = new (host, username, password, popConfig);
     if (popClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the POP3 client.");
     }

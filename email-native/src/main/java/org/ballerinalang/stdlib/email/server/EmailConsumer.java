@@ -76,8 +76,7 @@ public class EmailConsumer {
                                                     StringUtils.fromString(username),
                                                     StringUtils.fromString(password), protocolConfig);
         } else {
-            String errorMsg = "Protocol should either be 'IMAP' or 'POP'.";
-            throw new EmailConnectorException(errorMsg);
+            throw new EmailConnectorException("Protocol should either be 'IMAP' or 'POP'.");
         }
     }
 
@@ -86,9 +85,8 @@ public class EmailConsumer {
      */
     public void consume() {
         if (log.isDebugEnabled()) {
-            log.debug("Consumer thread name: " + Thread.currentThread().getName());
-            log.debug("Consumer hashcode: " + this.hashCode());
-            log.debug("Polling for an email...");
+            log.debug("Consumer thread name: " + Thread.currentThread().getName() + " hashcode: " + this.hashCode()
+                    + " is polling for an email...");
         }
         Object message = EmailAccessClient.readMessage(client,
                 StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION), BDecimal.valueOf(0));
@@ -112,9 +110,8 @@ public class EmailConsumer {
      */
     public void close() {
         if (log.isDebugEnabled()) {
-            log.debug("Close thread name: " + Thread.currentThread().getName());
-            log.debug("Close hashcode: " + this.hashCode());
-            log.debug("Polling for closing...");
+            log.debug("Close thread name: " + Thread.currentThread().getName() + " hashcode: " + this.hashCode()
+                    + " is polling for closing...");
         }
         Object message = EmailAccessClient.close(client);
         if (message instanceof BError) {

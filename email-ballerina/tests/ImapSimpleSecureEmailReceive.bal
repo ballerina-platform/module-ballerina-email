@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/jballerina.java;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 @test:Config {}
@@ -40,7 +41,14 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
              verifyHostName: false
          }
     };
-    ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
+    ImapClient|Error imapClientOrError = new (host, username,"wrongPassword", imapConfig);
+    if (imapClientOrError is ImapClient) {
+        test:assertFail(msg = "An error is not generated when an incorrect login password is used in the IMAP client.");
+    } else {
+        test:assertTrue(strings:includes(imapClientOrError.message(), "LOGIN failed. Invalid login/password"),
+        msg = "Incorrect error message while incorrect password login attempt with IMAP client.");
+    }
+    imapClientOrError = new (host, username, password, imapConfig);
     if (imapClientOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 client.");
     }

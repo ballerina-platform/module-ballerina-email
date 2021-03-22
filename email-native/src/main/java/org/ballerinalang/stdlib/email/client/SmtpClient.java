@@ -60,7 +60,7 @@ public class SmtpClient {
      */
     public static Object initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
                                           BMap<BString, Object> config) {
-        if (config.size() == 0) {
+        if (config == null || config.size() == 0) {
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, "SmtpConfiguration should not be empty.");
         }
         Properties properties;

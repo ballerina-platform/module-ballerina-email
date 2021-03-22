@@ -90,12 +90,6 @@ public class EmailConstants {
     public static final String PROPS_FOLDER = "folder";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
     public static final String MIME_CONTENT_TYPE_PATTERN = "multipart/*";
-    public static final BString ENDPOINT_CONFIG_SECURE_SOCKET = StringUtils.fromString("secureSocket");
-    public static final BString ENDPOINT_CONFIG_PRIVATE_KEY = StringUtils.fromString("privateKey");
-    public static final BString ENDPOINT_CONFIG_PATH = StringUtils.fromString("path");
-    public static final BString ENDPOINT_CONFIG_PASS_KEY = StringUtils.fromString("password");
-    public static final String IDENTITY = "IDENTITY";
-    public static final String IDENTITY_PASS_PHRASE = "IDENTITY_PASS_PHRASE";
     public static final String EMAIL_SERVER_CONNECTOR = "serverConnector";
     public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocolConfig");
     public static final String DEFAULT_STORE_LOCATION = "INBOX";

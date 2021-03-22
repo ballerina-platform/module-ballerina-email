@@ -153,6 +153,15 @@ function testListenEmailImap() returns @tainted error? {
     test:assertTrue(strings:includes(getReceivedErrorImap(), "connection failure"),
         msg = "Listened error message is not matched with IMAP.");
 
+    Error? closeStatus = emailServer.close();
+    if (closeStatus is Error) {
+        test:assertFail(msg = "Error while closing IMAP listener.");
+    }
+
+    test:assertTrue(isOnCloseInvokedImap(), msg = "Close event was not listened by method, onClose with IMAP.");
+    test:assertTrue(getReceivedCloseImap() == "",
+        msg = "Error occurred while getting the error while closing the connection with IMAP.");
+
 }
 
 public function startImapListener() returns Error? = @java:Method {

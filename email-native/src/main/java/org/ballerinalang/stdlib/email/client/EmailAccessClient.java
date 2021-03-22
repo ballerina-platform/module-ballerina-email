@@ -68,20 +68,15 @@ public class EmailAccessClient {
         Properties properties;
         try {
             properties = EmailAccessUtil.getPopProperties(config, host.getValue());
-        } catch (IOException | GeneralSecurityException e) {
-            log.error("Failed to initialize POP3 server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
-        }
-        Session session = Session.getInstance(properties, null);
-        try {
+            Session session = Session.getInstance(properties, null);
             Store store = session.getStore(EmailConstants.POP_PROTOCOL);
             store.connect(host.getValue(), username.getValue(), password.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_STORE, store);
             clientEndpoint.addNativeData(EmailConstants.PROPS_HOST.getValue(), host.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
-        } catch (MessagingException e) {
-            log.error("Failed initialize client properties : ", e);
+        } catch (IOException | GeneralSecurityException | MessagingException e) {
+            log.error("Failed to initialize POP3 server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         return null;
@@ -101,20 +96,15 @@ public class EmailAccessClient {
         Properties properties;
         try {
             properties = EmailAccessUtil.getImapProperties(config, host.getValue());
-        } catch (IOException | GeneralSecurityException e) {
-            log.error("Failed to initialize IMAP server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
-        }
-        Session session = Session.getInstance(properties, null);
-        try {
+            Session session = Session.getInstance(properties, null);
             Store store = session.getStore(EmailConstants.IMAP_PROTOCOL);
             store.connect(host.getValue(), username.getValue(), password.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_STORE, store);
             clientEndpoint.addNativeData(EmailConstants.PROPS_HOST.getValue(), host.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
-        } catch (MessagingException e) {
-            log.error("Failed initialize client properties : ", e);
+        } catch (IOException | GeneralSecurityException | MessagingException e) {
+            log.error("Failed to initialize IMAP server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         return null;
