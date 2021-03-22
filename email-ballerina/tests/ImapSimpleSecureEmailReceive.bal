@@ -41,7 +41,7 @@ function testReceiveSimpleEmailImap() returns @tainted error? {
              verifyHostName: false
          }
     };
-    ImapClient|Error imapClientOrError = new (host, username,"wrongPassword", imapConfig);
+    ImapClient|Error imapClientOrError = new (host, username, "wrongPassword", imapConfig);
     if (imapClientOrError is ImapClient) {
         test:assertFail(msg = "An error is not generated when an incorrect login password is used in the IMAP client.");
     } else {
