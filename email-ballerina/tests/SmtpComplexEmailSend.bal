@@ -19,9 +19,9 @@ import ballerina/mime;
 import ballerina/test;
 
 @test:Config {
-    //dependsOn: [
-    //    testSendEmailWithOptions
-    //]
+    dependsOn: [
+        testSendEmailWithOptions
+    ]
 }
 function testSendComplexEmail() returns @tainted error? {
 

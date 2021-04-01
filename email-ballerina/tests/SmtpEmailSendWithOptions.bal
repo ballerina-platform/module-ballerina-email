@@ -18,9 +18,9 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 import ballerina/test;
 
-//@test:Config {
-//    dependsOn: [testSendSimpleEmail]
-//}
+@test:Config {
+    dependsOn: [testSendSimpleEmail]
+}
 function testSendEmailWithOptions() returns @tainted error? {
 
     string host = "127.0.0.1";
