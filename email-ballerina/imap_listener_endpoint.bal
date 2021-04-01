@@ -140,7 +140,7 @@ class Job {
     *task:Job;
     private ImapListener imapListener;
 
-    public function execute() {
+    public isolated function execute() {
         var result = self.imapListener.poll();
         if (result is error) {
             log:printError("Error while executing poll function", 'error = result);

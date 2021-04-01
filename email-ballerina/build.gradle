@@ -23,14 +23,16 @@ def packageName = "email"
 def packageOrg = "ballerina"
 def platform = "java11"
 def tomlVersion = project.version.replace("-SNAPSHOT", "")
-def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
-def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
+def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
+def dependenciesTomlFile = new File("$project.projectDir/Dependencies.toml")
+def compilerPluginTomlFile = new File("$project.projectDir/CompilerPlugin.toml")
 def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
 def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
 def artifactLibParent = file("$project.projectDir/build/lib_parent/")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
-def originalConfig = ballerinaConfigFile.text
-def originalDependencyConfig = ballerinaDependencyFile.text
+def originalBallerinaToml = ballerinaTomlFile.text
+def originalDependenciesToml = dependenciesTomlFile.text
+def originalCompilerPluginToml = compilerPluginTomlFile.text
 def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/" +
         "jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
 
@@ -40,9 +42,6 @@ configurations {
 }
 
 dependencies {
-    jbalTools("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
-        transitive = false
-    }
     compile project(":${packageName}-native")
     packingJars (group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
         transitive = false
@@ -107,7 +106,7 @@ task copyStdlibs(type: Copy) {
     }
 }
 
-task updateTomlFile {
+task updateTomlFiles {
     doLast {
         def stdlibDependentTaskVersion = project.stdlibTaskVersion.replace("-SNAPSHOT", "")
         def stdlibDependentMimeVersion = project.stdlibMimeVersion.replace("-SNAPSHOT", "")
@@ -116,25 +115,29 @@ task updateTomlFile {
         def stdlibDependentLogVersion = project.stdlibLogVersion.replace("-SNAPSHOT", "")
         def stdlibDependentOsVersion = project.stdlibOsVersion.replace("-SNAPSHOT", "")
         def stdlibDependentIoVersion = project.stdlibIoVersion.replace("-SNAPSHOT", "")
-        def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
-        newConfig = newConfig.replace("@toml.version@", tomlVersion)
-        ballerinaConfigFile.text = newConfig
+        def newBallerinaToml = ballerinaTomlFile.text.replace("@project.version@", project.version)
+        newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
+        ballerinaTomlFile.text = newBallerinaToml
 
-        def newDependencyConfig = ballerinaDependencyFile.text.replace("@stdlib.task.version@", stdlibDependentTaskVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.mime.version@", stdlibDependentMimeVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.file.version@", stdlibDependentFileVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.time.version@", stdlibDependentTimeVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.log.version@", stdlibDependentLogVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.os.version@", stdlibDependentOsVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.io.version@", stdlibDependentIoVersion)
-        ballerinaDependencyFile.text = newDependencyConfig
+        def newDependenciesToml = dependenciesTomlFile.text.replace("@stdlib.task.version@", stdlibDependentTaskVersion)
+        newDependenciesToml = newDependenciesToml.replace("@stdlib.mime.version@", stdlibDependentMimeVersion)
+        newDependenciesToml = newDependenciesToml.replace("@stdlib.file.version@", stdlibDependentFileVersion)
+        newDependenciesToml = newDependenciesToml.replace("@stdlib.time.version@", stdlibDependentTimeVersion)
+        newDependenciesToml = newDependenciesToml.replace("@stdlib.log.version@", stdlibDependentLogVersion)
+        newDependenciesToml = newDependenciesToml.replace("@stdlib.os.version@", stdlibDependentOsVersion)
+        newDependenciesToml = newDependenciesToml.replace("@stdlib.io.version@", stdlibDependentIoVersion)
+        dependenciesTomlFile.text = newDependenciesToml
+
+        def newCompilerPluginToml = compilerPluginTomlFile.text.replace("@project.version@", project.version)
+        compilerPluginTomlFile.text = newCompilerPluginToml
     }
 }
 
-task revertTomlFile {
+task revertTomlFiles {
     doLast {
-        ballerinaConfigFile.text = originalConfig
-        ballerinaDependencyFile.text = originalDependencyConfig
+        ballerinaTomlFile.text = originalBallerinaToml
+        dependenciesTomlFile.text = originalDependenciesToml
+        compilerPluginTomlFile.text = originalCompilerPluginToml
     }
 }
 
@@ -182,11 +185,12 @@ task initializeVariables {
 
 task ballerinaTest {
     dependsOn(copyStdlibs)
-    dependsOn(":email-native:build")
-    dependsOn(":email-test-utils:build")
-    dependsOn(updateTomlFile)
+    dependsOn(":${packageName}-native:build")
+    dependsOn ":${packageName}-compiler-plugin:build"
+    dependsOn(":${packageName}-test-utils:build")
+    dependsOn(updateTomlFiles)
     dependsOn(initializeVariables)
-    finalizedBy(revertTomlFile)
+    finalizedBy(revertTomlFiles)
 
     doLast {
         exec {
@@ -208,7 +212,7 @@ test {
 task ballerinaBuild {
     inputs.dir file(project.projectDir)
     dependsOn(initializeVariables)
-    finalizedBy(revertTomlFile)
+    finalizedBy(revertTomlFiles)
 
     doLast {
         // Build and populate caches
@@ -218,7 +222,7 @@ task ballerinaBuild {
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'cmd', '/c', "$balJavaDebugParam $distributionBinPath/bal.bat build -c ${testParams} ${debugParams} && exit %%ERRORLEVEL%%"
             } else {
-                commandLine 'sh', '-c', "$balJavaDebugParam $distributionBinPath/bal build -c ${testParams} ${debugParams}"
+                commandLine 'sh', '-c', "$balJavaDebugParam $distributionBinPath/bal build -c ${testParams} ${debugParams} && $distributionBinPath/bal push --repository=local"
             }
         }
         // extract bala file to artifact cache directory
@@ -318,17 +322,18 @@ publishing {
 }
 
 ballerinaBuild.dependsOn ":${packageName}-native:build"
+ballerinaBuild.dependsOn ":${packageName}-compiler-plugin:build"
 ballerinaBuild.dependsOn ":${packageName}-test-utils:build"
 unpackStdLibs.dependsOn unpackJballerinaTools
 copyStdlibs.dependsOn unpackStdLibs
-updateTomlFile.dependsOn copyStdlibs
-ballerinaBuild.dependsOn updateTomlFile
+updateTomlFiles.dependsOn copyStdlibs
+ballerinaBuild.dependsOn updateTomlFiles
 unpackJballerinaTools.dependsOn copyPackingJarsToLib
 build.dependsOn ballerinaBuild
 
 ballerinaPublish.dependsOn ":${packageName}-native:build"
 ballerinaPublish.dependsOn ballerinaBuild
-ballerinaPublish.dependsOn updateTomlFile
+ballerinaPublish.dependsOn updateTomlFiles
 ballerinaPublish.dependsOn initializeVariables
-ballerinaPublish.finalizedBy revertTomlFile
+ballerinaPublish.finalizedBy revertTomlFiles
 publish.dependsOn ballerinaPublish
