@@ -56,7 +56,13 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
     private String modulePrefix;
     private SyntaxNodeAnalysisContext ctx;
 
-    private static final String CODE = "EMAIL_101";
+    public static final String CODE_101 = "EMAIL_101";
+    public static final String CODE_102 = "EMAIL_102";
+    public static final String CODE_103 = "EMAIL_103";
+    public static final String CODE_104 = "EMAIL_104";
+    public static final String CODE_105 = "EMAIL_105";
+    public static final String CODE_106 = "EMAIL_106";
+    public static final String CODE_107 = "EMAIL_107";
     public static final String SERVICE_MUST_CONTAIN_ON_MESSAGE_FUNCTION
             = "Service must contain `onMessage` function.";
     public static final String NO_PARAMETER_PROVIDED_FOR_0_FUNCTION_EXPECTS_1_AS_A_PARAMETER
@@ -133,7 +139,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
         boolean hasResourceKeyword = functionDefinitionNode.qualifierList().stream()
                 .filter(qualifier -> qualifier.kind() == SyntaxKind.RESOURCE_KEYWORD).toArray().length == 1;
         if (hasResourceKeyword) {
-            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE,
+            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_105,
                     RESOURCE_KEYWORD_NOT_EXPECTED_IN_0_FUNCTION_SIGNATURE,
                     DiagnosticSeverity.ERROR);
             ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
@@ -148,7 +154,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
     }
 
     private void reportInvalidFunction(FunctionDefinitionNode functionDefinitionNode) {
-        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE, FUNCTION_0_NOT_ACCEPTED_BY_THE_SERVICE,
+        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_103, FUNCTION_0_NOT_ACCEPTED_BY_THE_SERVICE,
                 DiagnosticSeverity.ERROR);
         ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
                 functionDefinitionNode.location(), functionDefinitionNode.functionName().toString()));
@@ -168,7 +174,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
 
     private void checkOnMessageFunctionExistence() {
         if (onMessageFunctionNode == null) {
-            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE,
+            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_102,
                     SERVICE_MUST_CONTAIN_ON_MESSAGE_FUNCTION, DiagnosticSeverity.ERROR);
             ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
                     ctx.node().location()));
@@ -179,7 +185,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
         boolean hasRemoteKeyword = functionDefinitionNode.qualifierList().stream()
                 .filter(qualifier -> qualifier.kind() == SyntaxKind.REMOTE_KEYWORD).toArray().length == 1;
         if (!hasRemoteKeyword) {
-            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE,
+            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_101,
                     REMOTE_KEYWORD_EXPECTED_IN_0_FUNCTION_SIGNATURE,
                     DiagnosticSeverity.ERROR);
             ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
@@ -191,7 +197,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
                                     FunctionDefinitionNode functionDefinitionNode,
                                     String functionName) {
         if (parameterNodes.isEmpty()) {
-            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE,
+            DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_106,
                     NO_PARAMETER_PROVIDED_FOR_0_FUNCTION_EXPECTS_1_AS_A_PARAMETER, DiagnosticSeverity.ERROR);
             String expectedParameter = functionName.equals(ON_MESSAGE) ?
                     modulePrefix + EMAIL_MESSAGE : functionName.equals(ON_ERROR) ?
@@ -210,19 +216,19 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             DiagnosticInfo diagnosticInfo;
             if (functionName.equals(ON_MESSAGE) && (!parameterTypeName.toString().contains(EMAIL_MESSAGE)
                     || !parameterTypeName.toString().contains(MODULE_NAME))) {
-                diagnosticInfo = new DiagnosticInfo(CODE,
+                diagnosticInfo = new DiagnosticInfo(CODE_104,
                         INVALID_PARAMETER_0_PROVIDED_FOR_1_FUNCTION_EXPECTS_2, DiagnosticSeverity.ERROR);
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
                         requiredParameterNode.location(), requiredParameterNode, functionName,
                         modulePrefix + EMAIL_MESSAGE));
             } else if (functionName.equals(ON_ERROR) && !parameterTypeName.toString().contains(ERROR)) {
-                diagnosticInfo = new DiagnosticInfo(CODE,
+                diagnosticInfo = new DiagnosticInfo(CODE_104,
                         INVALID_PARAMETER_0_PROVIDED_FOR_1_FUNCTION_EXPECTS_2, DiagnosticSeverity.ERROR);
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
                         requiredParameterNode.location(), requiredParameterNode, functionName,
                         modulePrefix + ERROR));
             } else if (functionName.equals(ON_CLOSE) && !parameterTypeName.toString().contains(ERROR)) {
-                diagnosticInfo = new DiagnosticInfo(CODE,
+                diagnosticInfo = new DiagnosticInfo(CODE_104,
                         INVALID_PARAMETER_0_PROVIDED_FOR_1_FUNCTION_EXPECTS_2, DiagnosticSeverity.ERROR);
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
                         requiredParameterNode.location(), requiredParameterNode, functionName,
@@ -238,7 +244,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             return;
         }
         Node returnTypeDescriptor = returnTypeDescriptorNode.get().type();
-        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE,
+        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_107,
                 INVALID_RETURN_TYPE_0_FUNCTION_1_RETURN_TYPE_SHOULD_BE_A_SUBTYPE_OF_2, DiagnosticSeverity.ERROR);
         ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
                 returnTypeDescriptor.location(), returnTypeDescriptor.toString(), functionName, NILL));
