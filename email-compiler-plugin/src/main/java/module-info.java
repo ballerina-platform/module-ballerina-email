@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -11,17 +11,15 @@
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
+ * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
 
-module io.ballerina.stdlib.email.testutils {
-    requires org.slf4j;
-    requires greenmail;
-    requires io.ballerina.stdlib.mime;
-    requires java.mail;
+module io.ballerina.stdlib.email.compiler {
+    requires io.ballerina.lang;
+    requires io.ballerina.parser;
+    requires io.ballerina.tools.api;
     requires io.ballerina.stdlib.email;
-    requires org.testng;
-    exports org.ballerinalang.stdlib.email.testutils;
+    exports io.ballerina.stdlib.email.compiler;
 }

@@ -142,7 +142,7 @@ class PopJob {
     *task:Job;
     private PopListener popListener;
 
-    public function execute() {
+    public isolated function execute() {
         var result = self.popListener.poll();
         if (result is error) {
             log:printError("Error while executing poll function", 'error = result);
