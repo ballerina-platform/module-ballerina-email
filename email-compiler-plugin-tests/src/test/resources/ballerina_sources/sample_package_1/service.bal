@@ -42,4 +42,8 @@ service "testImapService" on new email:ImapListener({
 
     }
 
+    function prepareEmail() {
+
+    }
+
 }

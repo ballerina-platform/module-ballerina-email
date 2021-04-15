@@ -116,7 +116,7 @@ public class CompilerPluginTest {
         Package currentPackage = loadPackage("sample_package_6");
         PackageCompilation compilation = currentPackage.getCompilation();
         DiagnosticResult diagnosticResult = compilation.diagnosticResult();
-        Assert.assertEquals(diagnosticResult.diagnostics().size(), 2);
+        Assert.assertEquals(diagnosticResult.diagnostics().size(), 1);
         Diagnostic diagnostic = (Diagnostic) diagnosticResult.diagnostics().toArray()[0];
         Assert.assertEquals(diagnostic.diagnosticInfo().code(), CODE_105);
         Assert.assertEquals(diagnostic.diagnosticInfo().messageFormat(),

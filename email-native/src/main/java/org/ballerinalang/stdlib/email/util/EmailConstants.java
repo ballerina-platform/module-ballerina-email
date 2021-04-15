@@ -34,6 +34,7 @@ public class EmailConstants {
 
     // Common constants
     public static final String MODULE_NAME = "email";
+    public static final String ORG_NAME = "ballerina";
 
      /**
      * email standard library version.

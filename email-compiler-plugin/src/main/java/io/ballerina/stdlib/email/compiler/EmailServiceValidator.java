@@ -111,14 +111,15 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
 
     public void validate() {
         ServiceDeclarationNode serviceDeclarationNode = (ServiceDeclarationNode) ctx.node();
-        serviceDeclarationNode.members().stream().filter(this::isResourceOrRemoteFunction).forEach(node -> {
+        serviceDeclarationNode.members().stream().filter(this::isResourceOrFunction).forEach(node -> {
             FunctionDefinitionNode functionDefinitionNode = (FunctionDefinitionNode) node;
             String functionName = functionDefinitionNode.functionName().toString();
             checkOnResourceFunctionExistence(functionDefinitionNode, functionName);
+            Boolean isRemoteFunction = isRemoteFunction(functionDefinitionNode);
             Boolean notOnMessage = (functionName.compareTo(ON_MESSAGE) != 0);
             Boolean notOnError = (functionName.compareTo(ON_ERROR) != 0);
             Boolean notOnClose = (functionName.compareTo(ON_CLOSE) != 0);
-            if (notOnMessage && notOnError && notOnClose) {
+            if (isRemoteFunction && notOnMessage && notOnError && notOnClose) {
                 reportInvalidFunction(functionDefinitionNode);
             } else {
                 onMessageFunctionNode = functionName.compareTo(ON_MESSAGE) == 0 ? functionDefinitionNode
@@ -147,10 +148,15 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
         }
     }
 
-    private boolean isResourceOrRemoteFunction(Node node) {
-        boolean isResourceFunction = node.kind() == SyntaxKind.RESOURCE_ACCESSOR_DEFINITION;
-        boolean isRemoteFunction = node.kind() == SyntaxKind.OBJECT_METHOD_DEFINITION;
-        return isResourceFunction || isRemoteFunction;
+    private boolean isResourceOrFunction(Node node) {
+        boolean isResource = node.kind() == SyntaxKind.RESOURCE_ACCESSOR_DEFINITION;
+        boolean isFunction = node.kind() == SyntaxKind.OBJECT_METHOD_DEFINITION;
+        return isResource || isFunction;
+    }
+
+    private boolean isRemoteFunction(FunctionDefinitionNode functionDefinitionNode) {
+        return functionDefinitionNode.qualifierList().stream()
+                .filter(qualifier -> qualifier.kind() == SyntaxKind.REMOTE_KEYWORD).toArray().length == 1;
     }
 
     private void reportInvalidFunction(FunctionDefinitionNode functionDefinitionNode) {
@@ -182,9 +188,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
     }
 
     private void checkRemoteKeywords(FunctionDefinitionNode functionDefinitionNode, String functionName) {
-        boolean hasRemoteKeyword = functionDefinitionNode.qualifierList().stream()
-                .filter(qualifier -> qualifier.kind() == SyntaxKind.REMOTE_KEYWORD).toArray().length == 1;
-        if (!hasRemoteKeyword) {
+        if (!isRemoteFunction(functionDefinitionNode)) {
             DiagnosticInfo diagnosticInfo = new DiagnosticInfo(CODE_101,
                     REMOTE_KEYWORD_EXPECTED_IN_0_FUNCTION_SIGNATURE,
                     DiagnosticSeverity.ERROR);
