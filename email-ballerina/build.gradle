@@ -22,7 +22,7 @@ description = 'Ballerina - Ballerina Email Connector'
 def packageName = "email"
 def packageOrg = "ballerina"
 def platform = "java11"
-def tomlVersion = project.version.replace("-SNAPSHOT", "")
+def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
 def dependenciesTomlFile = new File("$project.projectDir/Dependencies.toml")
 def compilerPluginTomlFile = new File("$project.projectDir/CompilerPlugin.toml")
@@ -35,6 +35,20 @@ def originalDependenciesToml = dependenciesTomlFile.text
 def originalCompilerPluginToml = compilerPluginTomlFile.text
 def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/" +
         "jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
+
+def stripBallerinaExtensionVersion(String extVersion) {
+    if (extVersion.matches(project.ext.timestampedVersionRegex)) {
+        def splitVersion = extVersion.split('-');
+        if (splitVersion.length > 3) {
+            def strippedValues = splitVersion[0..-4]
+            return strippedValues.join('-')
+        } else {
+            return extVersion
+        }
+    } else {
+        return extVersion.replace("${project.ext.snapshotVersion}", "")
+    }
+}
 
 configurations {
     jbalTools
@@ -108,13 +122,13 @@ task copyStdlibs(type: Copy) {
 
 task updateTomlFiles {
     doLast {
-        def stdlibDependentTaskVersion = project.stdlibTaskVersion.replace("-SNAPSHOT", "")
-        def stdlibDependentMimeVersion = project.stdlibMimeVersion.replace("-SNAPSHOT", "")
-        def stdlibDependentFileVersion = project.stdlibFileVersion.replace("-SNAPSHOT", "")
-        def stdlibDependentTimeVersion = project.stdlibTimeVersion.replace("-SNAPSHOT", "")
-        def stdlibDependentLogVersion = project.stdlibLogVersion.replace("-SNAPSHOT", "")
-        def stdlibDependentOsVersion = project.stdlibOsVersion.replace("-SNAPSHOT", "")
-        def stdlibDependentIoVersion = project.stdlibIoVersion.replace("-SNAPSHOT", "")
+        def stdlibDependentTaskVersion = stripBallerinaExtensionVersion(project.stdlibTaskVersion)
+        def stdlibDependentMimeVersion = stripBallerinaExtensionVersion(project.stdlibMimeVersion)
+        def stdlibDependentFileVersion = stripBallerinaExtensionVersion(project.stdlibFileVersion)
+        def stdlibDependentTimeVersion = stripBallerinaExtensionVersion(project.stdlibTimeVersion)
+        def stdlibDependentLogVersion = stripBallerinaExtensionVersion(project.stdlibLogVersion)
+        def stdlibDependentOsVersion = stripBallerinaExtensionVersion(project.stdlibOsVersion)
+        def stdlibDependentIoVersion = stripBallerinaExtensionVersion(project.stdlibIoVersion)
         def newBallerinaToml = ballerinaTomlFile.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
         ballerinaTomlFile.text = newBallerinaToml
