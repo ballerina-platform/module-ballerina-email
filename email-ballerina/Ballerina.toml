@@ -25,10 +25,10 @@ version = "1.9.11"
 
 
 [[platform.java11.dependency]]
-path = "./lib/testng-6.14.3.jar"
+path = "./lib/testng-7.4.0.jar"
 groupId = "org.testng"
 artifactId = "testng"
-version = "6.14.3"
+version = "7.4.0"
 
 
 [[platform.java11.dependency]]
