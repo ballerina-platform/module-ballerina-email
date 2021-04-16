@@ -20,7 +20,8 @@ module io.ballerina.stdlib.email.testutils {
     requires org.slf4j;
     requires greenmail;
     requires io.ballerina.stdlib.mime;
-    requires java.mail;
+    requires jakarta.mail;
+//    requires jakarta.activation;
     requires io.ballerina.stdlib.email;
     requires org.testng;
     exports org.ballerinalang.stdlib.email.testutils;

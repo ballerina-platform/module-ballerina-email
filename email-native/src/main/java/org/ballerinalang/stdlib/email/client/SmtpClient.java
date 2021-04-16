@@ -21,6 +21,10 @@ package org.ballerinalang.stdlib.email.client;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import org.ballerinalang.stdlib.email.util.CommonUtil;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
 import org.ballerinalang.stdlib.email.util.SmtpUtil;
@@ -30,11 +34,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Properties;
-
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
 
 /**
  * Contains functionality of SMTP Client.
@@ -71,7 +70,7 @@ public class SmtpClient {
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         Session session = Session.getInstance(properties,
-                new javax.mail.Authenticator() {
+                new jakarta.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username.getValue(), password.getValue());
                     }

@@ -30,7 +30,8 @@ dependencies {
     compile group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "${ballerinaLangVersion}"
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
 
-    compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
+    compile group: 'com.sun.mail', name: 'jakarta.mail', version: "${jakartaMailVersion}"
+    compile group: 'com.sun.activation', name: 'jakarta.activation', version: "${jakartaActivationVersion}"
     compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
 
     compile group: 'org.ballerinalang', name: 'ballerina-core', version: "${ballerinaLangVersion}"

@@ -24,7 +24,8 @@ module io.ballerina.stdlib.email {
     requires io.ballerina.tools.api;
     requires org.slf4j;
     requires io.ballerina.lang;
-    requires java.mail;
+    requires jakarta.mail;
     requires io.ballerina.stdlib.mime;
     requires io.ballerina.stdlib.io;
+    requires jakarta.activation;
 }

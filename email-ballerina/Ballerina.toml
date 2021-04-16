@@ -4,17 +4,23 @@ name = "email"
 version = "@toml.version@"
 
 [[platform.java11.dependency]]
-path = "./lib/javax.mail-1.6.2.jar"
-groupId = "javax.mail"
-artifactId = "java.mail"
-version = "1.6.2"
+path = "./lib/jakarta.mail-2.0.1.jar"
+groupId = "com.sun.mail"
+artifactId = "jakarta.mail"
+version = "2.0.1"
+
+[[platform.java11.dependency]]
+path = "./lib/jakarta.activation-2.0.0.jar"
+groupId = "com.sun.activation"
+artifactId = "jakarta.activation"
+version = "2.0.0"
 
 
 [[platform.java11.dependency]]
-path = "./lib/greenmail-1.5.11.jar"
+path = "./lib/greenmail-2.0.0-alpha-1.jar"
 groupId = "com.sun.mail"
 artifactId = "greenmail"
-version = "1.5.11"
+version = "2.0.0-alpha-1"
 
 
 [[platform.java11.dependency]]
