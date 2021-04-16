@@ -350,7 +350,8 @@ public class EmailAccessUtil {
     }
 
     private static BMap<BString, Object> extractHeadersFromMessage(Message message) throws MessagingException {
-        BMap<BString, Object> headerMap = ValueCreator.createMapValue();
+        BMap<BString, Object> headerMap
+                = ValueCreator.createMapValue(TypeCreator.createMapType(PredefinedTypes.TYPE_STRING));
         Enumeration<Header> headers = message.getAllHeaders();
         if (headers.hasMoreElements()) {
             while (headers.hasMoreElements()) {
