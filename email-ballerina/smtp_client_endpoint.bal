@@ -59,6 +59,7 @@ public client class SmtpClient {
     # + to - TO address list
     # + subject - Subject of email
     # + from - From address
+    # + body - Text body of the email
     # + options - Optional parameters of the email
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
     remote isolated function send(string|string[] to, string subject, string 'from, string body, *Options options)
