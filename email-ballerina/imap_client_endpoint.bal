@@ -37,6 +37,7 @@ public client class ImapClient {
     # ```
     #
     # + folder - Folder to read emails. The default value is `INBOX`
+    # + timeout - Polling timeout period in seconds.
     # + return - An `email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
     remote isolated function receiveMessage(string folder = DEFAULT_FOLDER, decimal timeout = 0)
