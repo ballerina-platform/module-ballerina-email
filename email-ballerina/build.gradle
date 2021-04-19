@@ -200,7 +200,7 @@ task initializeVariables {
         }
 
         if (graph.hasTask(":${packageName}-ballerina:test")) {
-            testParams = "--code-coverage --includes=*"
+            testParams = "--code-coverage --includes=io.ballerina.stdlib.email.*:ballerina.*"
         } else {
             testParams = "--skip-tests"
         }
