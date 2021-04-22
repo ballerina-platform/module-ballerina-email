@@ -164,7 +164,7 @@ def needSeparateTest = false
 def needBuildWithTest = false
 def needPublishToCentral = false
 def needPublishToLocalCentral = false
-def testCoverageParam = "--code-coverage --includes=org.ballerrinalang.stdlib.email."
+def testCoverageParam = "--code-coverage --includes=org.ballerinalang.stdlib.email.*:ballerina.*"
 
 task initializeVariables {
     if (project.hasProperty("groups")) {
@@ -200,7 +200,7 @@ task initializeVariables {
         }
 
         if (graph.hasTask(":${packageName}-ballerina:test")) {
-            testParams = "--code-coverage --includes=org.ballerrinalang.stdlib.email."
+            testParams = testCoverageParam
         } else {
             testParams = "--skip-tests"
         }
