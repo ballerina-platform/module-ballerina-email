@@ -1,7 +1,7 @@
 Ballerina Email Library
 =======================
 
-  [![Build](https://github.com/ballerina-platform/module-ballerina-email/workflows/Build%20master%20branch/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions?query=workflow%3ABuild)
+  [![Build](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-email.svg)](https://github.com/ballerina-platform/module-ballerina-email/commits/master)
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/email.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Femail)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
