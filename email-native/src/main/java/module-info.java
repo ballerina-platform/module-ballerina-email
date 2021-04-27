@@ -19,7 +19,6 @@
 module io.ballerina.stdlib.email {
     exports org.ballerinalang.stdlib.email.util;
     exports org.ballerinalang.stdlib.email.client;
-    exports org.ballerinalang.stdlib.email.service.compiler;
     requires io.ballerina.runtime;
     requires io.ballerina.tools.api;
     requires org.slf4j;
