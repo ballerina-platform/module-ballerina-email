@@ -19,7 +19,11 @@ import ballerina/jballerina.java;
 import ballerina/lang.'string as strings;
 import ballerina/test;
 
-@test:Config {}
+@test:Config {
+    dependsOn: [
+        testReceiveSimpleEmailImap
+    ]
+}
 function testReceiveComplexEmailImap() returns @tainted error? {
 
     string host = "127.0.0.1";

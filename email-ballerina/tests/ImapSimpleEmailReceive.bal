@@ -1,4 +1,4 @@
-// Copyright (c) 2020 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -18,27 +18,19 @@ import ballerina/jballerina.java;
 import ballerina/test;
 
 @test:Config {}
-function testReceiveSimpleSecureEmailImap() returns @tainted error? {
+function testReceiveSimpleEmailImap() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
 
-    Error? serverStatus = startSimpleSecureImapServer();
+    Error? serverStatus = startSimpleImapServer();
     if (serverStatus is Error) {
         test:assertFail(msg = "Error while starting secure IMAP server.");
     }
 
     ImapConfiguration imapConfig = {
-         port: 3993,
-         secureSocket: {
-             cert: "tests/resources/certsandkeys/greenmail.crt",
-             protocol: {
-                 name: TLS,
-                 versions: ["TLSv1.2", "TLSv1.1"]
-             },
-             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-             verifyHostName: false
-         }
+         port: 3143,
+         security: START_TLS_NEVER
     };
     ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
     if (imapClientOrError is Error) {
@@ -51,7 +43,7 @@ function testReceiveSimpleSecureEmailImap() returns @tainted error? {
     } else if (email is Message) {
         test:assertFail(msg = "Non zero emails received in zero read IMAP test.");
     }
-    Error? emailSendStatus = sendEmailSimpleSecureImapServer();
+    Error? emailSendStatus = sendEmailSimpleImapServer();
     if (emailSendStatus is Error) {
         test:assertFail(msg = "Error while sending email to secure IMAP server.");
     }
@@ -70,21 +62,21 @@ function testReceiveSimpleSecureEmailImap() returns @tainted error? {
         test:assertFail(msg = "Error while closing secure POP server.");
     }
 
-    serverStatus = stopSimpleSecureImapServer();
+    serverStatus = stopSimpleImapServer();
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping secure IMAP server.");
     }
 
 }
 
-public function startSimpleSecureImapServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleSecureEmailReceiveTest"
+public function startSimpleImapServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
 } external;
 
-public function stopSimpleSecureImapServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleSecureEmailReceiveTest"
+public function stopSimpleImapServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
 } external;
 
-public function sendEmailSimpleSecureImapServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleSecureEmailReceiveTest"
+public function sendEmailSimpleImapServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
 } external;

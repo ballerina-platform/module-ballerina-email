@@ -20,6 +20,9 @@ import ballerina/lang.'string as strings;
 import ballerina/test;
 
 @test:Config {
+    dependsOn: [
+        testReceiveSimpleEmailPop
+    ]
 }
 function testReceiveComplexEmailPop() returns @tainted error? {
 

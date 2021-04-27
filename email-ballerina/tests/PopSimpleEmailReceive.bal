@@ -1,4 +1,4 @@
-// Copyright (c) 2020 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -17,29 +17,20 @@
 import ballerina/jballerina.java;
 import ballerina/test;
 
-@test:Config {
-}
-function testReceiveSimpleSecureEmailPop() returns @tainted error? {
+@test:Config {}
+function testReceiveSimpleEmailPop() returns @tainted error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
 
-    Error? serverStatus = startSimpleSecurePopServer();
+    Error? serverStatus = startSimplePopServer();
     if (serverStatus is Error) {
-        test:assertFail(msg = "Error while starting secure POP server.");
+        test:assertFail(msg = "Error while starting secure Pop server.");
     }
 
     PopConfiguration popConfig = {
-         port: 3995,
-         secureSocket: {
-             cert: "tests/resources/certsandkeys/greenmail.crt",
-             protocol: {
-                 name: TLS,
-                 versions: ["TLSv1.2", "TLSv1.1"]
-             },
-             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-             verifyHostName: false
-         }
+         port: 3110,
+         security: START_TLS_NEVER
     };
     PopClient|Error popClientOrError = new (host, username, password, popConfig);
     if (popClientOrError is Error) {
@@ -52,7 +43,7 @@ function testReceiveSimpleSecureEmailPop() returns @tainted error? {
     } else if (email is Message) {
         test:assertFail(msg = "Non zero emails received in zero read POP test.");
     }
-    Error? emailSendStatus = sendEmailSimpleSecurePopServer();
+    Error? emailSendStatus = sendEmailSimplePopServer();
     if (emailSendStatus is Error) {
         test:assertFail(msg = "Error while sending email to secure POP server.");
     }
@@ -71,21 +62,21 @@ function testReceiveSimpleSecureEmailPop() returns @tainted error? {
         test:assertFail(msg = "Error while closing secure POP server.");
     }
 
-    serverStatus = stopSimpleSecurePopServer();
+    serverStatus = stopSimplePopServer();
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping secure POP server.");
     }
 
 }
 
-public function startSimpleSecurePopServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.PopSimpleSecureEmailReceiveTest"
+public function startSimplePopServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.PopSimpleEmailReceiveTest"
 } external;
 
-public function stopSimpleSecurePopServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.PopSimpleSecureEmailReceiveTest"
+public function stopSimplePopServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.PopSimpleEmailReceiveTest"
 } external;
 
-public function sendEmailSimpleSecurePopServer() returns Error? = @java:Method {
-    'class: "org.ballerinalang.stdlib.email.testutils.PopSimpleSecureEmailReceiveTest"
+public function sendEmailSimplePopServer() returns Error? = @java:Method {
+    'class: "org.ballerinalang.stdlib.email.testutils.PopSimpleEmailReceiveTest"
 } external;
