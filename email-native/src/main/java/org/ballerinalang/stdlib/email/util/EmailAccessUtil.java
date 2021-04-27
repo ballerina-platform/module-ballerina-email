@@ -102,28 +102,24 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.PROPS_POP_PORT,
                 Long.toString(emailAccessConfig.getIntValue(EmailConstants.PROPS_PORT)));
         BString security = emailAccessConfig.getStringValue(EmailConstants.PROPS_SECURITY);
-        if (security != null) {
-            String securityType = security.getValue();
-            switch (securityType) {
-                case PROPS_START_TLS_AUTO:
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
-                    break;
-                case PROPS_START_TLS_ALWAYS:
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS_REQUIRED, "true");
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
-                    addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-                    break;
-                case PROPS_START_TLS_NEVER:
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "false");
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
-                    break;
-                default:
-                    addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-            }
-        } else {
-            addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+        String securityType = security.getValue();
+        switch (securityType) {
+            case PROPS_START_TLS_AUTO:
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                break;
+            case PROPS_START_TLS_ALWAYS:
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_POP_STARTTLS_REQUIRED, "true");
+                properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+                break;
+            case PROPS_START_TLS_NEVER:
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "false");
+                properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                break;
+            default:
+                addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         addPopCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
@@ -154,28 +150,24 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.PROPS_IMAP_PORT,
                 Long.toString(emailAccessConfig.getIntValue(EmailConstants.PROPS_PORT)));
         BString security = emailAccessConfig.getStringValue(EmailConstants.PROPS_SECURITY);
-        if (security != null) {
-            String securityType = security.getValue();
-            switch (securityType) {
-                case PROPS_START_TLS_AUTO:
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
-                    break;
-                case PROPS_START_TLS_ALWAYS:
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS_REQUIRED, "true");
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
-                    addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-                    break;
-                case PROPS_START_TLS_NEVER:
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "false");
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
-                    break;
-                default:
-                    addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-            }
-        } else {
-            addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+        String securityType = security.getValue();
+        switch (securityType) {
+            case PROPS_START_TLS_AUTO:
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                break;
+            case PROPS_START_TLS_ALWAYS:
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS_REQUIRED, "true");
+                properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+                break;
+            case PROPS_START_TLS_NEVER:
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "false");
+                properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                break;
+            default:
+                addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         properties.put(EmailConstants.PROPS_IMAP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
