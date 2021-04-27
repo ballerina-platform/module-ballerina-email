@@ -72,22 +72,6 @@ public class EmailListenerHelper {
                                                                   BMap<BString, Object> protocolConfig,
                                                                   String protocol) {
         Map<String, Object> params = new HashMap<>(7);
-        BMap<BString, BString> secureSocket = (BMap<BString, BString>) serviceEndpointConfig.getMapValue(
-                EmailConstants.ENDPOINT_CONFIG_SECURE_SOCKET);
-        if (secureSocket != null) {
-            final BMap<BString, BString> privateKey = (BMap<BString, BString>) secureSocket.getMapValue(
-                    EmailConstants.ENDPOINT_CONFIG_PRIVATE_KEY);
-            if (privateKey != null) {
-                final String privateKeyPath = privateKey.getStringValue(EmailConstants.ENDPOINT_CONFIG_PATH).getValue();
-                final String privateKeyPassword =
-                        privateKey.getStringValue(EmailConstants.ENDPOINT_CONFIG_PASS_KEY).getValue();
-                if (privateKeyPath != null && !privateKeyPath.isEmpty() && privateKeyPassword != null
-                        && !privateKeyPassword.isEmpty()) {
-                    params.put(EmailConstants.IDENTITY, privateKeyPath);
-                    params.put(EmailConstants.IDENTITY_PASS_PHRASE, privateKeyPassword);
-                }
-            }
-        }
         if (protocolConfig != null) {
             params.put(EmailConstants.PROTOCOL_CONFIG.getValue(), protocolConfig);
         }
