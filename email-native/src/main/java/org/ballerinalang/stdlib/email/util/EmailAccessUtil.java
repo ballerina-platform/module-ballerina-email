@@ -32,10 +32,8 @@ import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.runtime.api.values.BXml;
 import io.ballerina.runtime.api.values.BXmlSequence;
 import org.ballerinalang.mime.util.EntityBodyChannel;
-import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityWrapper;
 import org.ballerinalang.mime.util.HeaderUtil;
 import org.ballerinalang.mime.util.MimeConstants;
@@ -46,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -411,13 +408,15 @@ public class EmailAccessUtil {
             entityArray.add(getMultipartEntity(bodyPart));
         } else {
             String contentType = bodyPart.getContentType();
-            if (contentType != null && bodyPart.getContent() instanceof String) {
+            if (contentType != null) {
                 if (CommonUtil.isJsonBased(contentType)) {
                     entityArray.add(getJsonEntity(bodyPart));
                 } else if (CommonUtil.isXmlBased(contentType)) {
                     entityArray.add(getXmlEntity(bodyPart));
-                } else {
+                } else if (CommonUtil.isTextBased(contentType)) {
                     entityArray.add(getTextEntity(bodyPart));
+                } else {
+                    entityArray.add(getBinaryEntity(bodyPart));
                 }
             } else {
                 entityArray.add(getBinaryEntity(bodyPart));
@@ -444,22 +443,7 @@ public class EmailAccessUtil {
         if (numberOfBodyParts > 0) {
             for (int i = 0; i < numberOfBodyParts; i++) {
                 BodyPart subPart = mimeMultipart.getBodyPart(i);
-                if (subPart.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
-                    entityArray.add(getMultipartEntity(subPart));
-                } else {
-                    String contentType = subPart.getContentType();
-                    if (contentType != null && subPart.getContent() instanceof String) {
-                        if (CommonUtil.isJsonBased(contentType)) {
-                            entityArray.add(getJsonEntity(subPart));
-                        } else if (CommonUtil.isXmlBased(contentType)) {
-                            entityArray.add(getXmlEntity(subPart));
-                        } else {
-                            entityArray.add(getTextEntity(subPart));
-                        }
-                    } else {
-                        entityArray.add(getBinaryEntity(subPart));
-                    }
-                }
+                attachMultipart(subPart, entityArray);
             }
             return entityArray;
         } else {
@@ -468,31 +452,30 @@ public class EmailAccessUtil {
     }
 
     private static BObject getJsonEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        String jsonContent = (String) bodyPart.getContent();
+        byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
+        EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
         BObject entity = createEntityObject();
-        EntityWrapper byteChannel = EntityBodyHandler.getEntityWrapper(jsonContent);
-        entity.addNativeData(MimeConstants.ENTITY_BYTE_CHANNEL, byteChannel);
+        entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_JSON);
         setEntityHeaders(entity, bodyPart);
         return entity;
     }
 
     private static BObject getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        String xmlContent = (String) bodyPart.getContent();
-        BXml xmlNode = (BXml) XmlUtils.parse(xmlContent);
+        byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
+        EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
         BObject entity = createEntityObject();
-        EntityBodyChannel byteChannel = new EntityBodyChannel(new ByteArrayInputStream(
-                xmlNode.stringValue(null).getBytes(StandardCharsets.UTF_8)));
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, new EntityWrapper(byteChannel));
+        entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_XML);
         setEntityHeaders(entity, bodyPart);
         return entity;
     }
 
     private static BObject getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        String textPayload = (String) bodyPart.getContent();
-        BObject entity = ValueCreator.createObjectValue(MimeUtil.getMimePackage(), ENTITY);
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getEntityWrapper(textPayload));
+        byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
+        EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
+        BObject entity = createEntityObject();
+        entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
         MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.TEXT_PLAIN);
         setEntityHeaders(entity, bodyPart);
         return entity;

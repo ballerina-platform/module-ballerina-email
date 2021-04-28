@@ -36,6 +36,7 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -73,7 +74,7 @@ public class CommonUtil {
      * @return boolean Whether the MIME Body Type is JSON based
      */
     protected static boolean isJsonBased(String contentType) {
-        return contentType.contains("json");
+        return Pattern.compile(Pattern.quote(contentType), Pattern.CASE_INSENSITIVE).matcher("json").find();
     }
 
     /**
@@ -83,7 +84,7 @@ public class CommonUtil {
      * @return boolean Whether the MIME Body Type is XML based
      */
     protected static boolean isXmlBased(String contentType) {
-        return contentType.contains("xml");
+        return Pattern.compile(Pattern.quote(contentType), Pattern.CASE_INSENSITIVE).matcher("xml").find();
     }
 
     /**
