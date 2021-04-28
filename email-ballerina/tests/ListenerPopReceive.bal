@@ -81,7 +81,7 @@ function getReceivedClosePop() returns string {
 }
 
 @test:Config {
-    dependsOn: [testReceiveSimpleEmailPop, testListenEmailImap]
+    dependsOn: [testReceiveSimpleSecureEmailPop, testListenEmailImap]
 }
 function testListenEmailPop() returns @tainted error? {
 

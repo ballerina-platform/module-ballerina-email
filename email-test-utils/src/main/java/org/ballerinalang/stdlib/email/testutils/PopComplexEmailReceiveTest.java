@@ -57,6 +57,8 @@ public class PopComplexEmailReceiveTest {
     private static final byte[] ATTACHMENT4_BINARY = "This is a sample source of bytes.".getBytes();
     private static final String ATTACHMENT1_HEADER1_NAME_TEXT = "H1";
     private static final String ATTACHMENT1_HEADER1_VALUE_TEXT = "V1";
+    private static final String MULTIPART_JSON = "{\"multipartJson\":\"sampleValue\"}";
+    private static final String MULTIPART_XML = "<name>Ballerina Multipart XML</name>";
     private static final String[] EMAIL_TO_ADDRESSES = {"hascode1@localhost", "hascode2@localhost"};
     private static final String[] EMAIL_CC_ADDRESSES = {"hascode3@localhost", "hascode4@localhost"};
     private static final String[] EMAIL_BCC_ADDRESSES = {"hascode5@localhost", "hascode6@localhost"};
@@ -95,7 +97,7 @@ public class PopComplexEmailReceiveTest {
         message.setReplyTo(convertToAddressArray(EMAIL_REPLY_TO_ADDRESSES));
         message.setSubject(EMAIL_SUBJECT);
 
-        Multipart multipartMessage = new MimeMultipart();
+        MimeMultipart multipartMessage = new MimeMultipart();
         MimeBodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setContent(EMAIL_TEXT, MimeConstants.TEXT_PLAIN);
         MimeBodyPart attachment1 = new MimeBodyPart();
@@ -112,7 +114,19 @@ public class PopComplexEmailReceiveTest {
         multipartMessage.addBodyPart(attachment2);
         multipartMessage.addBodyPart(attachment3);
         multipartMessage.addBodyPart(attachment4);
+
+        Multipart multipartAttachment = new MimeMultipart();
+        MimeBodyPart multipartJson = new MimeBodyPart();
+        MimeBodyPart multipartXml = new MimeBodyPart();
+        multipartJson.setContent(MULTIPART_JSON, MimeConstants.APPLICATION_JSON);
+        multipartXml.setContent(MULTIPART_XML, MimeConstants.APPLICATION_XML);
+        multipartAttachment.addBodyPart(multipartJson);
+        multipartAttachment.addBodyPart(multipartXml);
+        MimeBodyPart mimeAttachment = new MimeBodyPart();
+        mimeAttachment.setContent(multipartAttachment);
+        multipartMessage.addBodyPart(mimeAttachment);
         message.setContent(multipartMessage);
+
         message.addHeader(HEADER1_NAME, HEADER1_VALUE);
         user.deliver(message);
 

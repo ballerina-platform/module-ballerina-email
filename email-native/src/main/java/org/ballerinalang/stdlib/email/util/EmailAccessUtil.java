@@ -443,7 +443,23 @@ public class EmailAccessUtil {
         int numberOfBodyParts = mimeMultipart.getCount();
         if (numberOfBodyParts > 0) {
             for (int i = 0; i < numberOfBodyParts; i++) {
-                attachMultipart(bodyPart, entityArray);
+                BodyPart subPart = mimeMultipart.getBodyPart(i);
+                if (subPart.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
+                    entityArray.add(getMultipartEntity(subPart));
+                } else {
+                    String contentType = subPart.getContentType();
+                    if (contentType != null && subPart.getContent() instanceof String) {
+                        if (CommonUtil.isJsonBased(contentType)) {
+                            entityArray.add(getJsonEntity(subPart));
+                        } else if (CommonUtil.isXmlBased(contentType)) {
+                            entityArray.add(getXmlEntity(subPart));
+                        } else {
+                            entityArray.add(getTextEntity(subPart));
+                        }
+                    } else {
+                        entityArray.add(getBinaryEntity(subPart));
+                    }
+                }
             }
             return entityArray;
         } else {
