@@ -52,6 +52,8 @@ public class CommonUtil {
 
     private static final Logger log = LoggerFactory.getLogger(CommonUtil.class);
 
+    private CommonUtil() {}
+
     /**
      * Check whether the content type is based on text.
      *

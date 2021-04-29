@@ -36,9 +36,7 @@ import java.util.Map;
  */
 public class EmailListenerHelper {
 
-    private EmailListenerHelper() {
-        // private constructor
-    }
+    private EmailListenerHelper() {}
 
     /**
      * Initialize a new EmailConnector for the listener.
