@@ -77,7 +77,6 @@ public class EmailConstants {
     public static final BString PROPS_CERT_PROTOCOL_NAME = StringUtils.fromString("name");
     public static final BString PROPS_CERT_PROTOCOL_VERSIONS = StringUtils.fromString("versions");
     public static final BString PROPS_CERT_CIPHERS = StringUtils.fromString("ciphers");
-    public static final BString PROPS_CERT_PATH = StringUtils.fromString("path");
     public static final BString PROPS_VERIFY_HOSTNAME = StringUtils.fromString("verifyHostName");
 
     // Common constants to POP and IMAP

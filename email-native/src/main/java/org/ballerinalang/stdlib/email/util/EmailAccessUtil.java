@@ -64,7 +64,6 @@ import static org.ballerinalang.mime.util.MimeConstants.BODY_PARTS;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
-import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
@@ -410,16 +409,16 @@ public class EmailAccessUtil {
             String contentType = bodyPart.getContentType();
             if (contentType != null) {
                 if (CommonUtil.isJsonBased(contentType)) {
-                    entityArray.add(getJsonEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.APPLICATION_JSON));
                 } else if (CommonUtil.isXmlBased(contentType)) {
-                    entityArray.add(getXmlEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.APPLICATION_XML));
                 } else if (CommonUtil.isTextBased(contentType)) {
-                    entityArray.add(getTextEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.TEXT_PLAIN));
                 } else {
-                    entityArray.add(getBinaryEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.OCTET_STREAM));
                 }
             } else {
-                entityArray.add(getBinaryEntity(bodyPart));
+                entityArray.add(getTypedEntity(bodyPart, MimeConstants.OCTET_STREAM));
             }
         }
     }
@@ -451,42 +450,12 @@ public class EmailAccessUtil {
         }
     }
 
-    private static BObject getJsonEntity(BodyPart bodyPart) throws IOException, MessagingException {
+    private static BObject getTypedEntity(BodyPart bodyPart, String mimeType) throws IOException, MessagingException {
         byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
         EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
         BObject entity = createEntityObject();
         entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
-        MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_JSON);
-        setEntityHeaders(entity, bodyPart);
-        return entity;
-    }
-
-    private static BObject getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
-        EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
-        BObject entity = createEntityObject();
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
-        MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_XML);
-        setEntityHeaders(entity, bodyPart);
-        return entity;
-    }
-
-    private static BObject getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
-        EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
-        BObject entity = createEntityObject();
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
-        MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.TEXT_PLAIN);
-        setEntityHeaders(entity, bodyPart);
-        return entity;
-    }
-
-    private static BObject getBinaryEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
-        EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
-        BObject entity = createEntityObject();
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
-        MimeUtil.setContentType(createMediaTypeObject(), entity, OCTET_STREAM);
+        MimeUtil.setContentType(createMediaTypeObject(), entity, mimeType);
         setEntityHeaders(entity, bodyPart);
         return entity;
     }
