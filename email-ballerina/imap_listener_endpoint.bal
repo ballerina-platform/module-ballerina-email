@@ -125,7 +125,7 @@ public class ImapListener {
 
     # Close the IMAP server connection.
     # ```ballerina
-    # email:Error? closeResult = emailClient->close();
+    # email:Error? closeResult = emailListener->close();
     # ```
     #
     # + return - A `email:Error` if it can't close the connection or else `()`

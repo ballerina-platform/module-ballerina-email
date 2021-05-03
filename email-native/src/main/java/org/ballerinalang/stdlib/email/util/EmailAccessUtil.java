@@ -32,10 +32,8 @@ import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.runtime.api.values.BXml;
 import io.ballerina.runtime.api.values.BXmlSequence;
 import org.ballerinalang.mime.util.EntityBodyChannel;
-import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityWrapper;
 import org.ballerinalang.mime.util.HeaderUtil;
 import org.ballerinalang.mime.util.MimeConstants;
@@ -46,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -67,7 +64,6 @@ import static org.ballerinalang.mime.util.MimeConstants.BODY_PARTS;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY;
 import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
-import static org.ballerinalang.mime.util.MimeConstants.OCTET_STREAM;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
@@ -102,28 +98,24 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.PROPS_POP_PORT,
                 Long.toString(emailAccessConfig.getIntValue(EmailConstants.PROPS_PORT)));
         BString security = emailAccessConfig.getStringValue(EmailConstants.PROPS_SECURITY);
-        if (security != null) {
-            String securityType = security.getValue();
-            switch (securityType) {
-                case PROPS_START_TLS_AUTO:
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
-                    break;
-                case PROPS_START_TLS_ALWAYS:
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS_REQUIRED, "true");
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
-                    addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-                    break;
-                case PROPS_START_TLS_NEVER:
-                    properties.put(EmailConstants.PROPS_POP_STARTTLS, "false");
-                    properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
-                    break;
-                default:
-                    addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-            }
-        } else {
-            addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+        String securityType = security.getValue();
+        switch (securityType) {
+            case PROPS_START_TLS_AUTO:
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                break;
+            case PROPS_START_TLS_ALWAYS:
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_POP_STARTTLS_REQUIRED, "true");
+                properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+                break;
+            case PROPS_START_TLS_NEVER:
+                properties.put(EmailConstants.PROPS_POP_STARTTLS, "false");
+                properties.put(EmailConstants.PROPS_POP_SSL_ENABLE, "false");
+                break;
+            default:
+                addBasicPopTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         addPopCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
@@ -154,28 +146,24 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.PROPS_IMAP_PORT,
                 Long.toString(emailAccessConfig.getIntValue(EmailConstants.PROPS_PORT)));
         BString security = emailAccessConfig.getStringValue(EmailConstants.PROPS_SECURITY);
-        if (security != null) {
-            String securityType = security.getValue();
-            switch (securityType) {
-                case PROPS_START_TLS_AUTO:
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
-                    break;
-                case PROPS_START_TLS_ALWAYS:
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS_REQUIRED, "true");
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
-                    addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-                    break;
-                case PROPS_START_TLS_NEVER:
-                    properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "false");
-                    properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
-                    break;
-                default:
-                    addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
-            }
-        } else {
-            addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+        String securityType = security.getValue();
+        switch (securityType) {
+            case PROPS_START_TLS_AUTO:
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                break;
+            case PROPS_START_TLS_ALWAYS:
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "true");
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS_REQUIRED, "true");
+                properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+                break;
+            case PROPS_START_TLS_NEVER:
+                properties.put(EmailConstants.PROPS_IMAP_STARTTLS, "false");
+                properties.put(EmailConstants.PROPS_IMAP_SSL_ENABLE, "false");
+                break;
+            default:
+                addBasicImapTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
         properties.put(EmailConstants.PROPS_IMAP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
@@ -419,16 +407,18 @@ public class EmailAccessUtil {
             entityArray.add(getMultipartEntity(bodyPart));
         } else {
             String contentType = bodyPart.getContentType();
-            if (contentType != null && bodyPart.getContent() instanceof String) {
+            if (contentType != null) {
                 if (CommonUtil.isJsonBased(contentType)) {
-                    entityArray.add(getJsonEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.APPLICATION_JSON));
                 } else if (CommonUtil.isXmlBased(contentType)) {
-                    entityArray.add(getXmlEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.APPLICATION_XML));
+                } else if (CommonUtil.isTextBased(contentType)) {
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.TEXT_PLAIN));
                 } else {
-                    entityArray.add(getTextEntity(bodyPart));
+                    entityArray.add(getTypedEntity(bodyPart, MimeConstants.OCTET_STREAM));
                 }
             } else {
-                entityArray.add(getBinaryEntity(bodyPart));
+                entityArray.add(getTypedEntity(bodyPart, MimeConstants.OCTET_STREAM));
             }
         }
     }
@@ -451,7 +441,8 @@ public class EmailAccessUtil {
         int numberOfBodyParts = mimeMultipart.getCount();
         if (numberOfBodyParts > 0) {
             for (int i = 0; i < numberOfBodyParts; i++) {
-                attachMultipart(bodyPart, entityArray);
+                BodyPart subPart = mimeMultipart.getBodyPart(i);
+                attachMultipart(subPart, entityArray);
             }
             return entityArray;
         } else {
@@ -459,43 +450,12 @@ public class EmailAccessUtil {
         }
     }
 
-    private static BObject getJsonEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        String jsonContent = (String) bodyPart.getContent();
-        BObject entity = createEntityObject();
-        EntityWrapper byteChannel = EntityBodyHandler.getEntityWrapper(jsonContent);
-        entity.addNativeData(MimeConstants.ENTITY_BYTE_CHANNEL, byteChannel);
-        MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_JSON);
-        setEntityHeaders(entity, bodyPart);
-        return entity;
-    }
-
-    private static BObject getXmlEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        String xmlContent = (String) bodyPart.getContent();
-        BXml xmlNode = (BXml) XmlUtils.parse(xmlContent);
-        BObject entity = createEntityObject();
-        EntityBodyChannel byteChannel = new EntityBodyChannel(new ByteArrayInputStream(
-                xmlNode.stringValue(null).getBytes(StandardCharsets.UTF_8)));
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, new EntityWrapper(byteChannel));
-        MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.APPLICATION_XML);
-        setEntityHeaders(entity, bodyPart);
-        return entity;
-    }
-
-    private static BObject getTextEntity(BodyPart bodyPart) throws IOException, MessagingException {
-        String textPayload = (String) bodyPart.getContent();
-        BObject entity = ValueCreator.createObjectValue(MimeUtil.getMimePackage(), ENTITY);
-        entity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getEntityWrapper(textPayload));
-        MimeUtil.setContentType(createMediaTypeObject(), entity, MimeConstants.TEXT_PLAIN);
-        setEntityHeaders(entity, bodyPart);
-        return entity;
-    }
-
-    private static BObject getBinaryEntity(BodyPart bodyPart) throws IOException, MessagingException {
+    private static BObject getTypedEntity(BodyPart bodyPart, String mimeType) throws IOException, MessagingException {
         byte[] binaryContent = CommonUtil.convertInputStreamToByteArray(bodyPart.getInputStream());
         EntityWrapper byteChannel = new EntityWrapper(new EntityBodyChannel(new ByteArrayInputStream(binaryContent)));
         BObject entity = createEntityObject();
         entity.addNativeData(ENTITY_BYTE_CHANNEL, byteChannel);
-        MimeUtil.setContentType(createMediaTypeObject(), entity, OCTET_STREAM);
+        MimeUtil.setContentType(createMediaTypeObject(), entity, mimeType);
         setEntityHeaders(entity, bodyPart);
         return entity;
     }

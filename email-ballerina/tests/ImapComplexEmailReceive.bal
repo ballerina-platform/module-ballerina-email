@@ -19,7 +19,11 @@ import ballerina/jballerina.java;
 import ballerina/lang.'string as strings;
 import ballerina/test;
 
-@test:Config {}
+@test:Config {
+    dependsOn: [
+        testReceiveSimpleEmailImap
+    ]
+}
 function testReceiveComplexEmailImap() returns @tainted error? {
 
     string host = "127.0.0.1";
@@ -111,6 +115,22 @@ function testReceiveComplexEmailImap() returns @tainted error? {
                     returnArray[13] = <string>headerValue;
                 }
             }
+            var att4 = attachments[4];
+            if (att4 is mime:Entity) {
+                var attachment5 = att4.getBodyParts();
+                if (attachment5 is mime:Entity[]) {
+                    var attachment6 = attachment5[0].getJson();
+                    if (attachment6 is json) {
+                        returnArray[14] = !(attachment6 is ()) ? attachment6.toJsonString() : "";
+                    }
+                    var attachment7 = attachment5[1].getXml();
+                    if (attachment7 is xml) {
+                        returnArray[15] = attachment7.toString();
+                    }
+                } else {
+                    test:assertFail(msg = "Multipart attachment is not in mime:Entity[] type.");
+                }
+            }
         }
 
         test:assertEquals(returnArray[0], "Test E-Mail", msg = "Email subject is not matched.");
@@ -133,6 +153,10 @@ function testReceiveComplexEmailImap() returns @tainted error? {
         test:assertTrue(strings:includes(returnArray[12], "text/plain"),
             msg = "Email content type is not matched.");
         test:assertEquals(returnArray[13], "header1_value", msg = "Email header value is not matched.");
+        test:assertEquals(returnArray[14], "{\"multipartJson\":\"sampleValue\"}",
+            msg = "Email attachment Multipart JSON is not matched.");
+        test:assertEquals(returnArray[15], "<name>Ballerina Multipart XML</name>",
+            msg = "Email attachment Multipart XML is not matched.");
 
     } else {
         test:assertFail(msg = "Error while reading emails in complex IMAP test.");

@@ -50,9 +50,7 @@ public class EmailAccessClient {
     private static final Logger log = LoggerFactory.getLogger(EmailAccessClient.class);
     private static final FlagTerm UNSEEN_FLAG = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
 
-    private EmailAccessClient() {
-        // A Singleton class.
-    }
+    private EmailAccessClient() {}
 
     /**
      * Initializes the BObject object with the POP properties.

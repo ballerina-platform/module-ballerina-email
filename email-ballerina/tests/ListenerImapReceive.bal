@@ -81,7 +81,7 @@ function getReceivedCloseImap() returns string {
 }
 
 @test:Config {
-    dependsOn: [testReceiveSimpleEmailImap]
+    dependsOn: [testReceiveSimpleSecureEmailImap]
 }
 function testListenEmailImap() returns @tainted error? {
 
@@ -104,7 +104,8 @@ function testListenEmailImap() returns @tainted error? {
                                     },
                                     ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
                                     verifyHostName: false
-                               }
+                               },
+                               security: START_TLS_ALWAYS
                            });
     if (emailServerOrError is Error) {
         test:assertFail(msg = "Error while initializing the IMAP4 listener.");
