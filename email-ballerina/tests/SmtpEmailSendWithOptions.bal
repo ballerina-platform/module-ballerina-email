@@ -41,7 +41,7 @@ function testSendEmailWithOptions() returns @tainted error? {
 
     SmtpConfiguration smtpConfig = {
         port: 3025,
-        security: START_TLS_AUTO
+        security: START_TLS_NEVER
     };
 
     SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);

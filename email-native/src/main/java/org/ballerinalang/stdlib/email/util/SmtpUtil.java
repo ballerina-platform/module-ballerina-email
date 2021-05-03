@@ -58,6 +58,7 @@ import static org.ballerinalang.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static org.ballerinalang.mime.util.MimeConstants.MEDIA_TYPE;
 import static org.ballerinalang.mime.util.MimeConstants.TEXT_PLAIN;
 import static org.ballerinalang.mime.util.MimeUtil.getContentTypeWithParameters;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.HTML_CONTENT_TYPE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERTIFICATE;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_CIPHERS;
 import static org.ballerinalang.stdlib.email.util.EmailConstants.PROPS_CERT_PROTOCOL;
@@ -147,7 +148,7 @@ public class SmtpUtil {
         String subject = message.getStringValue(EmailConstants.MESSAGE_SUBJECT).getValue();
         String messageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_MESSAGE_BODY));
         String htmlMessageBody = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_HTML_MESSAGE_BODY));
-        String bodyContentType = message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE).getValue();
+        String bodyContentType = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE));
         String fromAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_FROM));
         if (fromAddress == null || fromAddress.isEmpty()) {
             fromAddress = username;
@@ -175,12 +176,16 @@ public class SmtpUtil {
             boolean hasTextBody = !messageBody.isEmpty();
             boolean hasHtmlBody = !htmlMessageBody.isEmpty();
             if (hasTextBody && !hasHtmlBody || !hasTextBody && hasHtmlBody) {
-                emailMessage.setContent(messageBody, bodyContentType);
+                if (bodyContentType.compareTo("") == 0) {
+                    emailMessage.setContent(messageBody, hasTextBody ? TEXT_PLAIN : HTML_CONTENT_TYPE);
+                } else {
+                    emailMessage.setContent(messageBody, bodyContentType);
+                }
             } else if (hasTextBody) { // hasHtmlBody is also implicitly true
                 emailMessage.setContent(getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
             }
         } else {
-            addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, bodyContentType, attachments);
+            addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, attachments);
         }
 
         addMessageHeaders(emailMessage, message);
@@ -249,7 +254,7 @@ public class SmtpUtil {
     }
 
     private static void addBodyAndAttachments(MimeMessage emailMessage, String messageBody, String htmlMessageBody,
-                                              String bodyContentType, Object attachments)
+                                              Object attachments)
             throws MessagingException, IOException {
         Multipart multipart = new MimeMultipart("mixed");
         addMultipartChild(multipart, getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
@@ -395,7 +400,7 @@ public class SmtpUtil {
         messageBodyPart.setText(textContent);
         multipart.addBodyPart(messageBodyPart);
         messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(htmlContent, EmailConstants.HTML_CONTENT_TYPE);
+        messageBodyPart.setContent(htmlContent, HTML_CONTENT_TYPE);
         multipart.addBodyPart(messageBodyPart);
         return multipart;
     }
