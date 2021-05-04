@@ -52,19 +52,19 @@ function testSendComplexEmail() returns @tainted error? {
     }
     SmtpClient smtpClient = check smtpClientOrError;
 
-    //Create a text body part.
+    // Create a text body part.
     mime:Entity bodyPart1 = new;
     bodyPart1.setText("Ballerina text body part");
 
-    //Create a body part with json content.
+    // Create a body part with json content.
     mime:Entity bodyPart2 = new;
     bodyPart2.setJson({"bodyPart":"jsonPart"});
 
-    //Create another body part with a xml file.
+    // Create another body part with a xml file.
     mime:Entity bodyPart3 = new;
     bodyPart3.setFileAsEntityBody("tests/resources/datafiles/file.xml", mime:TEXT_XML);
 
-    //Create another body part with a text file.
+    // Create another body part with a text file.
     mime:Entity bodyPart4 = new;
     mime:ContentDisposition disposition4 = new;
     disposition4.fileName = "test.tmp";
@@ -75,7 +75,7 @@ function testSendComplexEmail() returns @tainted error? {
     bodyPart4.setHeader("H1", "V1");
     bodyPart4.setFileAsEntityBody("tests/resources/datafiles/test.tmp");
 
-    //Create another body part with an image file.
+    // Create another body part with an image file.
     mime:Entity bodyPart5 = new;
     mime:ContentDisposition disposition5 = new;
     disposition5.fileName = "corona_virus.jpg";
@@ -83,7 +83,7 @@ function testSendComplexEmail() returns @tainted error? {
     bodyPart5.setContentDisposition(disposition5);
     bodyPart5.setFileAsEntityBody("tests/resources/datafiles/corona_virus.jpg", mime:IMAGE_JPEG);
 
-    //Create another body part with binary content.
+    // Create another body part with binary content.
     string binaryString = "Test content";
     byte[] binary = binaryString.toBytes();
     mime:Entity bodyPart6 = new;

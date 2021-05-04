@@ -121,14 +121,7 @@ public class EmailAccessUtil {
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
         properties.put(EmailConstants.PROPS_POP_AUTH, "true");
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.POP_PROTOCOL);
-        if (log.isDebugEnabled()) {
-            Set<String> propertySet = properties.stringPropertyNames();
-            log.debug("POP3 Properties set are as follows.");
-            for (Object propertyObj : propertySet) {
-                log.debug("Property Name: " + propertyObj + ", Value: " + properties.get(propertyObj).toString()
-                        + " ValueType: " + properties.get(propertyObj).getClass().getName());
-            }
-        }
+        printPopDebugLogs(properties);
         return properties;
     }
 
@@ -169,14 +162,7 @@ public class EmailAccessUtil {
         properties.put(EmailConstants.MAIL_STORE_PROTOCOL, EmailConstants.IMAP_PROTOCOL);
         addImapCertificate((BMap<BString, Object>) emailAccessConfig.getMapValue
                 (EmailConstants.PROPS_SECURE_SOCKET), properties);
-        if (log.isDebugEnabled()) {
-            Set<String> propertySet = properties.stringPropertyNames();
-            log.debug("IMAP4 Properties set are as follows.");
-            for (Object propertyObj : propertySet) {
-                log.debug("Property Name: " + propertyObj + ", Value: " + properties.get(propertyObj).toString()
-                        + " ValueType: " + properties.get(propertyObj).getClass().getName());
-            }
-        }
+        printImapDebugLogs(properties);
         return properties;
     }
 
@@ -521,6 +507,30 @@ public class EmailAccessUtil {
 
     private static String getStringNullChecked(String string) {
         return string == null ? "" : string;
+    }
+
+    @ExcludeCoverageFromGeneratedReport
+    private static void printPopDebugLogs(Properties properties) {
+        if (log.isDebugEnabled()) {
+            Set<String> propertySet = properties.stringPropertyNames();
+            log.debug("POP3 Properties set are as follows.");
+            for (Object propertyObj : propertySet) {
+                log.debug("Property Name: " + propertyObj + ", Value: " + properties.get(propertyObj).toString()
+                        + " ValueType: " + properties.get(propertyObj).getClass().getName());
+            }
+        }
+    }
+
+    @ExcludeCoverageFromGeneratedReport
+    private static void printImapDebugLogs(Properties properties) {
+        if (log.isDebugEnabled()) {
+            Set<String> propertySet = properties.stringPropertyNames();
+            log.debug("IMAP4 Properties set are as follows.");
+            for (Object propertyObj : propertySet) {
+                log.debug("Property Name: " + propertyObj + ", Value: " + properties.get(propertyObj).toString()
+                        + " ValueType: " + properties.get(propertyObj).getClass().getName());
+            }
+        }
     }
 
 }

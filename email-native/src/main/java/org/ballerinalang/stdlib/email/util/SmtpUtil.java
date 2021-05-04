@@ -118,14 +118,7 @@ public class SmtpUtil {
         }
         addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
                 properties);
-        if (log.isDebugEnabled()) {
-            Set<String> propertySet = properties.stringPropertyNames();
-            log.debug("SMTP Properties set are as follows.");
-            for (Object propertyObj : propertySet) {
-                log.debug("Property Name: " + propertyObj + ", Value: " + properties.get(propertyObj).toString()
-                        + " ValueType: " + properties.get(propertyObj).getClass().getName());
-            }
-        }
+        printDebugLogs(properties);
         return properties;
     }
 
@@ -411,6 +404,18 @@ public class SmtpUtil {
 
     private static boolean isNotEmpty(String string) {
         return string != null && !string.isEmpty();
+    }
+
+    @ExcludeCoverageFromGeneratedReport
+    private static void printDebugLogs(Properties properties) {
+        if (log.isDebugEnabled()) {
+            Set<String> propertySet = properties.stringPropertyNames();
+            log.debug("SMTP Properties set are as follows.");
+            for (Object propertyObj : propertySet) {
+                log.debug("Property Name: " + propertyObj + ", Value: " + properties.get(propertyObj).toString()
+                        + " ValueType: " + properties.get(propertyObj).getClass().getName());
+            }
+        }
     }
 
 }
