@@ -89,11 +89,24 @@ function testSendComplexEmail() returns @tainted error? {
     mime:Entity bodyPart6 = new;
     bodyPart6.setByteArray(binary);
 
+    //Create another body part with complex content.
+    mime:Entity bodyPart7 = new;
+    mime:Entity textEntity7 = new;
+    textEntity7.setText("Quarantine COVID-19!");
+    mime:Entity imageEntity7 = new;
+    imageEntity7.setFileAsEntityBody("tests/resources/datafiles/quarantine.jpg", mime:IMAGE_JPEG);
+    mime:ContentDisposition disposition6 = new;
+    disposition6.disposition = "attachment";
+    disposition6.fileName = "quarantine.jpg";
+    imageEntity7.setContentDisposition(disposition6);
+    bodyPart7.setBodyParts([textEntity7, imageEntity7], mime:MULTIPART_MIXED);
+
     // Create another attachment
     Attachment att7 = {filePath: "tests/resources/datafiles/vaccine.txt", contentType: "text/plain"};
 
     //Create an array to hold all the body parts.
-    (mime:Entity|Attachment)[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, att7];
+    (mime:Entity|Attachment)[] bodyParts
+        = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, bodyPart7, att7];
 
     Message email = {
         to: toAddresses,

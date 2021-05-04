@@ -102,7 +102,7 @@ public class SmtpComplexEmailSendTest {
             assertTrue(message.isMimeType("multipart/*"));
             Multipart multiPart = (Multipart) message.getContent();
             int multiPartCount = multiPart.getCount();
-            assertEquals(8, multiPartCount);
+            assertEquals(9, multiPartCount);
 
             testMessageBody((MimeBodyPart)
                     ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(0));
@@ -115,6 +115,7 @@ public class SmtpComplexEmailSendTest {
             testAttachment5((MimeBodyPart) multiPart.getBodyPart(5));
             testAttachment6((MimeBodyPart) multiPart.getBodyPart(6));
             testAttachment7((MimeBodyPart) multiPart.getBodyPart(7));
+            testAttachment8((MimeBodyPart) multiPart.getBodyPart(8));
 
             assertEquals(HEADER1_VALUE, message.getHeader(HEADER1_NAME)[0]);
             assertEquals(EMAIL_FROM, message.getFrom()[0].toString());
@@ -183,6 +184,15 @@ public class SmtpComplexEmailSendTest {
     }
 
     private static void testAttachment7(MimeBodyPart bodyPart) throws IOException, MessagingException {
+        assertTrue(bodyPart.getContentType().startsWith("multipart/mixed"));
+        MimeMultipart complexMultipart = (MimeMultipart) bodyPart.getContent();
+        assertEquals(2, complexMultipart.getCount());
+        assertEquals("Quarantine COVID-19!", ((String) complexMultipart.getBodyPart(0).getContent()));
+        compareInputStreams(new FileInputStream("tests/resources/datafiles/quarantine.jpg"),
+                (InputStream) complexMultipart.getBodyPart(1).getContent());
+    }
+
+    private static void testAttachment8(MimeBodyPart bodyPart) throws IOException, MessagingException {
         InputStream input = bodyPart.getInputStream();
         assertEquals("There is a vaccine for COVID-19.", convertInputStreamToString(input));
         assertTrue(bodyPart.getContentType().startsWith("text/plain"));
