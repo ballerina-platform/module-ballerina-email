@@ -45,9 +45,7 @@ public class SmtpClient {
 
     private static final Logger log = LoggerFactory.getLogger(SmtpClient.class);
 
-    private SmtpClient() {
-        // Singleton class
-    }
+    private SmtpClient() {}
 
     /**
      * Initializes the BObject object with the SMTP Properties.

@@ -19,7 +19,6 @@
 package org.ballerinalang.stdlib.email.server;
 
 import io.ballerina.runtime.api.Runtime;
-import io.ballerina.runtime.api.async.Callback;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import org.ballerinalang.stdlib.email.util.EmailConstants;
@@ -67,16 +66,7 @@ public class EmailListener {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
                 runtime.invokeMethodAsync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA,
-                                          new Callback() {
-                    @Override
-                    public void notifySuccess(Object o) {
-                    }
-
-                    @Override
-                    public void notifyFailure(BError error) {
-                        log.error("Error while invoking email onMessage method.");
-                    }
-                }, email, true);
+                        null, email, true);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -94,16 +84,7 @@ public class EmailListener {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
                 runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_ERROR, null, ON_ERROR_METADATA,
-                        new Callback() {
-                    @Override
-                    public void notifySuccess(Object o) {
-                    }
-
-                    @Override
-                    public void notifyFailure(BError error) {
-                        log.error("Error while invoking email onMessage method.");
-                    }
-                }, error, true);
+                        null, error, true);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -122,16 +103,7 @@ public class EmailListener {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
                 runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_CLOSE, null, ON_CLOSE_METADATA,
-                        new Callback() {
-                            @Override
-                            public void notifySuccess(Object o) {
-                            }
-
-                            @Override
-                            public void notifyFailure(BError error) {
-                                log.error("Error while closing the POP3/IMAP connection.");
-                            }
-                        }, error, true);
+                        null, error, true);
             }
         } else {
             log.error("Runtime should not be null.");

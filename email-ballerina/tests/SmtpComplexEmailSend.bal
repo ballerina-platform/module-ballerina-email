@@ -52,19 +52,19 @@ function testSendComplexEmail() returns @tainted error? {
     }
     SmtpClient smtpClient = check smtpClientOrError;
 
-    //Create a text body part.
+    // Create a text body part.
     mime:Entity bodyPart1 = new;
     bodyPart1.setText("Ballerina text body part");
 
-    //Create a body part with json content.
+    // Create a body part with json content.
     mime:Entity bodyPart2 = new;
     bodyPart2.setJson({"bodyPart":"jsonPart"});
 
-    //Create another body part with a xml file.
+    // Create another body part with a xml file.
     mime:Entity bodyPart3 = new;
     bodyPart3.setFileAsEntityBody("tests/resources/datafiles/file.xml", mime:TEXT_XML);
 
-    //Create another body part with a text file.
+    // Create another body part with a text file.
     mime:Entity bodyPart4 = new;
     mime:ContentDisposition disposition4 = new;
     disposition4.fileName = "test.tmp";
@@ -75,7 +75,7 @@ function testSendComplexEmail() returns @tainted error? {
     bodyPart4.setHeader("H1", "V1");
     bodyPart4.setFileAsEntityBody("tests/resources/datafiles/test.tmp");
 
-    //Create another body part with an image file.
+    // Create another body part with an image file.
     mime:Entity bodyPart5 = new;
     mime:ContentDisposition disposition5 = new;
     disposition5.fileName = "corona_virus.jpg";
@@ -83,17 +83,30 @@ function testSendComplexEmail() returns @tainted error? {
     bodyPart5.setContentDisposition(disposition5);
     bodyPart5.setFileAsEntityBody("tests/resources/datafiles/corona_virus.jpg", mime:IMAGE_JPEG);
 
-    //Create another body part with binary content.
+    // Create another body part with binary content.
     string binaryString = "Test content";
     byte[] binary = binaryString.toBytes();
     mime:Entity bodyPart6 = new;
     bodyPart6.setByteArray(binary);
 
+    //Create another body part with complex content.
+    mime:Entity bodyPart7 = new;
+    mime:Entity textEntity7 = new;
+    textEntity7.setText("Quarantine COVID-19!");
+    mime:Entity imageEntity7 = new;
+    imageEntity7.setFileAsEntityBody("tests/resources/datafiles/quarantine.jpg", mime:IMAGE_JPEG);
+    mime:ContentDisposition disposition6 = new;
+    disposition6.disposition = "attachment";
+    disposition6.fileName = "quarantine.jpg";
+    imageEntity7.setContentDisposition(disposition6);
+    bodyPart7.setBodyParts([textEntity7, imageEntity7], mime:MULTIPART_MIXED);
+
     // Create another attachment
     Attachment att7 = {filePath: "tests/resources/datafiles/vaccine.txt", contentType: "text/plain"};
 
     //Create an array to hold all the body parts.
-    (mime:Entity|Attachment)[] bodyParts = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, att7];
+    (mime:Entity|Attachment)[] bodyParts
+        = [bodyPart1, bodyPart2, bodyPart3, bodyPart4, bodyPart5, bodyPart6, bodyPart7, att7];
 
     Message email = {
         to: toAddresses,

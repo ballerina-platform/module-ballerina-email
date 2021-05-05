@@ -32,6 +32,8 @@ import static io.ballerina.runtime.api.constants.RuntimeConstants.BALLERINA_BUIL
  */
 public class EmailConstants {
 
+    private EmailConstants() {}
+
     // Common constants
     public static final String MODULE_NAME = "email";
     public static final String ORG_NAME = "ballerina";
@@ -75,7 +77,6 @@ public class EmailConstants {
     public static final BString PROPS_CERT_PROTOCOL_NAME = StringUtils.fromString("name");
     public static final BString PROPS_CERT_PROTOCOL_VERSIONS = StringUtils.fromString("versions");
     public static final BString PROPS_CERT_CIPHERS = StringUtils.fromString("ciphers");
-    public static final BString PROPS_CERT_PATH = StringUtils.fromString("path");
     public static final BString PROPS_VERIFY_HOSTNAME = StringUtils.fromString("verifyHostName");
 
     // Common constants to POP and IMAP
@@ -91,19 +92,12 @@ public class EmailConstants {
     public static final String PROPS_FOLDER = "folder";
     public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
     public static final String MIME_CONTENT_TYPE_PATTERN = "multipart/*";
-    public static final BString ENDPOINT_CONFIG_SECURE_SOCKET = StringUtils.fromString("secureSocket");
-    public static final BString ENDPOINT_CONFIG_PRIVATE_KEY = StringUtils.fromString("privateKey");
-    public static final BString ENDPOINT_CONFIG_PATH = StringUtils.fromString("path");
-    public static final BString ENDPOINT_CONFIG_PASS_KEY = StringUtils.fromString("password");
-    public static final String IDENTITY = "IDENTITY";
-    public static final String IDENTITY_PASS_PHRASE = "IDENTITY_PASS_PHRASE";
     public static final String EMAIL_SERVER_CONNECTOR = "serverConnector";
     public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocolConfig");
     public static final String DEFAULT_STORE_LOCATION = "INBOX";
     public static final String ON_MESSAGE = "onMessage";
     public static final String ON_ERROR = "onError";
     public static final String ON_CLOSE = "onClose";
-    public static final String LISTENER = "Listener";
 
     // POP related constants
     public static final String POP = "POP";
@@ -167,7 +161,4 @@ public class EmailConstants {
     public static final StrandMetadata ON_CLOSE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
             MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_CLOSE);
 
-    private EmailConstants() {
-        // private constructor
-    }
 }
