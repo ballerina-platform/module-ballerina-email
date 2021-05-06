@@ -36,6 +36,8 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 
+import static org.ballerinalang.stdlib.email.util.EmailConstants.HOSTNAME_CHECKER_CLASS;
+
 /**
  * Contains functionality of SMTP Client.
  *
@@ -46,6 +48,20 @@ public class SmtpClient {
     private static final Logger log = LoggerFactory.getLogger(SmtpClient.class);
 
     private SmtpClient() {}
+
+    static {
+        Class<?> hostNameCheckerClass = null;
+        try {
+            hostNameCheckerClass = Class.forName(HOSTNAME_CHECKER_CLASS);
+        } catch (ClassNotFoundException e) {
+            log.error("sun.security.util.HostnameChecker class was not found from SmtpClient.");
+        }
+        if (hostNameCheckerClass != null) {
+            String hostNameCheckerPackageName = hostNameCheckerClass.getPackageName();
+            Module smtpClientModule = SmtpClient.class.getModule();
+            hostNameCheckerClass.getModule().addOpens(hostNameCheckerPackageName, smtpClientModule);
+        }
+    }
 
     /**
      * Initializes the BObject object with the SMTP Properties.

@@ -54,6 +54,7 @@ public class EmailConstants {
                                                                  MODULE_VERSION);
     public static final String HTML_CONTENT_TYPE = "text/html";
     public static final String DEFAULT_TRANSPORT_PROTOCOL = "TLS";
+    public static final String HOSTNAME_CHECKER_CLASS = "sun.security.util.HostnameChecker";
     public static final String SSL_SOCKET_FACTORY_CLASS = "javax.net.ssl.SSLSocketFactory";
     public static final BString ATTACHMENT_FILE_PATH = StringUtils.fromString("filePath");
     public static final BString ATTACHMENT_CONTENT_TYPE = StringUtils.fromString("contentType");

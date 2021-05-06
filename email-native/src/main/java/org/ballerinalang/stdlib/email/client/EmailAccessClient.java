@@ -40,6 +40,8 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.search.FlagTerm;
 
+import static org.ballerinalang.stdlib.email.util.EmailConstants.HOSTNAME_CHECKER_CLASS;
+
 /**
  * Contains the functionality of email reading with POP and IMAP clients.
  *
@@ -51,6 +53,20 @@ public class EmailAccessClient {
     private static final FlagTerm UNSEEN_FLAG = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
 
     private EmailAccessClient() {}
+
+    static {
+        Class<?> hostNameCheckerClass = null;
+        try {
+            hostNameCheckerClass = Class.forName(HOSTNAME_CHECKER_CLASS);
+        } catch (ClassNotFoundException e) {
+            log.error("sun.security.util.HostnameChecker class was not found from EmailAccessClient.");
+        }
+        if (hostNameCheckerClass != null) {
+            String hostNameCheckerPackageName = hostNameCheckerClass.getPackageName();
+            Module emailAccessClientModule = EmailAccessClient.class.getModule();
+            hostNameCheckerClass.getModule().addOpens(hostNameCheckerPackageName, emailAccessClientModule);
+        }
+    }
 
     /**
      * Initializes the BObject object with the POP properties.
