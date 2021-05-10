@@ -27,14 +27,24 @@ import org.ballerinalang.mime.util.EntityBodyHandler;
 import org.ballerinalang.mime.util.EntityHeaderHandler;
 import org.ballerinalang.mime.util.MimeConstants;
 import org.ballerinalang.mime.util.MimeUtil;
+import org.ballerinalang.stdlib.io.channels.TempFileIOChannel;
 import org.ballerinalang.stdlib.io.channels.base.Channel;
+import org.ballerinalang.stdlib.io.utils.IOConstants;
+import org.ballerinalang.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.GeneralSecurityException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -288,8 +298,7 @@ public class SmtpUtil {
                     = attachedEntity.getStringValue(EmailConstants.ATTACHMENT_CONTENT_TYPE).getValue();
             File file = new File(attachmentFilePath);
             BObject mimeEntity = createObjectValue(MimeUtil.getMimePackage(), ENTITY);
-            mimeEntity.addNativeData(ENTITY_BYTE_CHANNEL, EntityBodyHandler.getByteChannelForTempFile(
-                    file.getAbsolutePath()));
+            mimeEntity.addNativeData(ENTITY_BYTE_CHANNEL, getByteChannelForTempFile(file.getAbsolutePath()));
             MimeUtil.setContentType(createObjectValue(MimeUtil.getMimePackage(), MEDIA_TYPE), mimeEntity,
                     TEXT_PLAIN);
             if (attachmentContentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
@@ -298,6 +307,20 @@ public class SmtpUtil {
                 multipart.addBodyPart(buildJavaMailBodyPart(mimeEntity, attachmentContentType));
             }
         }
+    }
+
+    private static TempFileIOChannel getByteChannelForTempFile(String temporaryFilePath) {
+        FileChannel fileChannel;
+        Set<OpenOption> options = new HashSet<>();
+        options.add(StandardOpenOption.READ);
+        Path path = Paths.get(temporaryFilePath);
+        try {
+            fileChannel = (FileChannel) Files.newByteChannel(path, options);
+        } catch (IOException e) {
+            throw IOUtils.createError(IOConstants.ErrorCode.GenericError,
+                    "Error occurred while creating a file channel from a temporary file");
+        }
+        return new TempFileIOChannel(fileChannel, temporaryFilePath);
     }
 
     private static MimeBodyPart populateMultipart(BObject mimeEntity) throws IOException, MessagingException {
