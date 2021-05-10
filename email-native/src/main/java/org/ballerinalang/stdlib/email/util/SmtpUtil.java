@@ -29,8 +29,6 @@ import org.ballerinalang.mime.util.MimeConstants;
 import org.ballerinalang.mime.util.MimeUtil;
 import org.ballerinalang.stdlib.io.channels.TempFileIOChannel;
 import org.ballerinalang.stdlib.io.channels.base.Channel;
-import org.ballerinalang.stdlib.io.utils.IOConstants;
-import org.ballerinalang.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -309,17 +307,12 @@ public class SmtpUtil {
         }
     }
 
-    private static TempFileIOChannel getByteChannelForTempFile(String temporaryFilePath) {
+    private static TempFileIOChannel getByteChannelForTempFile(String temporaryFilePath) throws IOException {
         FileChannel fileChannel;
         Set<OpenOption> options = new HashSet<>();
         options.add(StandardOpenOption.READ);
         Path path = Paths.get(temporaryFilePath);
-        try {
-            fileChannel = (FileChannel) Files.newByteChannel(path, options);
-        } catch (IOException e) {
-            throw IOUtils.createError(IOConstants.ErrorCode.GenericError,
-                    "Error occurred while creating a file channel from a temporary file");
-        }
+        fileChannel = (FileChannel) Files.newByteChannel(path, options);
         return new TempFileIOChannel(fileChannel, temporaryFilePath);
     }
 
