@@ -32,7 +32,6 @@ public client class SmtpClient {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
-
     # Sends an email message.
     # ```ballerina
     # email:Error? response = smtpClient->sendMessage(email);
@@ -61,7 +60,8 @@ public client class SmtpClient {
     # + from - From address
     # + body - Text body of the email
     # + options - Optional parameters of the email
-    # + return - An `email:Error` if failed to send the message to the recipient or else `()`
+    # + return - An `email:Error` if failed to send the message to
+    #            the recipient or else `()`
     remote isolated function send(string|string[] to, string subject, string 'from, string body, *Options options)
             returns Error? {
         Message email = {
