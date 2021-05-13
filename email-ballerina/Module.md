@@ -1,6 +1,6 @@
 ## Overview
 
-This module contains functions to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
+This module provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
 ### Client
 
