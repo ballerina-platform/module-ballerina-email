@@ -19,21 +19,16 @@ To send an email using the SMTP protocol, you must first create an `email:SmtpCl
 
 The following code creates an SMTP client, which connects to the default port(465) and enables SSL.
 ```ballerina
-email:SmtpClient smtpClient = new ("smtp.email.com",
-                                   "sender@email.com",
-                                   "pass123");
+email:SmtpClient|email:Error smtpClient = new ("smtp.email.com", "sender@email.com", "pass123");
 ```
 The port number of the server can be configured by passing the following configurations.
 
 ```ballerina
 email:SmtpConfiguration smtpConfig = {
-    port: 465 // Can use ports, 465, 587 or 25
+    port: 465
 };
 
-email:SmtpClient smtpClient = new ("smtp.email.com",
-                                   "sender@email.com",
-                                   "pass123",
-                                    smtpConfig);
+email:SmtpClient|email:Error smtpClient = new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
 ```
 
 ##### Sending an email
@@ -81,9 +76,7 @@ To receive an email using the POP3 protocol, you must first create an `email:Pop
 
 The following code creates a POP3 client, which connects to the default port(995) and enables SSL.
 ```ballerina
-email:PopClient|email:Error popClient = new ("pop.email.com",
-                                             "reader@email.com",
-                                             "pass456");
+email:PopClient|email:Error popClient = new ("pop.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server can be configured by passing the following configurations.
@@ -92,10 +85,7 @@ email:PopConfiguration popConfig = {
     port: 995
 };
 
-email:PopClient|email:Error popClient = new ("pop.email.com",
-                                             "reader@email.com",
-                                             "pass456",
-                                              popConfig);
+email:PopClient|email:Error popClient = new ("pop.email.com", "reader@email.com", "pass456", popConfig);
 ```
 
 ##### Receiving an email
@@ -115,9 +105,7 @@ To receive an email using the IMAP4 protocol, you must first create an `email:Im
 
 The following code creates an IMAP4 client, which connects to the default port(993) and enables SSL.
 ```ballerina
-email:ImapClient|email:Error imapClient = new ("imap.email.com",
-                                               "reader@email.com",
-                                               "pass456");
+email:ImapClient|email:Error imapClient = new ("imap.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server and/or the SSL support can also be configured by passing the following configurations.
@@ -127,10 +115,7 @@ email:ImapConfiguration imapConfig = {
     enableSsl: true
 };
 
-email:ImapClient|email:Error imapClient = new ("imap.email.com",
-                                               "reader@email.com",
-                                               "pass456",
-                                                imapConfig);
+email:ImapClient|email:Error imapClient = new ("imap.email.com", "reader@email.com", "pass456", imapConfig);
 ```
 
 ##### Receiving an email
@@ -174,8 +159,3 @@ service "emailObserver" on emailListener {
 
 }
 ```
-
-For information on the operations, which you can perform with this module, see the **Functions**  below. For examples of the usage of the operation, see the following.
-  * [Send Emails Example](https://ballerina.io/learn/by-example/send-email.html)
-  * [Receive Emails using a client Example](https://ballerina.io/learn/by-example/receive-email-using-client.html)
-  * [Receive Emails using a listener Example](https://ballerina.io/learn/by-example/receive-email-using-listener.html)

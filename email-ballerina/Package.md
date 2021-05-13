@@ -4,8 +4,6 @@ The Email library is one of the standard library packages of the<a target="_blan
 
 It provides an implementation for sending and receiving emails with SMTP, POP3 and IMAP4 protocols.
 
-For more information go to [The Email Package](https://docs.central.ballerina.io/ballerina/email/latest).
-
 ## Report Issues
 
 To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library).
