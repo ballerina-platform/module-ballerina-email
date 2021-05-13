@@ -6,8 +6,6 @@ It provides an implementation for sending and receiving emails with SMTP, POP3 a
 
 For more information go to [The Email Package](https://docs.central.ballerina.io/ballerina/email/latest).
 
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).
-
 ## Report Issues
 
 To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library).
