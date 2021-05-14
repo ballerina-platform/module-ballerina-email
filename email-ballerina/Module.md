@@ -143,7 +143,7 @@ listener email:PopListener emailListener = check new ({
 ```
 
 Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onMessage`
-method and when errors happen `onError` method get called.
+method and when errors happen `onError` method gets called.
 
 ```ballerina
 service "emailObserver" on emailListener {
