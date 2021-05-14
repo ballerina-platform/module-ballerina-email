@@ -19,7 +19,7 @@ To send an email using the SMTP protocol, you must first create an `email:SmtpCl
 
 The following code creates an SMTP client, which connects to the default port(465) and enables SSL.
 ```ballerina
-email:SmtpClient|email:Error smtpClient = new ("smtp.email.com", "sender@email.com", "pass123");
+email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123");
 ```
 The port number of the server can be configured by passing the following configurations.
 
@@ -28,7 +28,7 @@ email:SmtpConfiguration smtpConfig = {
     port: 465
 };
 
-email:SmtpClient|email:Error smtpClient = new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
+email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
 ```
 
 ##### Sending an email
@@ -48,7 +48,7 @@ email:Message email = {
     replyTo: ["replyTo1@email.com", "replyTo2@email.com"]
 };
 
-email:Error? response = smtpClient->sendMessage(email);
+check smtpClient->sendMessage(email);
 ```
 
 An email can be sent directly by calling the client, specifying optional parameters as named parameters, as well.
@@ -76,7 +76,7 @@ To receive an email using the POP3 protocol, you must first create an `email:Pop
 
 The following code creates a POP3 client, which connects to the default port(995) and enables SSL.
 ```ballerina
-email:PopClient|email:Error popClient = new ("pop.email.com", "reader@email.com", "pass456");
+email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server can be configured by passing the following configurations.
@@ -85,7 +85,7 @@ email:PopConfiguration popConfig = {
     port: 995
 };
 
-email:PopClient|email:Error popClient = new ("pop.email.com", "reader@email.com", "pass456", popConfig);
+email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pass456", popConfig);
 ```
 
 ##### Receiving an email
@@ -93,7 +93,7 @@ Once the `email:PopClient` is created, emails can be received using the POP3 pro
 Samples for this operation can be found below.
 
 ```ballerina
-email:Message|email:Error? emailResponse = popClient->receiveMessage();
+email:Message? emailResponse = check popClient->receiveMessage();
 ```
 
 #### IMAP4 Client
@@ -105,7 +105,7 @@ To receive an email using the IMAP4 protocol, you must first create an `email:Im
 
 The following code creates an IMAP4 client, which connects to the default port(993) and enables SSL.
 ```ballerina
-email:ImapClient|email:Error imapClient = new ("imap.email.com", "reader@email.com", "pass456");
+email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server and/or the SSL support can also be configured by passing the following configurations.
@@ -115,7 +115,7 @@ email:ImapConfiguration imapConfig = {
     enableSsl: true
 };
 
-email:ImapClient|email:Error imapClient = new ("imap.email.com", "reader@email.com", "pass456", imapConfig);
+email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "pass456", imapConfig);
 ```
 
 ##### Receiving an email
@@ -123,7 +123,7 @@ Once the `email:ImapClient` is created, emails can be received using the IMAP4 p
 Samples for this operation can be found below.
 
 ```ballerina
-email:Message|email:Error emailResponse = imapClient->receiveMessage();
+email:Message? emailResponse = check imapClient->receiveMessage();
 ```
 
 #### POP3 and IMAP Listeners
@@ -158,4 +158,167 @@ service "emailObserver" on emailListener {
     }
 
 }
+```
+
+## Security and Authentication
+
+Email module supports both TLS/SSL and STARTTLS as transport level security.
+
+Transport level security for all SMTP, POP3, and IMAP clients/listeners can be configured with `secureSocket` field.
+
+```ballerina
+secureSocket: {
+    cert: "path/to/certfile.crt",
+    protocol: {
+        name: TLS,
+        versions: ["TLSv1.2", "TLSv1.1"]
+    },
+    ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+    verifyHostName: true
+}
+```
+
+Transport level security for SMTP client configuration can be defined as follows.
+
+```ballerina
+email:SmtpConfiguration smtpConfig = {
+    port: 465,
+    secureSocket: {
+        // Transport level configuration
+    }
+};
+```
+
+Transport level security for POP3 client configuration can be defined as follows.
+
+```ballerina
+email:PopConfiguration popConfig = {
+     port: 995,
+     secureSocket: {
+         // Transport level configuration
+     }
+};
+```
+
+Transport level security for IMAP client configuration can be defined as follows.
+
+```ballerina
+email:ImapConfiguration imapConfig = {
+     port: 993,
+     secureSocket: {
+         // Transport level configuration
+     }
+};
+```
+
+Transport level security for POP3 listener configuration can be defined as follows.
+
+```ballerina
+email:PopListenerConfiguration popListenerConfig = {
+    host: "127.0.0.1",
+    username: "hascode",
+    password: "abcdef123",
+    pollingInterval: 2,
+    port: 995,
+    secureSocket: {
+        // Transport level configuration
+    }
+};
+```
+
+Transport level security for IMAP listener configuration can be defined as follows.
+
+```ballerina
+email:ImapListenerConfiguration imapListenerConfig = {
+    host: "127.0.0.1",
+    username: "hascode",
+    password: "abcdef123",
+    pollingInterval: 2,
+    port: 993,
+    secureSocket: {
+        // Transport level configuration
+    }
+};
+```
+
+By default, TLS/SSL is enabled as the default transport level security protocol and the certificate verification is set as required.
+This optional protocol definition can be configured with the `enum` field, `security`, in each of the configuration type described above.
+
+Options available with the field, `security` are as follows.
+
+1. `SSL` - As same as the default TLS/SSL protocol
+2. `START_TLS_NEVER` - Disables both TLS/SSL and STARTTLS protocols and allows only the unencrypted transport level communication
+3. `START_TLS_ALWAYS` - Makes it mandatory to use secure STARTTLS protocol
+4. `START_TLS_AUTO` - Enables STARTTLS protocol which would switch to unsecure communication mode if the secure STARTTLS mode is not available in the server
+
+Following is an example of using the field, `security` in the SMTP client with `START_TLS_AUTO` mode.
+
+```ballerina
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    secureSocket: {
+        // Transport level configuration
+    },
+    security: START_TLS_AUTO
+};
+```
+
+Similarly, other client/listener configuration types can also be defined with the field `security`.
+
+**Note**: Make sure the port number is changed accordingly depending on the protocol used.
+
+Standard port numbers used for each of the protocol for each type of transport security are as given below.
+
+| Protocol/Security | SSL | STARTTLS | Unsecure |
+|-------------------|-----|----------|----------|
+| **SMTP**          | 465 | 587      | 25, 587  |
+| **POP3**          | 995 | 995      | 110      |
+| **IMAP4**         | 993 | 143, 993 | 143      |
+
+All the authentication is based on username/password credentials.
+
+Note that when the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument to the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
+
+## Message Content and Attachments
+
+An `email:Message` prepared to be sent, can have the text body content, `body`, and/or HTML body content, `htmlBody`.
+When emails are received with POP3 or IMAP, text email bodies and HTML bodies of the email are captured by `body` and `htmlBody` fields of `email:Message` respectively.
+
+When sending emails with SMTP, there are four options to specify email `attachments` in `email:Message`.
+
+1. With `email:Attachment` type which points to an attachment file along with its content-type
+2. With an array of `email:Attachment` type
+3. With `mime:Entity` type
+4. With an array of `mime:Entity` type
+
+Option 1 and 2 are designed for ordinary users to attach files from the local machine along with its content-type.
+Option 3 and 4 are designed for advanced users who have programming knowledge to define complex MIME typed data attachments.
+
+Following is an example of attaching a PDF file to an email with option 1.
+
+```ballerina
+email:Attachment pdfAttachment = {filePath: "path/to/application.pdf", contentType: "application/pdf"};
+
+email:Message email = {
+    // Other fields
+    attachments: pdfAttachment
+};
+```
+
+Following is an example of attaching a JPG file to an email with option 3.
+
+```ballerina
+mime:Entity imageAttachment = new;
+mime:ContentDisposition disposition = new;
+disposition.fileName = "profilePic.jpg";
+disposition.disposition = "attachment";
+disposition.name = "profilePic";
+imageAttachment.setContentDisposition(disposition);
+imageAttachment.setContentId("ImageAttachment");
+imageAttachment.setFileAsEntityBody("path/to/profilePic.jpg", mime:IMAGE_JPEG);
+
+email:Message email = {
+    // Other fields
+    attachments: imageAttachment
+};
 ```
