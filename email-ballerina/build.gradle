@@ -14,9 +14,6 @@
  * limitations under the License.
  *
  */
-
-import org.apache.tools.ant.taskdefs.condition.Os
-
 buildscript {
     repositories {
         maven {
@@ -46,7 +43,7 @@ def originalCompilerPluginToml = compilerPluginTomlFile.text
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
-        def splitVersion = extVersion.split('-');
+        def splitVersion = extVersion.split('-')
         if (splitVersion.length > 3) {
             def strippedValues = splitVersion[0..-4]
             return strippedValues.join('-')
@@ -60,36 +57,32 @@ def stripBallerinaExtensionVersion(String extVersion) {
 
 apply plugin: 'io.ballerina.plugin'
 
-ballerina{
+ballerina {
+    packageOrganization = packageOrg
     module = packageName
     langVersion = ballerinaLangVersion
 }
 
 configurations {
-    packingJars
+    externalJars
 }
 
 dependencies {
-    packingJars (group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
+    externalJars(group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
         transitive = false
     }
-    packingJars (group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
+    externalJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
         transitive = false
     }
-    packingJars (group: 'org.testng', name: 'testng', version: "${testngVersion}") {
+    externalJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
         transitive = false
     }
-    packingJars (group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
+    externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
         transitive = false
     }
 }
 
-task copyPackingJarsToLib(type: Copy) {
-    into "$project.projectDir/lib"
-    from configurations.packingJars
-}
-
-task updateTomlVersions {
+task updateTomlFiles {
     doLast {
         def stdlibDependentTaskVersion = stripBallerinaExtensionVersion(project.stdlibTaskVersion)
         def stdlibDependentMimeVersion = stripBallerinaExtensionVersion(project.stdlibMimeVersion)
@@ -116,16 +109,12 @@ task updateTomlVersions {
     }
 }
 
-task revertTomlFile {
+task revertTomlFiles {
     doLast {
         ballerinaTomlFile.text = originalBallerinaToml
         dependenciesTomlFile.text = originalDependenciesToml
         compilerPluginTomlFile.text = originalCompilerPluginToml
     }
-}
-
-def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
 publishing {
@@ -147,15 +136,14 @@ publishing {
     }
 }
 
+updateTomlFiles.dependsOn copyStdlibs
+
 build.dependsOn ":${packageName}-native:build"
 build.dependsOn ":${packageName}-compiler-plugin:build"
 build.dependsOn ":${packageName}-test-utils:build"
 test.dependsOn ":${packageName}-native:build"
 test.dependsOn ":${packageName}-compiler-plugin:build"
 test.dependsOn ":${packageName}-test-utils:build"
-
-updateTomlVersions.dependsOn copyStdlibs
-unpackJballerinaTools.dependsOn copyPackingJarsToLib
 
 publishToMavenLocal.dependsOn build
 publish.dependsOn build
