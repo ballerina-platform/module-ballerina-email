@@ -11,7 +11,7 @@ The Email package is one of the standard library packages of the<a target="_blan
 
 It provides implementation for sending emails over SMTP and receiving (with client and listener modes) over POP3 and IMAP4 protocols.
 
-For more information go to [The Email Package](https://docs.central.ballerina.io/ballerina/email/latest).
+For more information, go to the [`email` package](https://docs.central.ballerina.io/ballerina/email/latest).
 
 ## Issues and Projects 
 

@@ -26,8 +26,8 @@ public class PopListener {
 
     # Gets invoked during the `email:PopListener` initialization.
     #
-    # + ListenerConfig - Configurations for Email endpoint
-    # + return - () or else an `email:Error` upon failure to
+    # + ListenerConfig - Configurations for the email endpoint
+    # + return - `()` or else an `email:Error` upon failure to
     #            initialize the listener
     public isolated function init(PopListenerConfiguration listenerConfig) returns Error? {
         self.config = listenerConfig;
@@ -47,7 +47,7 @@ public class PopListener {
     # email:Error? result = emailListener.start();
     # ```
     #
-    # + return - () or else an `email:Error` upon failure to
+    # + return - `()` or else an `email:Error` upon failure to
     #            start the listener
     public isolated function 'start() returns @tainted error? {
         return self.internalStart();

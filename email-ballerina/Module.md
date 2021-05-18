@@ -51,7 +51,7 @@ email:Message email = {
 check smtpClient->sendMessage(email);
 ```
 
-An email can be sent directly by calling the client, specifying optional parameters as named parameters, as well.
+An email can be sent directly by calling the client specifying optional parameters as named parameters as well.
 Samples for this operation can be found below.
 
 ```ballerina
@@ -128,7 +128,7 @@ email:Message? emailResponse = check imapClient->receiveMessage();
 
 #### POP3 and IMAP Listeners
 
-As POP3 and IMAP4 protocols are similar in the listener use cases, lets consider POP3.
+As POP3 and IMAP4 protocols are similar in the listener use cases, POP3 is considered in the examples below.
 In order to receive emails one-by-one from a POP3 server, you must first create an `email:PopListener` object.
 The code for creating an `email:PopListener` can be found below.
 
@@ -142,8 +142,8 @@ listener email:PopListener emailListener = check new ({
 });
 ```
 
-Once initialized a `service` can listen to the new emails as follows. New emails get received at the `onMessage`
-method and when errors happen `onError` method gets called.
+Once initialized, a `service` can listen to the new emails as follows. New emails get received at the `onMessage`
+method and when errors happen, the `onError` method gets called.
 
 ```ballerina
 service "emailObserver" on emailListener {
@@ -162,9 +162,9 @@ service "emailObserver" on emailListener {
 
 ## Security and Authentication
 
-Email module supports both TLS/SSL and STARTTLS as transport level security.
+The `email` module supports both the TLS/SSL and STARTTLS as transport-level security protocols.
 
-Transport level security for all SMTP, POP3, and IMAP clients/listeners can be configured with `secureSocket` field.
+Transport-level security for all SMTP, POP3, and IMAP clients/listeners can be configured with the `secureSocket` field.
 
 ```ballerina
 secureSocket: {
@@ -178,7 +178,7 @@ secureSocket: {
 }
 ```
 
-Transport level security for SMTP client configuration can be defined as follows.
+Transport-level security for the SMTP client configuration can be defined as follows.
 
 ```ballerina
 email:SmtpConfiguration smtpConfig = {
@@ -189,7 +189,7 @@ email:SmtpConfiguration smtpConfig = {
 };
 ```
 
-Transport level security for POP3 client configuration can be defined as follows.
+Transport-level security for the POP3 client configuration can be defined as follows.
 
 ```ballerina
 email:PopConfiguration popConfig = {
@@ -200,7 +200,7 @@ email:PopConfiguration popConfig = {
 };
 ```
 
-Transport level security for IMAP client configuration can be defined as follows.
+Transport-level security for the IMAP client configuration can be defined as follows.
 
 ```ballerina
 email:ImapConfiguration imapConfig = {
@@ -211,7 +211,7 @@ email:ImapConfiguration imapConfig = {
 };
 ```
 
-Transport level security for POP3 listener configuration can be defined as follows.
+Transport-level security for the POP3 listener configuration can be defined as follows.
 
 ```ballerina
 email:PopListenerConfiguration popListenerConfig = {
@@ -226,7 +226,7 @@ email:PopListenerConfiguration popListenerConfig = {
 };
 ```
 
-Transport level security for IMAP listener configuration can be defined as follows.
+Transport-level security for the IMAP listener configuration can be defined as follows.
 
 ```ballerina
 email:ImapListenerConfiguration imapListenerConfig = {
@@ -241,17 +241,17 @@ email:ImapListenerConfiguration imapListenerConfig = {
 };
 ```
 
-By default, TLS/SSL is enabled as the default transport level security protocol and the certificate verification is set as required.
-This optional protocol definition can be configured with the `enum` field, `security`, in each of the configuration type described above.
+By default, TLS/SSL is enabled as the default transport-level security protocol, and the certificate verification is set as required.
+This optional protocol definition can be configured with the `security` `enum` field in each of the configuration types described above.
 
-Options available with the field, `security` are as follows.
+The options available with the `security` field are as follows.
 
 1. `SSL` - As same as the default TLS/SSL protocol
-2. `START_TLS_NEVER` - Disables both TLS/SSL and STARTTLS protocols and allows only the unencrypted transport level communication
-3. `START_TLS_ALWAYS` - Makes it mandatory to use secure STARTTLS protocol
-4. `START_TLS_AUTO` - Enables STARTTLS protocol which would switch to unsecure communication mode if the secure STARTTLS mode is not available in the server
+2. `START_TLS_NEVER` - Disables both TLS/SSL and STARTTLS protocols and allows only the unencrypted transport-level communication
+3. `START_TLS_ALWAYS` - Makes it mandatory to use the secure STARTTLS protocol
+4. `START_TLS_AUTO` - Enables the STARTTLS protocol, which would switch to the unsecured communication mode if the secure STARTTLS mode is not available in the server
 
-Following is an example of using the field, `security` in the SMTP client with `START_TLS_AUTO` mode.
+The following is an example of using the `security` field in the SMTP client with the `START_TLS_AUTO` mode.
 
 ```ballerina
 email:SmtpConfiguration smtpConfig = {
@@ -263,7 +263,7 @@ email:SmtpConfiguration smtpConfig = {
 };
 ```
 
-Similarly, other client/listener configuration types can also be defined with the field `security`.
+Similarly, other client/listener configuration types can also be defined with the `security` field.
 
 **Note**: Make sure the port number is changed accordingly depending on the protocol used.
 
@@ -275,26 +275,26 @@ Standard port numbers used for each of the protocol for each type of transport s
 | **POP3**          | 995 | 995      | 110      |
 | **IMAP4**         | 993 | 143, 993 | 143      |
 
-All the authentication is based on username/password credentials.
+All the authentications are based on the username/password credentials.
 
-Note that when the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument to the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
+>**Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
 
 ## Message Content and Attachments
 
-An `email:Message` prepared to be sent, can have the text body content, `body`, and/or HTML body content, `htmlBody`.
-When emails are received with POP3 or IMAP, text email bodies and HTML bodies of the email are captured by `body` and `htmlBody` fields of `email:Message` respectively.
+An `email:Message` prepared to be sent can have the text body content, `body`, and/or HTML body content (`htmlBody`).
+When emails are received with POP3 or IMAP, the text email bodies and HTML bodies of the email are captured by the `body` and `htmlBody` fields of the `email:Message` respectively.
 
-When sending emails with SMTP, there are four options to specify email `attachments` in `email:Message`.
+When sending emails with SMTP, there are four options to specify the email `attachments` in the `email:Message`.
 
-1. With `email:Attachment` type which points to an attachment file along with its content-type
-2. With an array of `email:Attachment` type
-3. With `mime:Entity` type
-4. With an array of `mime:Entity` type
+1. With the `email:Attachment` type, which points to an attachment file along with its content-type
+2. With an array of the `email:Attachment` type
+3. With the `mime:Entity` type
+4. With an array of the `mime:Entity` type
 
 Option 1 and 2 are designed for ordinary users to attach files from the local machine along with its content-type.
 Option 3 and 4 are designed for advanced users who have programming knowledge to define complex MIME typed data attachments.
 
-Following is an example of attaching a PDF file to an email with option 1.
+The following is an example of attaching a PDF file to an email with option 1.
 
 ```ballerina
 email:Attachment pdfAttachment = {filePath: "path/to/application.pdf", contentType: "application/pdf"};

@@ -36,8 +36,8 @@ public client class PopClient {
     # email:Message|email:Error? emailResponse = popClient->receiveMessage();
     # ```
     #
-    # + folder - Folder to read emails. The default value is `INBOX`
-    # + timeout - Polling timeout period in seconds.
+    # + folder - Folder to read the emails. The default value is `INBOX`
+    # + timeout - Polling timeout period in seconds
     # + return - An `email:Message` if reading the message is successful,
     #            `()` if there are no emails in the specified folder,
     #            or else an `email:Error` if the recipient failed to receive the message
