@@ -305,7 +305,7 @@ email:Message email = {
 };
 ```
 
-Following is an example of attaching a JPG file to an email with option 3.
+The following is an example of attaching a JPG file to an email with option 3.
 
 ```ballerina
 mime:Entity imageAttachment = new;
