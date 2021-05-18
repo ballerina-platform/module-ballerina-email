@@ -14,9 +14,6 @@
  * limitations under the License.
  *
  */
-
-import org.apache.tools.ant.taskdefs.condition.Os
-
 buildscript {
     repositories {
         maven {
@@ -46,7 +43,7 @@ def originalCompilerPluginToml = compilerPluginTomlFile.text
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
-        def splitVersion = extVersion.split('-');
+        def splitVersion = extVersion.split('-')
         if (splitVersion.length > 3) {
             def strippedValues = splitVersion[0..-4]
             return strippedValues.join('-')
@@ -60,7 +57,7 @@ def stripBallerinaExtensionVersion(String extVersion) {
 
 apply plugin: 'io.ballerina.plugin'
 
-ballerina{
+ballerina {
     module = packageName
     langVersion = ballerinaLangVersion
 }
@@ -70,16 +67,16 @@ configurations {
 }
 
 dependencies {
-    packingJars (group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
+    packingJars(group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}") {
         transitive = false
     }
-    packingJars (group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
+    packingJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
         transitive = false
     }
-    packingJars (group: 'org.testng', name: 'testng', version: "${testngVersion}") {
+    packingJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
         transitive = false
     }
-    packingJars (group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
+    packingJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
         transitive = false
     }
 }
