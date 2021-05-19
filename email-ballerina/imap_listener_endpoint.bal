@@ -25,8 +25,9 @@ public class ImapListener {
 
     # Gets invoked during the `email:ImapListener` initialization.
     #
-    # + ListenerConfig - Configurations for Email endpoint
-    # + return - () or else error upon failure to initialize the listener
+    # + ListenerConfig - Configurations for the email endpoint
+    # + return - `()` or else an `email:Error` upon failure to
+    #            initialize the listener
     public isolated function init(ImapListenerConfiguration listenerConfig) returns Error? {
         self.config = listenerConfig;
         ImapConfiguration imapConfig = {
