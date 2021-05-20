@@ -105,7 +105,7 @@ public class PopListener {
     }
 
     isolated function stop() returns error? {
-        task:JobId|error? id = self.jobId;
+        task:JobId? id = self.jobId;
         if (id is task:JobId) {
             check task:unscheduleJob(id);
             log:printInfo("Stopped listening to remote server at " + self.config.host);
