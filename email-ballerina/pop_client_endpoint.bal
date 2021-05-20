@@ -17,7 +17,7 @@
 import ballerina/jballerina.java;
 
 # Represents a POP Client, which interacts with a POP Server.
-public client class PopClient {
+public isolated client class PopClient {
 
     # Gets invoked during the `email:PopClient` initialization.
     #
