@@ -19,9 +19,9 @@ import ballerina/log;
 import ballerina/task;
 
 # Represents a service listener that monitors the email server location.
-public isolated class PopListener {
+public class PopListener {
 
-    private final readonly & PopListenerConfiguration config;
+    private PopListenerConfiguration config;
     private task:JobId? jobId = ();
 
     # Gets invoked during the `email:PopListener` initialization.
@@ -30,7 +30,7 @@ public isolated class PopListener {
     # + return - `()` or else an `email:Error` upon failure to
     #            initialize the listener
     public isolated function init(PopListenerConfiguration listenerConfig) returns Error? {
-        self.config = listenerConfig.cloneReadOnly();
+        self.config = listenerConfig;
         PopConfiguration popConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
@@ -99,21 +99,16 @@ public isolated class PopListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        lock {
-            self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval);
-            log:printInfo("User " + self.config.username + " is listening to remote server at "
-                + self.config.host + "...");
-        }
+        self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval);
+        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
 
     }
 
     isolated function stop() returns error? {
-        lock {
-            task:JobId|error? id = self.jobId;
-            if (id is task:JobId) {
-                check task:unscheduleJob(id);
-                log:printInfo("Stopped listening to remote server at " + self.config.host);
-            }
+        task:JobId|error? id = self.jobId;
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
     }
 

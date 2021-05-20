@@ -18,9 +18,9 @@ import ballerina/log;
 import ballerina/task;
 
 # Represents a service listener that monitors the email server location.
-public isolated class ImapListener {
+public class ImapListener {
 
-    private final readonly & ImapListenerConfiguration config;
+    private ImapListenerConfiguration config;
     private task:JobId? jobId = ();
 
     # Gets invoked during the `email:ImapListener` initialization.
@@ -29,7 +29,7 @@ public isolated class ImapListener {
     # + return - `()` or else an `email:Error` upon failure to
     #            initialize the listener
     public isolated function init(ImapListenerConfiguration listenerConfig) returns Error? {
-        self.config = listenerConfig.cloneReadOnly();
+        self.config = listenerConfig;
         ImapConfiguration imapConfig = {
              port: listenerConfig.port,
              security: listenerConfig.security
@@ -97,21 +97,16 @@ public isolated class ImapListener {
     }
 
     isolated function internalStart() returns @tainted error? {
-        lock {
-            self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
-            log:printInfo("User " + self.config.username + " is listening to remote server at "
-                + self.config.host + "...");
-        }
+        self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
+        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host + "...");
     }
 
     isolated function stop() returns error? {
-        lock {
-            task:JobId|error? id = self.jobId;
+        task:JobId|error? id = self.jobId;
 
-            if (id is task:JobId) {
-                check task:unscheduleJob(id);
-                log:printInfo("Stopped listening to remote server at " + self.config.host);
-            }
+        if (id is task:JobId) {
+            check task:unscheduleJob(id);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
     }
 
