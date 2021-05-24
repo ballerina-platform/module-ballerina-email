@@ -98,15 +98,14 @@ public class ImapListener {
 
     isolated function internalStart() returns @tainted error? {
         self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
-        log:printDebug("User " + self.config.username + " is listening to remote server at "
-            + self.config.host + "...");
+        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host);
     }
 
     isolated function stop() returns error? {
         task:JobId? id = self.jobId;
         if (id is task:JobId) {
             check task:unscheduleJob(id);
-            log:printDebug("Stopped listening to remote server at " + self.config.host);
+            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
     }
 
