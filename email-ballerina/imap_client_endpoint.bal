@@ -17,7 +17,7 @@
 import ballerina/jballerina.java;
 
 # Represents an IMAP Client, which interacts with an IMAP Server.
-public client class ImapClient {
+public isolated client class ImapClient {
 
     # Gets invoked during the `email:ImapClient` initialization.
     #

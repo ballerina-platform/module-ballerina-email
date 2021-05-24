@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
-public client class SmtpClient {
+public isolated client class SmtpClient {
 
     # Gets invoked during the `email:SmtpClient` initialization.
     #
