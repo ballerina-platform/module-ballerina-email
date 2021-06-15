@@ -24,7 +24,7 @@ import ballerina/test;
         testReceiveSimpleEmailPop
     ]
 }
-function testReceiveComplexEmailPop() returns @tainted error? {
+function testReceiveComplexEmailPop() returns error? {
 
     string host = "127.0.0.1";
     string username = "hascode";

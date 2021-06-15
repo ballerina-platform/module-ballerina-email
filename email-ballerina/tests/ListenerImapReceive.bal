@@ -83,7 +83,7 @@ function getReceivedCloseImap() returns string {
 @test:Config {
     dependsOn: [testReceiveSimpleSecureEmailImap]
 }
-function testListenEmailImap() returns @tainted error? {
+function testListenEmailImap() returns error? {
 
     Error? listenerStatus = startImapListener();
     if (listenerStatus is Error) {

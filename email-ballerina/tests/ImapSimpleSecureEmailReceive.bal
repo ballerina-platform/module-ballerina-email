@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/test;
 
 @test:Config {}
-function testReceiveSimpleSecureEmailImap() returns @tainted error? {
+function testReceiveSimpleSecureEmailImap() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
