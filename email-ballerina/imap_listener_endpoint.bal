@@ -47,7 +47,7 @@ public class ImapListener {
     # ```
     #
     # + return - () or else error upon failure to start the listener
-    public isolated function 'start() returns @tainted error? {
+    public isolated function 'start() returns error? {
         return self.internalStart();
     }
 
@@ -96,7 +96,7 @@ public class ImapListener {
         check self.stop();
     }
 
-    isolated function internalStart() returns @tainted error? {
+    isolated function internalStart() returns error? {
         self.jobId = check task:scheduleJobRecurByFrequency(new Job(self), self.config.pollingInterval);
         log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host);
     }

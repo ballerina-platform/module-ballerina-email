@@ -19,7 +19,7 @@ import ballerina/test;
 
 @test:Config {
 }
-function testReceiveSimpleSecureEmailPop() returns @tainted error? {
+function testReceiveSimpleSecureEmailPop() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";

@@ -20,7 +20,7 @@ import ballerina/test;
 @test:Config {
     dependsOn: [testSendSimpleEmail]
 }
-function testSendSimpleEmailWithOptions() returns @tainted error? {
+function testSendSimpleEmailWithOptions() returns error? {
     string host = "127.0.0.1";
     string username = "someone@localhost.com";
     string password = "abcdef123";

@@ -23,7 +23,7 @@ import ballerina/test;
         testSendEmailWithOptions
     ]
 }
-function testSendComplexEmail() returns @tainted error? {
+function testSendComplexEmail() returns error? {
 
     string host = "127.0.0.1";
     string username = "hascode";
