@@ -6,9 +6,11 @@ This module provides APIs to perform email operations such as sending and readin
 
 This module supports the following three client types.
 
-- `email:SmtpClient` - The client, which supports sending an email using the SMTP protocol.
-- `email:PopClient` - The client, which supports receiving an email using the POP3 protocol.
-- `email:ImapClient` - The client, which supports receiving an email using the IMAP4 protocol.
+**email:SmtpClient**: The client, which supports sending an email using the SMTP protocol.
+
+**email:PopClient**: The client, which supports receiving an email using the POP3 protocol.
+
+**email:ImapClient**: The client, which supports receiving an email using the IMAP4 protocol.
 
 #### SMTP Client
 
@@ -245,10 +247,13 @@ This optional protocol definition can be configured with the `security` `enum` f
 
 The options available with the `security` field are as follows.
 
-1. `SSL` - As same as the default TLS/SSL protocol
-2. `START_TLS_NEVER` - Disables both TLS/SSL and STARTTLS protocols and allows only the unencrypted transport-level communication
-3. `START_TLS_ALWAYS` - Makes it mandatory to use the secure STARTTLS protocol
-4. `START_TLS_AUTO` - Enables the STARTTLS protocol, which would switch to the unsecured communication mode if the secure STARTTLS mode is not available in the server
+**SSL**: As same as the default TLS/SSL protocol
+
+**START_TLS_NEVER**: Disables both TLS/SSL and STARTTLS protocols and allows only the unencrypted transport-level communication
+
+**START_TLS_ALWAYS**: Makes it mandatory to use the secure STARTTLS protocol
+
+**START_TLS_AUTO**: Enables the STARTTLS protocol, which would switch to the unsecured communication mode if the secure STARTTLS mode is not available in the server
 
 The following is an example of using the `security` field in the SMTP client with the `START_TLS_AUTO` mode.
 
