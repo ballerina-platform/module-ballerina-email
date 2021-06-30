@@ -27,7 +27,7 @@ public isolated client class PopClient {
     # + clientConfig - Configurations for the POP Client
     # + return - An `email:Error` if creating the client failed or else `()`
     public isolated function init(string host, string username, string password,
-            PopConfiguration clientConfig = {}) returns Error? {
+            *PopConfiguration clientConfig) returns Error? {
         return initPopClientEndpoint(self, host, username, password, clientConfig);
     }
 
