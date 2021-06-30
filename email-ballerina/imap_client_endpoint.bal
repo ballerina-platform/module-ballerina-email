@@ -27,7 +27,7 @@ public isolated client class ImapClient {
     # + clientConfig - Configurations for the IMAP Client
     # + return - An `email:Error` if failed while creating the client or else `()`
     public isolated function init(string host, string username, string password,
-            ImapConfiguration clientConfig = {}) returns Error? {
+            *ImapConfiguration clientConfig) returns Error? {
         return initImapClientEndpoint(self, host, username, password, clientConfig);
     }
 

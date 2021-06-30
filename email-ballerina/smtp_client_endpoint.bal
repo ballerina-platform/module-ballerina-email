@@ -27,7 +27,7 @@ public isolated client class SmtpClient {
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
-    public isolated function init(string host, string username, string password, SmtpConfiguration clientConfig = {})
+    public isolated function init(string host, string username, string password, *SmtpConfiguration clientConfig)
             returns Error? {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
