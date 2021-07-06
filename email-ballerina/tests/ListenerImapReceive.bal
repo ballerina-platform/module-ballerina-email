@@ -18,6 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/lang.runtime as runtime;
 import ballerina/lang.'string as strings;
 import ballerina/test;
+import ballerina/log;
 
 boolean onMessageInvokedImap = false;
 boolean onErrorInvokedImap = false;
@@ -25,6 +26,7 @@ boolean onCloseInvokedImap = false;
 string receivedMessageImap = "";
 string receivedErrorImap = "";
 string receivedCloseImap = "";
+int receivedMessageCountImap = 0;
 
 function isOnEmailInvokedImap() returns boolean {
     int i = 0;
@@ -115,6 +117,8 @@ function testListenEmailImap() returns error? {
     service object {} emailObserver = service object {
         remote function onMessage(Message emailMessage) {
             receivedMessageImap = emailMessage.subject;
+            receivedMessageCountImap += 1;
+            log:printInfo("Listened an IMAP message with subject: " + emailMessage.subject);
             onMessageInvokedImap = true;
         }
 
@@ -144,6 +148,7 @@ function testListenEmailImap() returns error? {
         msg = "An error occurred while listening and invoked method, onError with IMAP.");
     test:assertEquals(getReceivedMessageImap(), "Test E-Mail",
         msg = "Listened email subject is not matched with IMAP.");
+    test:assertEquals(receivedMessageCountImap, 1, msg = "IMAP listener has listened to more than one email.");
 
     listenerStatus = stopImapListener();
     if (listenerStatus is error) {

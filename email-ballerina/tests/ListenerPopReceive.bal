@@ -18,6 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/lang.runtime as runtime;
 import ballerina/lang.'string as strings;
 import ballerina/test;
+import ballerina/log;
 
 boolean onMessageInvokedPop = false;
 boolean onErrorInvokedPop = false;
@@ -25,6 +26,7 @@ boolean onCloseInvokedPop = false;
 string receivedMessagePop = "";
 string receivedErrorPop = "";
 string receivedClosePop = "";
+int receivedMessageCountPop = 0;
 
 function isOnEmailInvokedPop() returns boolean {
     int i = 0;
@@ -114,6 +116,8 @@ function testListenEmailPop() returns error? {
     service object {} emailObserver = service object {
         remote function onMessage(Message emailMessage) {
             receivedMessagePop = emailMessage.subject;
+            receivedMessageCountPop += 1;
+            log:printInfo("Listened a POP3 message with subject: " + emailMessage.subject);
             onMessageInvokedPop = true;
         }
 
@@ -143,6 +147,7 @@ function testListenEmailPop() returns error? {
     test:assertFalse(isOnErrorInvokedPop(),
         msg = "An error occurred while listening and invoked method, onError with POP.");
     test:assertEquals(getReceivedMessagePop(), "Test E-Mail", msg = "Listened email subject is not matched with POP.");
+    test:assertEquals(receivedMessageCountPop, 1, msg = "POP listener has listened to more than one email.");
 
     listenerStatus = stopPopListener();
     if (listenerStatus is error) {
