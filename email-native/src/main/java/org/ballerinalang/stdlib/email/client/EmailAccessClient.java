@@ -41,6 +41,7 @@ import javax.mail.Store;
 import javax.mail.search.FlagTerm;
 
 import static org.ballerinalang.stdlib.email.util.EmailConstants.HOSTNAME_CHECKER_CLASS;
+import static org.ballerinalang.stdlib.email.util.EmailConstants.POP_CLIENT;
 
 /**
  * Contains the functionality of email reading with POP and IMAP clients.
@@ -217,7 +218,11 @@ public class EmailAccessClient {
                 if (messages.length > 0) {
                     mapValue = EmailAccessUtil.getMapValue(messages[0]);
                     Flags flags = new Flags();
-                    flags.add(Flags.Flag.SEEN);
+                    if (POP_CLIENT.equals(clientConnector.getType().getName())) {
+                        flags.add(Flags.Flag.DELETED);
+                    } else {
+                        flags.add(Flags.Flag.SEEN);
+                    }
                     folder.setFlags(new int[]{messages[0].getMessageNumber()}, flags, true);
                 }
                 if (log.isDebugEnabled()) {
