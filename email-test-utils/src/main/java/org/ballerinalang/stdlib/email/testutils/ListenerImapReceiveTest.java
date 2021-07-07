@@ -63,6 +63,7 @@ public class ListenerImapReceiveTest {
 
     public static Object sendEmailImapListener() throws MessagingException, InterruptedException {
         sendEmail();
+        sendEmail();
         Thread.sleep(10000);
         return null;
     }
