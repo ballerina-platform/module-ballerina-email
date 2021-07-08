@@ -63,6 +63,7 @@ public class ListenerPopReceiveTest {
 
     public static Object sendEmailPopListener() throws MessagingException, InterruptedException {
         sendEmail();
+        sendEmail();
         Thread.sleep(10000);
         return null;
     }

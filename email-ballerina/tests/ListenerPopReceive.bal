@@ -30,7 +30,7 @@ int receivedMessageCountPop = 0;
 
 function isOnEmailInvokedPop() returns boolean {
     int i = 0;
-    while ((!onMessageInvokedPop) && (i < 10)) {
+    while ((!onMessageInvokedPop) && (receivedMessageCountPop < 2) && (i < 10)) {
     	 runtime:sleep(1);
     	 i += 1;
     }
@@ -147,7 +147,7 @@ function testListenEmailPop() returns error? {
     test:assertFalse(isOnErrorInvokedPop(),
         msg = "An error occurred while listening and invoked method, onError with POP.");
     test:assertEquals(getReceivedMessagePop(), "Test E-Mail", msg = "Listened email subject is not matched with POP.");
-    test:assertEquals(receivedMessageCountPop, 1, msg = "POP listener has listened to more than one email.");
+    test:assertEquals(receivedMessageCountPop, 2, msg = "POP listener has not listened to exactly 2 emails.");
 
     listenerStatus = stopPopListener();
     if (listenerStatus is error) {

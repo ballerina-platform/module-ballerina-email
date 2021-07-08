@@ -30,7 +30,7 @@ int receivedMessageCountImap = 0;
 
 function isOnEmailInvokedImap() returns boolean {
     int i = 0;
-    while ((!onMessageInvokedImap) && (i < 10)) {
+    while ((!onMessageInvokedImap) && (receivedMessageCountImap < 2) && (i < 10)) {
     	 runtime:sleep(1);
     	 i += 1;
     }
@@ -148,7 +148,7 @@ function testListenEmailImap() returns error? {
         msg = "An error occurred while listening and invoked method, onError with IMAP.");
     test:assertEquals(getReceivedMessageImap(), "Test E-Mail",
         msg = "Listened email subject is not matched with IMAP.");
-    test:assertEquals(receivedMessageCountImap, 1, msg = "IMAP listener has listened to more than one email.");
+    test:assertEquals(receivedMessageCountImap, 2, msg = "IMAP listener has not listened to exactly 2 emails.");
 
     listenerStatus = stopImapListener();
     if (listenerStatus is error) {
