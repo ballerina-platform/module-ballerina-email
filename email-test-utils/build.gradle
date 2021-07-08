@@ -22,12 +22,15 @@ plugins {
 description = 'Ballerina - Email Java Test Utils'
 
 dependencies {
-    compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+    implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
 
-    compile group: 'org.testng', name: 'testng', version: "${testngVersion}"
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
-    compile group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
-    compile project(":email-native")
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
+    implementation group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
+    implementation group: 'org.ballerinalang', name: 'mime-native', version: "${stdlibMimeVersion}"
+    implementation group: 'org.testng', name: 'testng', version: "${testngVersion}"
+    implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
+    implementation group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
+    implementation project(":email-native")
 }
 
 compileJava {

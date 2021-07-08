@@ -25,17 +25,17 @@ dependencies {
     checkstyle project(':build-config:checkstyle')
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
 
-    compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "${ballerinaLangVersion}"
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
+    implementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
+    implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+    implementation group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "${ballerinaLangVersion}"
+    implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
 
-    compile group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
-    compile group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
+    implementation group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
 
-    compile group: 'org.ballerinalang', name: 'ballerina-core', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'io-native', version: "${stdlibIoVersion}"
-    compile group: 'org.ballerinalang', name: 'mime-native', version: "${stdlibMimeVersion}"
+    implementation group: 'org.ballerinalang', name: 'ballerina-core', version: "${ballerinaLangVersion}"
+    implementation group: 'org.ballerinalang', name: 'io-native', version: "${stdlibIoVersion}"
+    implementation group: 'org.ballerinalang', name: 'mime-native', version: "${stdlibMimeVersion}"
 
     checkstyle project(":build-config:checkstyle")
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
