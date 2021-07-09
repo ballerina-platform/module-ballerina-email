@@ -12,8 +12,20 @@ plugins {
 }
 
 rootProject.name = 'email'
-include(':build-config:checkstyle')
-include ':email-ballerina', ':email-native', ':email-test-utils', ':email-compiler-plugin', 'email-compiler-plugin-tests'
+
+include ':checkstyle'
+include ':email-native'
+include ':email-test-utils'
+include ':email-ballerina'
+include ':email-compiler-plugin'
+include ':email-compiler-plugin-tests'
+
+project(':checkstyle').projectDir = file("build-config${File.separator}checkstyle")
+project(':email-native').projectDir = file('native')
+project(':email-ballerina').projectDir = file('ballerina')
+project(':email-test-utils').projectDir = file('test-utils')
+project(':email-compiler-plugin').projectDir = file('compiler-plugin')
+project(':email-compiler-plugin-tests').projectDir = file('compiler-plugin-tests')
 
 gradleEnterprise {
     buildScan {

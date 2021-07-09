@@ -17,12 +17,12 @@
   -->
 <FindBugsFilter>
     <Match>
-        <Class name="org.ballerinalang.stdlib.email.client.EmailAccessClient"/>
+        <Class name="io.ballerina.stdlib.email.client.EmailAccessClient"/>
         <Method name="readMessage"/>
         <Bug code="RCN" />
     </Match>
     <Match>
-        <Class name="org.ballerinalang.stdlib.email.server.EmailListener"/>
+        <Class name="io.ballerina.stdlib.email.server.EmailListener"/>
         <Bug code="SIC" />
     </Match>
 </FindBugsFilter>
