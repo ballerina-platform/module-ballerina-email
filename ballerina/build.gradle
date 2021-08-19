@@ -35,10 +35,8 @@ def packageName = "email"
 def packageOrg = "ballerina"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
-def dependenciesTomlFile = new File("$project.projectDir/Dependencies.toml")
 def compilerPluginTomlFile = new File("$project.projectDir/CompilerPlugin.toml")
 def originalBallerinaToml = ballerinaTomlFile.text
-def originalDependenciesToml = dependenciesTomlFile.text
 def originalCompilerPluginToml = compilerPluginTomlFile.text
 
 def stripBallerinaExtensionVersion(String extVersion) {
@@ -84,25 +82,9 @@ dependencies {
 
 task updateTomlFiles {
     doLast {
-        def stdlibDependentTaskVersion = stripBallerinaExtensionVersion(project.stdlibTaskVersion)
-        def stdlibDependentMimeVersion = stripBallerinaExtensionVersion(project.stdlibMimeVersion)
-        def stdlibDependentFileVersion = stripBallerinaExtensionVersion(project.stdlibFileVersion)
-        def stdlibDependentTimeVersion = stripBallerinaExtensionVersion(project.stdlibTimeVersion)
-        def stdlibDependentLogVersion = stripBallerinaExtensionVersion(project.stdlibLogVersion)
-        def stdlibDependentOsVersion = stripBallerinaExtensionVersion(project.stdlibOsVersion)
-        def stdlibDependentIoVersion = stripBallerinaExtensionVersion(project.stdlibIoVersion)
         def newBallerinaToml = ballerinaTomlFile.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
         ballerinaTomlFile.text = newBallerinaToml
-
-        def newDependenciesToml = dependenciesTomlFile.text.replace("@stdlib.task.version@", stdlibDependentTaskVersion)
-        newDependenciesToml = newDependenciesToml.replace("@stdlib.mime.version@", stdlibDependentMimeVersion)
-        newDependenciesToml = newDependenciesToml.replace("@stdlib.file.version@", stdlibDependentFileVersion)
-        newDependenciesToml = newDependenciesToml.replace("@stdlib.time.version@", stdlibDependentTimeVersion)
-        newDependenciesToml = newDependenciesToml.replace("@stdlib.log.version@", stdlibDependentLogVersion)
-        newDependenciesToml = newDependenciesToml.replace("@stdlib.os.version@", stdlibDependentOsVersion)
-        newDependenciesToml = newDependenciesToml.replace("@stdlib.io.version@", stdlibDependentIoVersion)
-        dependenciesTomlFile.text = newDependenciesToml
 
         def newCompilerPluginToml = compilerPluginTomlFile.text.replace("@project.version@", project.version)
         compilerPluginTomlFile.text = newCompilerPluginToml
@@ -112,7 +94,6 @@ task updateTomlFiles {
 task revertTomlFiles {
     doLast {
         ballerinaTomlFile.text = originalBallerinaToml
-        dependenciesTomlFile.text = originalDependenciesToml
         compilerPluginTomlFile.text = originalCompilerPluginToml
     }
 }
