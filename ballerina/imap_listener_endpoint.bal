@@ -31,8 +31,8 @@ public class ImapListener {
     public isolated function init(ImapListenerConfiguration listenerConfig) returns Error? {
         self.config = listenerConfig;
         ImapConfiguration imapConfig = {
-             port: listenerConfig.port,
-             security: listenerConfig.security
+            port: listenerConfig.port,
+            security: listenerConfig.security
         };
         SecureSocket? secureSocketParam = listenerConfig?.secureSocket;
         if (!(secureSocketParam is ())) {
