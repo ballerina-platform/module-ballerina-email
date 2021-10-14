@@ -130,8 +130,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
     }
 
     private boolean isEmailModule(ModuleSymbol moduleSymbol) {
-        return equals(moduleSymbol.getName().get(), "email")
-                && equals(moduleSymbol.id().orgName(), ORG_NAME);
+        return equals(moduleSymbol.getName().get(), MODULE_NAME) && equals(moduleSymbol.id().orgName(), ORG_NAME);
     }
 
     public static boolean equals(String actual, String expected) {
