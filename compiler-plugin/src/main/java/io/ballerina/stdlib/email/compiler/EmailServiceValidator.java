@@ -18,8 +18,13 @@
 
 package io.ballerina.stdlib.email.compiler;
 
-import io.ballerina.compiler.syntax.tree.ExplicitNewExpressionNode;
-import io.ballerina.compiler.syntax.tree.ExpressionNode;
+import io.ballerina.compiler.api.symbols.ModuleSymbol;
+import io.ballerina.compiler.api.symbols.ServiceDeclarationSymbol;
+import io.ballerina.compiler.api.symbols.Symbol;
+import io.ballerina.compiler.api.symbols.TypeDescKind;
+import io.ballerina.compiler.api.symbols.TypeReferenceTypeSymbol;
+import io.ballerina.compiler.api.symbols.TypeSymbol;
+import io.ballerina.compiler.api.symbols.UnionTypeSymbol;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
 import io.ballerina.compiler.syntax.tree.ImportDeclarationNode;
 import io.ballerina.compiler.syntax.tree.ModulePartNode;
@@ -30,13 +35,13 @@ import io.ballerina.compiler.syntax.tree.ReturnTypeDescriptorNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.ServiceDeclarationNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
-import io.ballerina.compiler.syntax.tree.TypeDescriptorNode;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
 import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.ballerina.stdlib.email.util.EmailConstants.EMAIL_MESSAGE;
@@ -45,6 +50,7 @@ import static io.ballerina.stdlib.email.util.EmailConstants.MODULE_NAME;
 import static io.ballerina.stdlib.email.util.EmailConstants.ON_CLOSE;
 import static io.ballerina.stdlib.email.util.EmailConstants.ON_ERROR;
 import static io.ballerina.stdlib.email.util.EmailConstants.ON_MESSAGE;
+import static io.ballerina.stdlib.email.util.EmailConstants.ORG_NAME;
 
 /**
  * Validate Email Services.
@@ -81,7 +87,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
     @Override
     public void perform(SyntaxNodeAnalysisContext ctx) {
         ServiceDeclarationNode serviceDeclarationNode = (ServiceDeclarationNode) ctx.node();
-        SeparatedNodeList<ExpressionNode> expressions = serviceDeclarationNode.expressions();
+        Optional<Symbol> serviceDeclarationSymbol = ctx.semanticModel().symbol(serviceDeclarationNode);
 
         String modulePrefix = MODULE_NAME;
         ModulePartNode modulePartNode = ctx.syntaxTree().rootNode();
@@ -95,18 +101,41 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             }
         }
 
-        for (ExpressionNode expressionNode : expressions) {
-            if (expressionNode.kind() == SyntaxKind.EXPLICIT_NEW_EXPRESSION) {
-                TypeDescriptorNode typeDescriptorNode = ((ExplicitNewExpressionNode) expressionNode).typeDescriptor();
-                Node moduleIdentifierTokenOfListener = typeDescriptorNode.children().get(0);
-                if (moduleIdentifierTokenOfListener.toString().compareTo(modulePrefix) == 0) {
+        if (serviceDeclarationSymbol.isPresent()) {
+            List<TypeSymbol> listenerTypes = ((ServiceDeclarationSymbol) serviceDeclarationSymbol.get())
+                    .listenerTypes();
+            for (TypeSymbol listenerType : listenerTypes) {
+                if (isListenerBelongsToEmailModule(listenerType)) {
                     this.ctx = ctx;
-                    this.modulePrefix = modulePrefix + SyntaxKind.COLON_TOKEN.stringValue();
+                    this.modulePrefix = modulePrefix;
                     this.validate();
                 }
             }
         }
+    }
 
+    private boolean isListenerBelongsToEmailModule(TypeSymbol listenerType) {
+        if (listenerType.typeKind() == TypeDescKind.UNION) {
+            return ((UnionTypeSymbol) listenerType).memberTypeDescriptors().stream()
+                    .filter(typeDescriptor -> typeDescriptor instanceof TypeReferenceTypeSymbol)
+                    .map(typeReferenceTypeSymbol -> (TypeReferenceTypeSymbol) typeReferenceTypeSymbol)
+                    .anyMatch(typeReferenceTypeSymbol -> isEmailModule(typeReferenceTypeSymbol.getModule().get()));
+        }
+
+        if (listenerType.typeKind() == TypeDescKind.TYPE_REFERENCE) {
+            return isEmailModule(((TypeReferenceTypeSymbol) listenerType).typeDescriptor().getModule().get());
+        }
+
+        return false;
+    }
+
+    private boolean isEmailModule(ModuleSymbol moduleSymbol) {
+        return equals(moduleSymbol.getName().get(), "email")
+                && equals(moduleSymbol.id().orgName(), ORG_NAME);
+    }
+
+    public static boolean equals(String actual, String expected) {
+        return actual.compareTo(expected) == 0;
     }
 
     public void validate() {
