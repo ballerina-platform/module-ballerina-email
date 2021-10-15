@@ -149,6 +149,22 @@ public class CompilerPluginTest {
         }
     }
 
+    @Test
+    public void testListenerPreDeclaredListenerWithWrongReturnTypes() {
+        Package currentPackage = loadPackage("sample_package_11");
+        PackageCompilation compilation = currentPackage.getCompilation();
+        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
+        Assert.assertEquals(diagnosticResult.diagnostics().size(), 1);
+    }
+
+    @Test
+    public void testListenerPreDeclaredListener() {
+        Package currentPackage = loadPackage("sample_package_10");
+        PackageCompilation compilation = currentPackage.getCompilation();
+        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
+        Assert.assertEquals(diagnosticResult.diagnostics().size(), 0);
+    }
+
     private Package loadPackage(String path) {
         Path projectDirPath = RESOURCE_DIRECTORY.resolve(path);
         BuildProject project = BuildProject.load(getEnvironmentBuilder(), projectDirPath);
