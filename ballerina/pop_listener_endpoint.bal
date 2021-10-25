@@ -65,6 +65,7 @@ public class PopListener {
         if(name is string?) {
             return self.register(s, name);
         }
+        return ();
     }
 
     # Stops consuming messages and detaches the service from the `email:PopListener`.
@@ -75,7 +76,7 @@ public class PopListener {
     # + s - Type descriptor of the service
     # + return - `()` or else a `email:Error` upon failure to detach the service
     public isolated function detach(service object {} s) returns error? {
-
+        return ();
     }
 
     # Stops the `email:PopListener` forcefully.
@@ -85,7 +86,7 @@ public class PopListener {
     #
     # + return - `()` or else a `email:Error` upon failure to stop the listener
     public isolated function immediateStop() returns error? {
-        check self.stop();
+        return check self.stop();
     }
 
     # Stops the `email:PopListener` gracefully.
@@ -95,13 +96,13 @@ public class PopListener {
     #
     # + return - () or else error upon failure to stop the listener
     public isolated function gracefulStop() returns error? {
-        check self.stop();
+        return check self.stop();
     }
 
     isolated function internalStart() returns error? {
         self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval);
         log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host);
-
+        return ();
     }
 
     isolated function stop() returns error? {
@@ -110,6 +111,7 @@ public class PopListener {
             check task:unscheduleJob(id);
             log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
+        return ();
     }
 
     isolated function poll() returns error? {

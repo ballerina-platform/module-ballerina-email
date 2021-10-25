@@ -17,7 +17,7 @@ service "testService" on new email:PopListener({
     }
 
     remote function onClose(email:Error? closeError) returns email:Error? {
-
+        return ();
     }
 
 }
