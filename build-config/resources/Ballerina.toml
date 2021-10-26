@@ -2,6 +2,10 @@
 org = "ballerina"
 name = "email"
 version = "@toml.version@"
+authors = ["Ballerina"]
+keywords = ["email", "SMTP", "POP", "POP3", "IMAP", "mail"]
+repository = "https://github.com/ballerina-platform/module-ballerina-email"
+license = ["Apache-2.0"]
 distribution = "slbeta3"
 
 [[platform.java11.dependency]]
