@@ -67,6 +67,8 @@ function testReceiveSimpleEmailPop() returns error? {
         test:assertFail(msg = "Error while stopping secure POP server.");
     }
 
+    return;
+
 }
 
 public function startSimplePopServer() returns Error? = @java:Method {

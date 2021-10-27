@@ -164,6 +164,8 @@ function testListenEmailImap() returns error? {
         test:assertFail(msg = "Error while closing IMAP listener.");
     }
 
+    return;
+
 }
 
 public function startImapListener() returns Error? = @java:Method {
