@@ -136,6 +136,7 @@ function testSendComplexEmail() returns error? {
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping complex SMTP server.");
     }
+    return;
 }
 
 public function startComplexSmtpServer() returns Error? = @java:Method {

@@ -163,6 +163,8 @@ function testListenEmailPop() returns error? {
         test:assertFail(msg = "Error while closing POP listener.");
     }
 
+    return;
+
 }
 
 public function startPopListener() returns Error? = @java:Method {
