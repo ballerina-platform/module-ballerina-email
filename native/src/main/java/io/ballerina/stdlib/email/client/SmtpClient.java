@@ -79,8 +79,8 @@ public class SmtpClient {
         try {
             properties = SmtpUtil.getProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
-            log.error("Error while initializing SMTP properties : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, "Error while initializing SMTP properties");
+            log.debug("Error while initializing SMTP properties : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
@@ -106,9 +106,8 @@ public class SmtpClient {
                     (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue()), message));
             return null;
         } catch (MessagingException | IOException e) {
-            log.error("Error while sending the message to SMTP server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
-                    "Error while sending the message to SMTP server");
+            log.debug("Error while sending the message to SMTP server : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }
 

@@ -16,6 +16,7 @@
 
 import ballerina/jballerina.java;
 import ballerina/lang.runtime as runtime;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 import ballerina/log;
 
@@ -154,7 +155,7 @@ function testListenEmailPop() returns error? {
     }
 
     test:assertTrue(isOnErrorInvokedPop(), msg = "Error was not listened by method, onError with POP.");
-    test:assertEquals(getReceivedErrorPop(), "Error while email folder operation",
+    test:assertTrue(strings:includes(getReceivedErrorPop(), "Open failed"),
         msg = "Listened error message is not matched with POP.");
 
     Error? closeStatus = emailServer.close();

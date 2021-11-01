@@ -15,8 +15,26 @@
 // under the License.
 
 import ballerina/jballerina.java;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
+// @test:Config {
+// }
+// function testSendSimpleGmail() returns error? {
+//     SmtpClient smtpClient = check new ("smtp.gmail.com",
+//         "testmail@gmail.com", "123");
+
+//     Message email = {
+//         to: ["anupama@wso2.com"],
+//         subject: "Sample Email",
+//         body: "This is a sample email.",
+//         'from: "testmail@gmail.com",
+//         replyTo: ["testmail@gmail.com", "testmail@gmail.com"]
+//     };
+
+//     return smtpClient->sendMessage(email);
+// }
+    
 @test:Config {
 }
 function testSendSimpleEmail() returns error? {
@@ -70,7 +88,7 @@ function testSendSimpleEmail() returns error? {
     smtpClient = check smtpClientOrError;
     response = smtpClient->sendMessage(email);
     if (response is Error) {
-        test:assertEquals(response.message(), "Error while sending the message to SMTP server",
+        test:assertTrue(strings:includes(response.message(), "Authentication credentials invalid"),
             msg = "Error while authentication failure.");
     } else {
         test:assertFail(msg = "No error returned when wrong SMTP password is given.");
