@@ -17,23 +17,6 @@
 import ballerina/jballerina.java;
 import ballerina/lang.'string as strings;
 import ballerina/test;
-
-// @test:Config {
-// }
-// function testSendSimpleGmail() returns error? {
-//     SmtpClient smtpClient = check new ("smtp.gmail.com",
-//         "testmail@gmail.com", "123");
-
-//     Message email = {
-//         to: ["anupama@wso2.com"],
-//         subject: "Sample Email",
-//         body: "This is a sample email.",
-//         'from: "testmail@gmail.com",
-//         replyTo: ["testmail@gmail.com", "testmail@gmail.com"]
-//     };
-
-//     return smtpClient->sendMessage(email);
-// }
     
 @test:Config {
 }
