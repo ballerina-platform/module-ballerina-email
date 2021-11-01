@@ -17,7 +17,7 @@
 import ballerina/jballerina.java;
 import ballerina/lang.'string as strings;
 import ballerina/test;
-    
+
 @test:Config {
 }
 function testSendSimpleEmail() returns error? {
