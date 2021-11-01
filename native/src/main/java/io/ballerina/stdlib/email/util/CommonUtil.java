@@ -133,8 +133,8 @@ public class CommonUtil {
     }
 
     public static BError getBallerinaError(String typeId, String message) {
-        return ErrorCreator.createDistinctError(typeId, EmailUtils.getEmailPackage(),
-                StringUtils.fromString(message));
+        return ErrorCreator.createError(ModuleUtils.getModule(), typeId,
+                StringUtils.fromString(message), null, null);
     }
 
 }

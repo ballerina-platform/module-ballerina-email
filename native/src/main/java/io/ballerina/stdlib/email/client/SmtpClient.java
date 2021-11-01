@@ -79,7 +79,7 @@ public class SmtpClient {
         try {
             properties = SmtpUtil.getProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
-            log.error("Failed to initialize SMTP server : ", e);
+            log.debug("Error while initializing SMTP properties : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
         Session session = Session.getInstance(properties,
@@ -106,7 +106,7 @@ public class SmtpClient {
                     (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue()), message));
             return null;
         } catch (MessagingException | IOException e) {
-            log.error("Failed to send message to SMTP server : ", e);
+            log.debug("Error while sending the message to SMTP server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }
