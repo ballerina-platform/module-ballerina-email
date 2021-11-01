@@ -16,7 +16,6 @@
 
 import ballerina/jballerina.java;
 import ballerina/lang.runtime as runtime;
-import ballerina/lang.'string as strings;
 import ballerina/test;
 import ballerina/log;
 
@@ -156,7 +155,7 @@ function testListenEmailImap() returns error? {
     }
 
     test:assertTrue(isOnErrorInvokedImap(), msg = "Error was not listened by method, onError with IMAP.");
-    test:assertTrue(strings:includes(getReceivedErrorImap(), "connection failure"),
+    test:assertEquals(getReceivedErrorImap(), "Error while email folder operation",
         msg = "Listened error message is not matched with IMAP.");
 
     Error? closeStatus = emailServer.close();

@@ -81,8 +81,9 @@ public class EmailAccessClient {
         try {
             properties = EmailAccessUtil.getPopProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
-            log.error("Failed to initialize POP3 server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            log.error("Error while initializing POP3 client properties : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while initializing POP3 client properties");
         }
         Session session = Session.getInstance(properties, null);
         try {
@@ -93,8 +94,9 @@ public class EmailAccessClient {
             clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
         } catch (MessagingException e) {
-            log.error("Failed initialize client properties : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            log.error("Error while connecting to the POP3 store : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while connecting to the POP3 store");
         }
         return null;
     }
@@ -114,8 +116,9 @@ public class EmailAccessClient {
         try {
             properties = EmailAccessUtil.getImapProperties(config, host.getValue());
         } catch (IOException | GeneralSecurityException e) {
-            log.error("Failed to initialize IMAP server : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            log.error("Error while initializing IMAP client properties : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while initializing IMAP client properties");
         }
         Session session = Session.getInstance(properties, null);
         try {
@@ -126,8 +129,9 @@ public class EmailAccessClient {
             clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
             clientEndpoint.addNativeData(EmailConstants.PROPS_PASSWORD.getValue(), password.getValue());
         } catch (MessagingException e) {
-            log.error("Failed initialize client properties : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            log.error("Error while connecting to the IMAP store : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while connecting to the IMAP store");
         }
         return null;
     }
@@ -190,7 +194,7 @@ public class EmailAccessClient {
             }
         } catch (InterruptedException e) {
             log.error("Interrupted during the thread sleep : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, "Interrupted during the thread sleep");
         }
         return null;
     }
@@ -228,8 +232,8 @@ public class EmailAccessClient {
             }
             return mapValue;
         } catch (MessagingException | IOException e) {
-            log.error("Failed to read message : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            log.error("Error while email folder operation : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, "Error while email folder operation");
         }
     }
 
@@ -242,8 +246,8 @@ public class EmailAccessClient {
             }
             store.close();
         } catch (MessagingException e) {
-            log.error("Failed to close client : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+            log.error("Error while closing the client : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, "Error while closing the client");
         }
         return null;
     }

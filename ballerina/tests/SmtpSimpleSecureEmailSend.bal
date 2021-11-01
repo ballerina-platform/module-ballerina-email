@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/lang.'string as strings;
 import ballerina/test;
 
 @test:Config {
@@ -71,7 +70,7 @@ function testSendSimpleEmail() returns error? {
     smtpClient = check smtpClientOrError;
     response = smtpClient->sendMessage(email);
     if (response is Error) {
-        test:assertTrue(strings:includes(response.message(), "Authentication credentials invalid"),
+        test:assertEquals(response.message(), "Error while sending the message to SMTP server",
             msg = "Error while authentication failure.");
     } else {
         test:assertFail(msg = "No error returned when wrong SMTP password is given.");
