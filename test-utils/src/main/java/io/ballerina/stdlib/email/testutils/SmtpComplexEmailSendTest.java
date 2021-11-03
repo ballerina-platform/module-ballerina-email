@@ -193,6 +193,7 @@ public class SmtpComplexEmailSendTest {
     }
 
     private static void testAttachment8(MimeBodyPart bodyPart) throws IOException, MessagingException {
+        assertEquals("vaccine.txt", bodyPart.getFileName());
         InputStream input = bodyPart.getInputStream();
         assertEquals("There is a vaccine for COVID-19.", convertInputStreamToString(input));
         assertTrue(bodyPart.getContentType().startsWith("text/plain"));
