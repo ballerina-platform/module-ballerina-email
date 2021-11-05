@@ -108,7 +108,6 @@ function testSendEmailWithOptions() returns error? {
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping send-with-options SMTP server.");
     }
-    return;
 }
 
 public function startSendWithOptionsSmtpServer() returns Error? = @java:Method {

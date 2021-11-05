@@ -136,8 +136,8 @@ function testListenEmailImap() returns error? {
 
     };
 
-    error? attachStatus = emailServer.attach(emailObserver, "");
-    error? startStatus = emailServer.start();
+    _ = check emailServer.attach(emailObserver, "");
+    _ = check emailServer.start();
 
     Error? emailSentStatus = sendEmailImapListener();
     if (emailSentStatus is Error) {
@@ -163,8 +163,6 @@ function testListenEmailImap() returns error? {
     if (closeStatus is Error) {
         test:assertFail(msg = "Error while closing IMAP listener.");
     }
-
-    return;
 
 }
 

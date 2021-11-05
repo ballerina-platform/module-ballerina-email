@@ -172,8 +172,6 @@ function testReceiveComplexEmailImap() returns error? {
         test:assertFail(msg = "Error while stopping complex IMAP server.");
     }
 
-    return;
-
 }
 
 public function startComplexImapServer() returns Error? = @java:Method {

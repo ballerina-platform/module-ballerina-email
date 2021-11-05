@@ -135,8 +135,8 @@ function testListenEmailPop() returns error? {
 
     };
 
-    error? attachStatus = emailServer.attach(emailObserver, "");
-    error? startStatus = emailServer.start();
+    _ = check emailServer.attach(emailObserver, "");
+    _ = check emailServer.start();
 
     Error? emailSentStatus = sendEmailPopListener();
     if (emailSentStatus is Error) {
@@ -162,8 +162,6 @@ function testListenEmailPop() returns error? {
     if (closeStatus is Error) {
         test:assertFail(msg = "Error while closing POP listener.");
     }
-
-    return;
 
 }
 
