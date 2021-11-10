@@ -67,7 +67,6 @@ function testSendSimpleEmailWithOptions() returns error? {
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping send-secure-with-options SMTP server.");
     }
-    return;
 }
 
 public function startSimpleSecureSmtpServerWithOptions() returns Error? = @java:Method {

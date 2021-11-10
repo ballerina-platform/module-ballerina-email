@@ -75,8 +75,6 @@ function testReceiveSimpleSecureEmailImap() returns error? {
         test:assertFail(msg = "Error while stopping secure IMAP server.");
     }
 
-    return;
-
 }
 
 public function startSimpleSecureImapServer() returns Error? = @java:Method {

@@ -172,8 +172,6 @@ function testReceiveComplexEmailPop() returns error? {
         test:assertFail(msg = "Error while stopping complex POP server.");
     }
 
-    return;
-
 }
 
 public function startComplexPopServer() returns Error? = @java:Method {

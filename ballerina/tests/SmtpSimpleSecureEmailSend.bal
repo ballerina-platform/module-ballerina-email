@@ -27,7 +27,6 @@ function testSendSimpleEmail() returns error? {
     string toAddress = "hascode@localhost";
     string subject = "Test E-Mail";
     string body = "This is a test e-mail.";
-    string fromAddress = "someone@localhost.com";
 
     error? serverStatus = startSimpleSecureSmtpServer();
     SmtpConfiguration smtpConfig = {
@@ -80,7 +79,6 @@ function testSendSimpleEmail() returns error? {
     if (serverStatus is error) {
         test:assertFail(msg = "Error while stopping secure SMTP server.");
     }
-    return;
 }
 
 public function startSimpleSecureSmtpServer() returns Error? = @java:Method {

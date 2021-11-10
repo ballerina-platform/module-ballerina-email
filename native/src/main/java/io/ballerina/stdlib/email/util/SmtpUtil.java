@@ -22,7 +22,6 @@ import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.stdlib.io.channels.TempFileIOChannel;
 import io.ballerina.stdlib.io.channels.base.Channel;
 import io.ballerina.stdlib.mime.nativeimpl.MimeDataSourceBuilder;
 import io.ballerina.stdlib.mime.util.EntityBodyHandler;
@@ -35,14 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.GeneralSecurityException;
-import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -72,7 +64,6 @@ import static io.ballerina.stdlib.email.util.EmailConstants.PROPS_START_TLS_AUTO
 import static io.ballerina.stdlib.email.util.EmailConstants.PROPS_START_TLS_NEVER;
 import static io.ballerina.stdlib.email.util.EmailConstants.PROPS_VERIFY_HOSTNAME;
 import static io.ballerina.stdlib.mime.util.MimeConstants.ENTITY;
-import static io.ballerina.stdlib.mime.util.MimeConstants.ENTITY_BYTE_CHANNEL;
 import static io.ballerina.stdlib.mime.util.MimeConstants.MEDIA_TYPE;
 import static io.ballerina.stdlib.mime.util.MimeConstants.TEXT_PLAIN;
 import static io.ballerina.stdlib.mime.util.MimeUtil.getContentTypeWithParameters;
@@ -296,24 +287,14 @@ public class SmtpUtil {
                     = attachedEntity.getStringValue(EmailConstants.ATTACHMENT_CONTENT_TYPE).getValue();
             File file = new File(attachmentFilePath);
             BObject mimeEntity = createObjectValue(MimeUtil.getMimePackage(), ENTITY);
-            mimeEntity.addNativeData(ENTITY_BYTE_CHANNEL, getByteChannelForTempFile(file.getAbsolutePath()));
             MimeUtil.setContentType(createObjectValue(MimeUtil.getMimePackage(), MEDIA_TYPE), mimeEntity,
                     TEXT_PLAIN);
             if (attachmentContentType.startsWith(MimeConstants.MULTIPART_AS_PRIMARY_TYPE)) {
                 multipart.addBodyPart(populateMultipart(mimeEntity));
             } else {
-                multipart.addBodyPart(buildJavaMailBodyPart(mimeEntity, attachmentContentType));
+                multipart.addBodyPart(buildJavaMailBodyPart(file));
             }
         }
-    }
-
-    private static TempFileIOChannel getByteChannelForTempFile(String temporaryFilePath) throws IOException {
-        FileChannel fileChannel;
-        Set<OpenOption> options = new HashSet<>();
-        options.add(StandardOpenOption.READ);
-        Path path = Paths.get(temporaryFilePath);
-        fileChannel = (FileChannel) Files.newByteChannel(path, options);
-        return new TempFileIOChannel(fileChannel, temporaryFilePath);
     }
 
     private static MimeBodyPart populateMultipart(BObject mimeEntity) throws IOException, MessagingException {
@@ -351,6 +332,15 @@ public class SmtpUtil {
             }
         }
         addHeadersToJavaMailBodyPart(mimeEntity, attachmentBodyPart);
+        return attachmentBodyPart;
+    }
+
+    private static MimeBodyPart buildJavaMailBodyPart(File file)
+            throws MessagingException, IOException {
+        MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+        if (file != null) {
+            attachmentBodyPart.attachFile(file);
+        }
         return attachmentBodyPart;
     }
 

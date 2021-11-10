@@ -137,7 +137,7 @@ public class PopListener {
     # + return - An `email:Error` if it can't close the connection
     #            or else `()`
     isolated function close() returns Error? {
-        error? stopResult = self.stop();
+        _ = check <Error?>(self.stop());
         return externListenerClose(self);
     }
 
