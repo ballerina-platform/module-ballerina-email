@@ -101,7 +101,6 @@ public class PopListener {
 
     isolated function internalStart() returns error? {
         self.jobId = check task:scheduleJobRecurByFrequency(new PopJob(self), self.config.pollingInterval);
-        log:printInfo("User " + self.config.username + " is listening to remote server at " + self.config.host);
         return ();
     }
 
@@ -109,7 +108,6 @@ public class PopListener {
         task:JobId? id = self.jobId;
         if (id is task:JobId) {
             check task:unscheduleJob(id);
-            log:printInfo("Stopped listening to remote server at " + self.config.host);
         }
         return ();
     }
