@@ -59,7 +59,7 @@ public class ImapListener {
     # + s - Type descriptor of the service
     # + name - Name of the service
     # + return - `()` or else a `email:Error` upon failure to register the listener
-    public isolated function attach(service object {} s, string[]|string? name = ()) returns error? {
+    public isolated function attach(Service s, string[]|string? name = ()) returns error? {
         if(name is string?) {
             return self.register(s, name);
         }
@@ -73,7 +73,7 @@ public class ImapListener {
     #
     # + s - Type descriptor of the service
     # + return - `()` or else a `email:Error` upon failure to detach the service
-    public isolated function detach(service object {} s) returns error? {
+    public isolated function detach(Service s) returns error? {
         return ();
     }
 
@@ -121,7 +121,7 @@ public class ImapListener {
     #
     # + emailService - Type descriptor of the service
     # + name - Service name
-    public isolated function register(service object {} emailService, string? name) {
+    public isolated function register(Service emailService, string? name) {
         register(self, emailService);
     }
 

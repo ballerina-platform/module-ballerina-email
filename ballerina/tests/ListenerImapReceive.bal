@@ -114,7 +114,7 @@ function testListenEmailImap() returns error? {
     }
     ImapListener emailServer = check emailServerOrError;
 
-    service object {} emailObserver = service object {
+    Service emailObserver = service object {
         remote function onMessage(Message emailMessage) {
             receivedMessageImap = emailMessage.subject;
             receivedMessageCountImap += 1;

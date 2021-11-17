@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
  - [[#2055] Remove Java stacktrace getting logged while Ballerina code execution](https://github.com/ballerina-platform/ballerina-standard-library/issues/2055)
  - [[#1162] Automatically set the attachment file name from the attachment file path](https://github.com/ballerina-platform/ballerina-standard-library/issues/1162)
 
+### Changed
+ - [[#2398] Mark Service type as distinct](https://github.com/ballerina-platform/ballerina-standard-library/issues/2398)
+
 ## [1.1.0-alpha8] - 2021-04-22
 
 ### Added

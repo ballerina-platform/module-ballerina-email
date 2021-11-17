@@ -111,3 +111,7 @@ public enum Protocol {
 
 # Default folder to read emails.
 public const DEFAULT_FOLDER = "INBOX";
+
+# Represents a Email service.
+public type Service distinct service object {
+};
