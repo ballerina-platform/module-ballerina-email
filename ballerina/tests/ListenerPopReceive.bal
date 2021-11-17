@@ -113,7 +113,7 @@ function testListenEmailPop() returns error? {
     }
     PopListener emailServer = check emailServerOrError;
 
-    service object {} emailObserver = service object {
+    Service emailObserver = service object {
         remote function onMessage(Message emailMessage) {
             receivedMessagePop = emailMessage.subject;
             receivedMessageCountPop += 1;
