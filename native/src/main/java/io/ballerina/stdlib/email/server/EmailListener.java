@@ -19,6 +19,7 @@
 package io.ballerina.stdlib.email.server;
 
 import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.async.StrandMetadata;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.email.util.EmailConstants;
@@ -65,8 +66,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.invokeMethodAsync(service.getValue(), ON_MESSAGE, null, ON_MESSAGE_METADATA,
-                        null, email, true);
+                invokeAsyncCall(service.getValue(), ON_MESSAGE, ON_MESSAGE_METADATA, email);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -83,8 +83,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_ERROR, null, ON_ERROR_METADATA,
-                        null, error, true);
+                invokeAsyncCall(service.getValue(), EmailConstants.ON_ERROR, ON_ERROR_METADATA, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -102,8 +101,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.invokeMethodAsync(service.getValue(), EmailConstants.ON_CLOSE, null, ON_CLOSE_METADATA,
-                        null, error, true);
+                invokeAsyncCall(service.getValue(), EmailConstants.ON_CLOSE, ON_CLOSE_METADATA, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -113,6 +111,17 @@ public class EmailListener {
     protected void addService(BObject service) {
         if (service != null && service.getType() != null && service.getType().getName() != null) {
             registeredServices.put(service.getType().getName(), service);
+        }
+    }
+
+    private void invokeAsyncCall(BObject service, String methodName, StrandMetadata metadata, Object arg) {
+        if (service.getType().isIsolated() &&
+                service.getType().isIsolated(methodName)) {
+            runtime.invokeMethodAsyncConcurrently(service, methodName,
+                    null, metadata, null, null, null, arg, true);
+        } else {
+            runtime.invokeMethodAsyncSequentially(service, methodName,
+                    null, metadata, null, null, null, arg, true);
         }
     }
 
