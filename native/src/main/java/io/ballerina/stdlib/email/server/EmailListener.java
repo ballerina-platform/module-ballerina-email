@@ -22,6 +22,7 @@ import io.ballerina.runtime.api.Runtime;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.email.util.EmailConstants;
+import io.ballerina.stdlib.email.util.ExcludeCoverageFromGeneratedReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,6 +108,7 @@ public class EmailListener {
      * Place an error in Ballerina if error has occurred while closing.
      * @param error Email object to be received
      */
+    @ExcludeCoverageFromGeneratedReport
     public void onClose(Object error) {
         if (error != null) {
             log.error(((BError) error).getMessage());
