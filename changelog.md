@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+- [[#2079] Add example number 1](https://github.com/ballerina-platform/ballerina-standard-library/issues/2079)
+
 ### Fixed
  - [[#1136] Allow reflection access to sun.security.util.HostnameChecker](https://github.com/ballerina-platform/ballerina-standard-library/issues/1136)
  - [[#1574] Avoid POP listener continuously receiving the same email message](https://github.com/ballerina-platform/ballerina-standard-library/issues/1574)
