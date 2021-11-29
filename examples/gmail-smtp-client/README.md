@@ -5,7 +5,7 @@
 This guide explains how to securely send an email using the SMTP API of Gmail using Ballerina. 
 The following figure illustrates a high level design diagram of the complete use case.
 
-![Send an email using Gmail SMTP API](./smtp-client-for-gmail.png)
+![Send an email using Gmail SMTP API](./smtp-client-for-gmail.jpg)
 
 Following are the detailed explanations of each of the step.
 
