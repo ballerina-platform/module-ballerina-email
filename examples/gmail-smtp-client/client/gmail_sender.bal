@@ -22,12 +22,12 @@ configurable string senderPassword = ?;
 
 public function main() returns error? {
 
-    // Creates an SMTP client to Gmail. The default port number `465` is
+    // Creates an SMTP client for Gmail. The default port number `465` is
     // used over SSL with these configurations.
     email:SmtpClient smtpClient = check new ("smtp.gmail.com",
         senderAddress, senderPassword);
 
-    // Defines the email that is required to be sent. `'from` address is
+    // Defines the email that is required to be sent. The `'from` address is
     // automatically set from the client credentials.
     email:Message emailMessage = {
         to: receiverAddress,
