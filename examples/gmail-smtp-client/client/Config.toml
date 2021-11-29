@@ -1,0 +1,4 @@
+[gmail_sender]
+senderAddress="sender@gmail.com"
+receiverAddress="receiver@example.com"
+senderPassword="pass123"
