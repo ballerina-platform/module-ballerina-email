@@ -56,9 +56,6 @@ public class EmailConnector {
     public void poll() {
         if (isPollOperationOccupied.compareAndSet(false, true)) {
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Poll method invoked.");
-                }
                 consumer.consume();
             } catch (Exception e) {
                 log.error("Error executing the polling cycle of RemoteFileSystemServer", e);
@@ -76,9 +73,6 @@ public class EmailConnector {
     public void close() {
         if (isPollOperationOccupied.compareAndSet(false, true)) {
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Close method invoked.");
-                }
                 consumer.close();
             } catch (Exception e) {
                 log.error("Error executing the closing cycle of RemoteFileSystemServer", e);
