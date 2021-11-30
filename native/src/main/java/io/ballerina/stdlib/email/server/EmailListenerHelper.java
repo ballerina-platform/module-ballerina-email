@@ -53,7 +53,7 @@ public class EmailListenerHelper {
         EmailConnector emailConnector = null;
         try {
             emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
-        } catch (EmailConnectorException|GeneralSecurityException|IOException e) {
+        } catch (EmailConnectorException | GeneralSecurityException | IOException e) {
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                     "Error while initializing the email listener: " + e.getMessage());
         }
