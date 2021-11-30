@@ -29,6 +29,7 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.email.client.EmailAccessClient;
 import io.ballerina.stdlib.email.util.EmailConstants;
 import io.ballerina.stdlib.email.util.EmailUtils;
+import io.ballerina.stdlib.email.util.ExcludeCoverageFromGeneratedReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,11 +86,7 @@ public class EmailConsumer {
      * Read emails from the Email client and pass to the listener.
      */
     public void consume() {
-        if (log.isDebugEnabled()) {
-            log.debug("Consumer thread name: " + Thread.currentThread().getName());
-            log.debug("Consumer hashcode: " + this.hashCode());
-            log.debug("Polling for an email...");
-        }
+        printConsumeDebugLogs();
         Object message = EmailAccessClient.readMessage(client,
                 StringUtils.fromString(EmailConstants.DEFAULT_STORE_LOCATION), BDecimal.valueOf(0));
         if (message != null) {
@@ -111,11 +108,7 @@ public class EmailConsumer {
      * Close email polling job from the Email client and pass to the listener.
      */
     public void close() {
-        if (log.isDebugEnabled()) {
-            log.debug("Close thread name: " + Thread.currentThread().getName());
-            log.debug("Close hashcode: " + this.hashCode());
-            log.debug("Polling for closing...");
-        }
+        printCloseDebugLogs();
         Object message = EmailAccessClient.close(client);
         if (message instanceof BError) {
             emailListener.onClose(message);
@@ -127,6 +120,24 @@ public class EmailConsumer {
 
     protected EmailListener getEmailListener() {
         return emailListener;
+    }
+
+    @ExcludeCoverageFromGeneratedReport
+    private void printConsumeDebugLogs() {
+        if (log.isDebugEnabled()) {
+            log.debug("Consumer thread name: " + Thread.currentThread().getName());
+            log.debug("Consumer hashcode: " + this.hashCode());
+            log.debug("Polling for an email...");
+        }
+    }
+
+    @ExcludeCoverageFromGeneratedReport
+    private void printCloseDebugLogs() {
+        if (log.isDebugEnabled()) {
+            log.debug("Close thread name: " + Thread.currentThread().getName());
+            log.debug("Close hashcode: " + this.hashCode());
+            log.debug("Polling for closing...");
+        }
     }
 
 }
