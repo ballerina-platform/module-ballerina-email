@@ -32,11 +32,7 @@ function testReceiveSimpleEmailPop() returns error? {
          port: 3110,
          security: START_TLS_NEVER
     };
-    PopClient|Error popClientOrError = new (host, username, password, popConfig);
-    if (popClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the POP3 client.");
-    }
-    PopClient popClient = check popClientOrError;
+    PopClient popClient = check new (host, username, password, popConfig);
     Message|Error? email = popClient->receiveMessage(timeout = 2);
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple POP test.");
