@@ -40,11 +40,7 @@ function testReceiveSimpleSecureEmailImap() returns error? {
              verifyHostName: false
          }
     };
-    ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
-    if (imapClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the IMAP4 client.");
-    }
-    ImapClient imapClient = check imapClientOrError;
+    ImapClient imapClient = check new (host, username, password, imapConfig);
     Message|Error? email = imapClient->receiveMessage(timeout = 2);
     if (email is Error) {
         test:assertFail(msg = "Error while zero reading email in simple IMAP test.");

@@ -48,11 +48,7 @@ function testSendSimpleEmailWithOptions() returns error? {
         security: START_TLS_ALWAYS
     };
 
-    SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
-    if (smtpClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the SMTP client with options.");
-    }
-    SmtpClient smtpClient = check smtpClientOrError;
+    SmtpClient smtpClient = check new (host, username,  password, smtpConfig);
 
     Error? response = smtpClient->send(toAddress, subject, fromAddress, body);
     if (response is Error) {
