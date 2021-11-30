@@ -22,6 +22,7 @@ import io.ballerina.runtime.api.Runtime;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.email.util.CommonUtil;
 import io.ballerina.stdlib.email.util.EmailConstants;
 
 import java.io.IOException;
@@ -44,14 +45,20 @@ public class EmailListenerHelper {
      * @param serviceEndpointConfig Email server endpoint configuration
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public static void init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig,
-                            BMap<BString, Object> protocolConfig, BString protocol)
-            throws EmailConnectorException, GeneralSecurityException, IOException {
+    public static Object init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig,
+                            BMap<BString, Object> protocolConfig, BString protocol) {
         final EmailListener listener = new EmailListener(Runtime.getCurrentRuntime());
         Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig, protocolConfig,
                 protocol.getValue());
-        EmailConnector emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
+        EmailConnector emailConnector = null;
+        try {
+            emailConnector = EmailConnectorFactory.createServerConnector(paramMap, listener);
+        } catch (EmailConnectorException|GeneralSecurityException|IOException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while initializing the email listener: " + e.getMessage());
+        }
         emailListener.addNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR, emailConnector);
+        return null;
     }
 
     /**
@@ -88,13 +95,15 @@ public class EmailListenerHelper {
      * @param emailListener Ballerina listener for connecting to the email server endpoint
      * @throws Exception If an error occurs during the polling operations
      */
-    public static void poll(BObject emailListener) throws Exception {
+    public static Object poll(BObject emailListener) {
         EmailConnector connector = (EmailConnector) emailListener.getNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR);
         try {
             connector.poll();
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while polling in the email listener: " + e.getMessage());
         }
+        return null;
     }
 
     /**
@@ -102,12 +111,14 @@ public class EmailListenerHelper {
      * @param emailListener Ballerina listener for closing the POP3/IMAP server endpoint
      * @throws Exception If an error occurs during the polling operations
      */
-    public static void close(BObject emailListener) throws Exception {
+    public static Object close(BObject emailListener) {
         EmailConnector connector = (EmailConnector) emailListener.getNativeData(EmailConstants.EMAIL_SERVER_CONNECTOR);
         try {
             connector.close();
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while closing email listener: " + e.getMessage());
         }
+        return null;
     }
 }
