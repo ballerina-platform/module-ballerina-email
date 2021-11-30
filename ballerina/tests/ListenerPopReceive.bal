@@ -92,7 +92,7 @@ function testListenEmailPop() returns error? {
         test:assertFail(msg = "Error while starting POP listener.");
     }
 
-    PopListener|Error emailServerOrError = new ({
+    PopListener emailServer = check new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
@@ -108,10 +108,6 @@ function testListenEmailPop() returns error? {
                                     verifyHostName: false
                                }
                            });
-    if (emailServerOrError is Error) {
-        test:assertFail(msg = "Error while initializing the POP3 listener.");
-    }
-    PopListener emailServer = check emailServerOrError;
 
     Service emailObserver = service object {
         remote function onMessage(Message emailMessage) {
