@@ -45,11 +45,7 @@ function testReceiveComplexEmailImap() returns error? {
          security: START_TLS_AUTO
     };
     string[] returnArray = [];
-    ImapClient|Error imapClientOrError = new (host, username, password, imapConfig);
-    if (imapClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the IMAP4 client.");
-    }
-    ImapClient imapClient = check imapClientOrError;
+    ImapClient imapClient = check new (host, username, password, imapConfig);
     Message|Error? emailResponse = imapClient->receiveMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;

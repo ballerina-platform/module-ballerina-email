@@ -44,11 +44,7 @@ function testSendEmailWithOptions() returns error? {
         security: START_TLS_NEVER
     };
 
-    SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
-    if (smtpClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the SMTP client.");
-    }
-    SmtpClient smtpClient = check smtpClientOrError;
+    SmtpClient smtpClient = check new (host, username,  password, smtpConfig);
 
     //Create a text body part.
     mime:Entity bodyPart1 = new;
