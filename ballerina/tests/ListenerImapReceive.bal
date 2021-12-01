@@ -92,7 +92,7 @@ function testListenEmailImap() returns error? {
         test:assertFail(msg = "Error while starting IMAP listener.");
     }
 
-    ImapListener|Error emailServerOrError = new ({
+    ImapListener emailServer = check new ({
                                host: "127.0.0.1",
                                username: "hascode",
                                password: "abcdef123",
@@ -109,10 +109,6 @@ function testListenEmailImap() returns error? {
                                },
                                security: START_TLS_ALWAYS
                            });
-    if (emailServerOrError is Error) {
-        test:assertFail(msg = "Error while initializing the IMAP4 listener.");
-    }
-    ImapListener emailServer = check emailServerOrError;
 
     Service emailObserver = service object {
         remote function onMessage(Message emailMessage) {

@@ -45,11 +45,7 @@ function testReceiveComplexEmailPop() returns error? {
          security: START_TLS_AUTO
     };
     string[] returnArray = [];
-    PopClient|Error popClientOrError = new (host, username, password, popConfig);
-    if (popClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the POP3 client.");
-    }
-    PopClient popClient = check popClientOrError;
+    PopClient popClient = check new (host, username, password, popConfig);
     Message|Error? emailResponse = popClient->receiveMessage();
     if (emailResponse is Message) {
         returnArray[0] = emailResponse.subject;

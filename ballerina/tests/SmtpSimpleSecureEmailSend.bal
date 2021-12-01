@@ -42,11 +42,7 @@ function testSendSimpleEmail() returns error? {
         }
     };
 
-    SmtpClient|Error smtpClientOrError = new (host, username,  password, smtpConfig);
-    if (smtpClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the SMTP client.");
-    }
-    SmtpClient smtpClient = check smtpClientOrError;
+    SmtpClient smtpClient = check new (host, username,  password, smtpConfig);
     Message email = {
         to: toAddress,
         subject: subject,
@@ -63,11 +59,7 @@ function testSendSimpleEmail() returns error? {
         test:assertFail(msg = "Error while validating the received email.");
     }
 
-    smtpClientOrError = new (host, username,  "wrongPassword", smtpConfig);
-    if (smtpClientOrError is Error) {
-        test:assertFail(msg = "Error while initializing the SMTP client.");
-    }
-    smtpClient = check smtpClientOrError;
+    smtpClient = check new (host, username,  "wrongPassword", smtpConfig);
     response = smtpClient->sendMessage(email);
     if (response is Error) {
         test:assertTrue(strings:includes(response.message(), "Authentication credentials invalid"),
