@@ -21,6 +21,8 @@ package io.ballerina.stdlib.email.testutils;
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 
 import java.io.IOException;
 import java.security.Security;
@@ -64,14 +66,19 @@ public class SmtpSimpleSecureEmailSendWithOptionsTest {
         return null;
     }
 
-    public static Object validateSimpleSecureEmailWithOptions() throws IOException, MessagingException, InterruptedException {
+    public static Object validateSimpleSecureEmailWithOptions() {
         MimeMessage[] messages = mailServer.getReceivedMessages();
         assertNotNull(messages);
         assertEquals(1, messages.length);
         MimeMessage message = messages[0];
-        assertEquals(EMAIL_SUBJECT, message.getSubject());
-        assertTrue(String.valueOf(message.getContent()).contains(EMAIL_TEXT));
-        assertEquals(EMAIL_FROM, message.getFrom()[0].toString());
+        try {
+            assertEquals(EMAIL_SUBJECT, message.getSubject());
+            assertTrue(String.valueOf(message.getContent()).contains(EMAIL_TEXT));
+            assertEquals(EMAIL_FROM, message.getFrom()[0].toString());
+        } catch (MessagingException | IOException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while validating the simple secure email with options: " + e.getMessage());
+        }
         return null;
     }
 

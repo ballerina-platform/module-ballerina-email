@@ -22,6 +22,8 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 
 import java.security.Security;
 
@@ -55,16 +57,31 @@ public class ListenerImapReceiveTest {
         return null;
     }
 
-    public static Object stopImapListener() throws InterruptedException {
+    public static Object stopImapListener() {
         mailServer.stop();
-        Thread.sleep(10000);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error on the thread: " + e.getMessage());
+        }
         return null;
     }
 
-    public static Object sendEmailImapListener() throws MessagingException, InterruptedException {
-        sendEmail();
-        sendEmail();
-        Thread.sleep(10000);
+    public static Object sendEmailImapListener() {
+        try {
+            sendEmail();
+            sendEmail();
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error on the thread: " + e.getMessage());
+        }
         return null;
     }
 
