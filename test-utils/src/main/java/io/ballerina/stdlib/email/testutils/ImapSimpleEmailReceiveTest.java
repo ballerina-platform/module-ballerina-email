@@ -23,6 +23,8 @@ import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 
 import java.security.Security;
 import javax.mail.Message;
@@ -57,8 +59,13 @@ public class ImapSimpleEmailReceiveTest {
         return null;
     }
 
-    public static Object sendEmailSimpleImapServer() throws MessagingException {
-        sendEmail();
+    public static Object sendEmailSimpleImapServer() {
+        try {
+            sendEmail();
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
         return null;
     }
 
