@@ -21,6 +21,8 @@ package io.ballerina.stdlib.email.testutils;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 import io.ballerina.stdlib.mime.util.MimeConstants;
 
 import javax.mail.Address;
@@ -75,8 +77,13 @@ public class ImapComplexEmailReceiveTest {
         return null;
     }
 
-    public static Object sendEmailComplexImapServer() throws MessagingException {
-        sendEmail();
+    public static Object sendEmailComplexImapServer() {
+        try {
+            sendEmail();
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
         return null;
     }
 

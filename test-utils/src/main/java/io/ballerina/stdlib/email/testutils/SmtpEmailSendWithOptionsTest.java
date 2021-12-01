@@ -20,6 +20,7 @@ package io.ballerina.stdlib.email.testutils;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import io.ballerina.stdlib.email.util.EmailConstants;
 import io.ballerina.stdlib.mime.util.MimeConstants;
 import io.ballerina.stdlib.email.util.CommonUtil;
 
@@ -93,35 +94,40 @@ public class SmtpEmailSendWithOptionsTest {
         return null;
     }
 
-    public static Object validateSendWithOptionsEmails() throws IOException, MessagingException {
+    public static Object validateSendWithOptionsEmails() {
         MimeMessage[] messages = mailServer.getReceivedMessages();
         assertNotNull(messages);
         assertEquals(6, messages.length);
         for (MimeMessage message : messages) {
-            assertEquals(EMAIL_SUBJECT, message.getSubject());
-            assertTrue(message.isMimeType("multipart/*"));
-            Multipart multiPart = (Multipart) message.getContent();
-            int multiPartCount = multiPart.getCount();
-            assertEquals(8, multiPartCount);
+            try {
+                assertEquals(EMAIL_SUBJECT, message.getSubject());
+                assertTrue(message.isMimeType("multipart/*"));
+                Multipart multiPart = (Multipart) message.getContent();
+                int multiPartCount = multiPart.getCount();
+                assertEquals(8, multiPartCount);
 
-            testMessageBody((MimeBodyPart)
-                    ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(0));
-            htmlMessageBody((MimeBodyPart)
-                    ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(1));
-            testAttachment1((MimeBodyPart) multiPart.getBodyPart(1));
-            testAttachment2((MimeBodyPart) multiPart.getBodyPart(2));
-            testAttachment3((MimeBodyPart) multiPart.getBodyPart(3));
-            testAttachment4((MimeBodyPart) multiPart.getBodyPart(4));
-            testAttachment5((MimeBodyPart) multiPart.getBodyPart(5));
-            testAttachment6((MimeBodyPart) multiPart.getBodyPart(6));
-            testAttachment7((MimeBodyPart) multiPart.getBodyPart(7));
+                testMessageBody((MimeBodyPart)
+                        ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(0));
+                htmlMessageBody((MimeBodyPart)
+                        ((MimeMultipart) multiPart.getBodyPart(0).getContent()).getBodyPart(1));
+                testAttachment1((MimeBodyPart) multiPart.getBodyPart(1));
+                testAttachment2((MimeBodyPart) multiPart.getBodyPart(2));
+                testAttachment3((MimeBodyPart) multiPart.getBodyPart(3));
+                testAttachment4((MimeBodyPart) multiPart.getBodyPart(4));
+                testAttachment5((MimeBodyPart) multiPart.getBodyPart(5));
+                testAttachment6((MimeBodyPart) multiPart.getBodyPart(6));
+                testAttachment7((MimeBodyPart) multiPart.getBodyPart(7));
 
-            assertEquals(HEADER1_VALUE, message.getHeader(HEADER1_NAME)[0]);
-            assertEquals(EMAIL_FROM, message.getFrom()[0].toString());
-            assertEquals(EMAIL_SENDER, message.getSender().toString());
-            assertTrue(containAddresses(message.getRecipients(Message.RecipientType.TO), EMAIL_TO_ADDRESSES));
-            assertTrue(containAddresses(message.getRecipients(Message.RecipientType.CC), EMAIL_CC_ADDRESSES));
-            assertTrue(containAddresses(message.getReplyTo(), EMAIL_REPLY_TO_ADDRESSES));
+                assertEquals(HEADER1_VALUE, message.getHeader(HEADER1_NAME)[0]);
+                assertEquals(EMAIL_FROM, message.getFrom()[0].toString());
+                assertEquals(EMAIL_SENDER, message.getSender().toString());
+                assertTrue(containAddresses(message.getRecipients(Message.RecipientType.TO), EMAIL_TO_ADDRESSES));
+                assertTrue(containAddresses(message.getRecipients(Message.RecipientType.CC), EMAIL_CC_ADDRESSES));
+                assertTrue(containAddresses(message.getReplyTo(), EMAIL_REPLY_TO_ADDRESSES));
+            } catch (MessagingException | IOException e) {
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "Error while validating the complex email: " + e.getMessage());
+            }
         }
         return null;
     }
