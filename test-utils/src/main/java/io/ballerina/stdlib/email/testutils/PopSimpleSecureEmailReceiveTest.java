@@ -22,6 +22,8 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -59,8 +61,13 @@ public class PopSimpleSecureEmailReceiveTest {
         return null;
     }
 
-    public static Object sendEmailSimpleSecurePopServer() throws MessagingException {
-        sendEmail();
+    public static Object sendEmailSimpleSecurePopServer() {
+        try {
+            sendEmail();
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
         return null;
     }
 

@@ -21,6 +21,8 @@ package io.ballerina.stdlib.email.testutils;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 import io.ballerina.stdlib.mime.util.MimeConstants;
 
 import javax.mail.Address;
@@ -65,7 +67,7 @@ public class PopComplexEmailReceiveTest {
     private static final String[] EMAIL_REPLY_TO_ADDRESSES = {"reply1@abc.com", "reply2@abc.com"};
     private static GreenMail mailServer;
 
-    public static Object startComplexPopServer() throws MessagingException {
+    public static Object startComplexPopServer() {
         startServer();
         return null;
     }
@@ -75,8 +77,13 @@ public class PopComplexEmailReceiveTest {
         return null;
     }
 
-    public static Object sendEmailComplexPopServer() throws MessagingException {
-        sendEmail();
+    public static Object sendEmailComplexPopServer() {
+        try {
+            sendEmail();
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
         return null;
     }
 

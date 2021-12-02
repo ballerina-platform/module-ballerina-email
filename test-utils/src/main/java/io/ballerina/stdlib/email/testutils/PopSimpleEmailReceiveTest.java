@@ -21,6 +21,8 @@ package io.ballerina.stdlib.email.testutils;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import io.ballerina.stdlib.email.util.CommonUtil;
+import io.ballerina.stdlib.email.util.EmailConstants;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -54,8 +56,13 @@ public class PopSimpleEmailReceiveTest {
         return null;
     }
 
-    public static Object sendEmailSimplePopServer() throws MessagingException {
-        sendEmail();
+    public static Object sendEmailSimplePopServer() {
+        try {
+            sendEmail();
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
         return null;
     }
 
