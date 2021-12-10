@@ -1,12 +1,12 @@
 [package]
 org = "ballerina"
 name = "email"
-version = "2.0.1"
+version = "2.1.0"
 authors = ["Ballerina"]
 keywords = ["email", "SMTP", "POP", "POP3", "IMAP", "mail"]
 repository = "https://github.com/ballerina-platform/module-ballerina-email"
 license = ["Apache-2.0"]
-distribution = "slbeta3"
+distribution = "slbeta6"
 
 [[platform.java11.dependency]]
 path = "./lib/javax.mail-1.6.2.jar"
@@ -21,8 +21,8 @@ path = "./lib/mimepull-1.9.11.jar"
 path = "./lib/testng-7.4.0.jar"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/email-native-2.0.1-SNAPSHOT.jar"
+path = "../native/build/libs/email-native-2.1.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
-path = "../test-utils/build/libs/email-test-utils-2.0.1-SNAPSHOT.jar"
+path = "../test-utils/build/libs/email-test-utils-2.1.0-SNAPSHOT.jar"
 scope = "testOnly"
