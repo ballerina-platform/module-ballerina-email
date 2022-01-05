@@ -5,7 +5,7 @@ version = "@toml.version@"
 authors = ["Ballerina"]
 keywords = ["email", "SMTP", "POP", "POP3", "IMAP", "mail"]
 repository = "https://github.com/ballerina-platform/module-ballerina-email"
-icon = "resources/icon.png"
+icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.0.0"
 
