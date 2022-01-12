@@ -83,6 +83,8 @@ subprojects {
         ballerinaStdLibs "io.ballerina.stdlib:log-ballerina:${stdlibLogVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:os-ballerina:${stdlibOsVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:io-ballerina:${stdlibIoVersion}"
+        ballerinaStdLibs "io.ballerina.stdlib:observe-ballerina:${observeVersion}"
+        ballerinaStdLibs "io.ballerina:observe-ballerina:${observeInternalVersion}"
 
     }
 
