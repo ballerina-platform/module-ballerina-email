@@ -18,6 +18,11 @@
 
 package io.ballerina.stdlib.email.client;
 
+import io.ballerina.runtime.api.TypeTags;
+import io.ballerina.runtime.api.types.IntersectionType;
+import io.ballerina.runtime.api.types.MethodType;
+import io.ballerina.runtime.api.types.Parameter;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
@@ -30,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Flags;
@@ -201,6 +207,7 @@ public class EmailAccessClient {
 
     private static Object readMessageFromFolder(BObject clientConnector, BString folderName) {
         BMap<BString, Object> mapValue = null;
+        boolean isReadonly = isReadOnlyParameter(clientConnector, EmailConstants.ON_MESSAGE);
         try {
             Store store = (Store) clientConnector.getNativeData(EmailConstants.PROPS_STORE);
             Object folderObj = clientConnector.getNativeData(EmailConstants.PROPS_FOLDER);
@@ -217,7 +224,7 @@ public class EmailAccessClient {
                 clientConnector.addNativeData(EmailConstants.PROPS_FOLDER, folder);
                 Message[] messages = folder.search(UNSEEN_FLAG);
                 if (messages.length > 0) {
-                    mapValue = EmailAccessUtil.getMapValue(messages[0]);
+                    mapValue = EmailAccessUtil.getMapValue(messages[0], isReadonly);
                     Flags flags = new Flags();
                     if (EmailConstants.POP_CLIENT.equals(clientConnector.getType().getName())) {
                         flags.add(Flags.Flag.DELETED);
@@ -235,6 +242,23 @@ public class EmailAccessClient {
             log.debug("Error while email folder operation : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
+    }
+
+    private static boolean isReadOnlyParameter(BObject service, String methodName) {
+        for (MethodType method : service.getType().getMethods()) {
+            if (method.getName().equals(methodName)) {
+                Parameter[] parameters = method.getParameters();
+                if (parameters.length == 1) {
+                    Parameter parameter = parameters[0];
+                    Type paramType = parameter.type;
+                    if (paramType instanceof IntersectionType) {
+                        List<Type> constituentTypes = ((IntersectionType) paramType).getConstituentTypes();
+                        return constituentTypes.stream().anyMatch(t -> TypeTags.READONLY_TAG == t.getTag());
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public static Object close(BObject clientConnector) {

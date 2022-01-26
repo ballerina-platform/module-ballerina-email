@@ -174,7 +174,8 @@ public class EmailAccessUtil {
      * @throws MessagingException If an error occurs related to messaging
      * @throws IOException If an error occurs related to I/O
      */
-    public static BMap<BString, Object> getMapValue(Message message) throws MessagingException, IOException {
+    public static BMap<BString, Object> getMapValue(Message message, boolean isReadonly) throws MessagingException,
+            IOException {
         Map<String, Object> valueMap = new HashMap<>();
         Object toAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.TO));
         Object ccAddressArrayValue = getAddressBArrayList(message.getRecipients(Message.RecipientType.CC));
@@ -209,6 +210,10 @@ public class EmailAccessUtil {
         valueMap.put(EmailConstants.MESSAGE_SENDER.getValue(), senderAddress);
         if (attachments != null && attachments.size() > 0) {
             valueMap.put(EmailConstants.MESSAGE_ATTACHMENTS.getValue(), attachments);
+        }
+        if (isReadonly) {
+            return ValueCreator.createReadonlyRecordValue(EmailUtils.getEmailPackage(), EmailConstants.EMAIL_MESSAGE,
+                    valueMap);
         }
         return ValueCreator.createRecordValue(EmailUtils.getEmailPackage(), EmailConstants.EMAIL_MESSAGE, valueMap);
     }
