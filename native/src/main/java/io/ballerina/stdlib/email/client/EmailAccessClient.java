@@ -248,7 +248,7 @@ public class EmailAccessClient {
         for (MethodType method : service.getType().getMethods()) {
             if (method.getName().equals(methodName)) {
                 Parameter[] parameters = method.getParameters();
-                if (parameters.length == 1) {
+                if (parameters.length >= 1) {
                     Parameter parameter = parameters[0];
                     Type paramType = parameter.type;
                     if (paramType instanceof IntersectionType) {
