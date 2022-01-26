@@ -253,19 +253,11 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
 
     private void validateParameter(FunctionDefinitionNode functionDefinitionNode,
             SeparatedNodeList<ParameterNode> parameterNodes, String functionName) {
-        FunctionTypeSymbol functionTypeSymbol = ((MethodSymbol) ctx.semanticModel().symbol(functionDefinitionNode)
-                .get()).typeDescriptor();
-        List<ParameterSymbol> inputParams = functionTypeSymbol.params().get();
-        String moduleId = getModuleId(inputParams.get(0));
-
         for (ParameterNode parameterNode : parameterNodes) {
             RequiredParameterNode requiredParameterNode = (RequiredParameterNode) parameterNode;
             Node parameterTypeName = requiredParameterNode.typeName();
             DiagnosticInfo diagnosticInfo;
-            if (functionName.equals(ON_MESSAGE) && !(inputParams.get(0).typeDescriptor().signature().
-                    equals(moduleId + ":" + EMAIL_MESSAGE) || (inputParams.get(0).typeDescriptor().signature().
-                    contains(EMAIL_MESSAGE) && inputParams.get(0).typeDescriptor().typeKind() ==
-                    TypeDescKind.INTERSECTION))) {
+            if (functionName.equals(ON_MESSAGE) && !validateOnMessageParams(functionDefinitionNode)) {
                 diagnosticInfo = new DiagnosticInfo(CODE_104,
                         INVALID_PARAMETER_0_PROVIDED_FOR_1_FUNCTION_EXPECTS_2, DiagnosticSeverity.ERROR);
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
@@ -285,6 +277,19 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
                         modulePrefix + ERROR));
             }
         }
+    }
+
+    private boolean validateOnMessageParams(FunctionDefinitionNode functionDefinitionNode) {
+        FunctionTypeSymbol functionTypeSymbol = ((MethodSymbol) ctx.semanticModel().symbol(functionDefinitionNode)
+                .get()).typeDescriptor();
+        List<ParameterSymbol> inputParams = functionTypeSymbol.params().get();
+        String moduleId = getModuleId(inputParams.get(0));
+        String typeDescriptorSignature = inputParams.get(0).typeDescriptor().signature();
+        TypeDescKind typeDescriptorKind = inputParams.get(0).typeDescriptor().typeKind();
+        boolean isValidNonReadonlySignature = typeDescriptorSignature.equals(moduleId + ":" + EMAIL_MESSAGE);
+        boolean isValidReadonlySignature = typeDescriptorSignature.contains(EMAIL_MESSAGE) && typeDescriptorKind ==
+                TypeDescKind.INTERSECTION;
+        return isValidNonReadonlySignature || isValidReadonlySignature;
     }
 
     private String getModuleId(ParameterSymbol inputParam) {
