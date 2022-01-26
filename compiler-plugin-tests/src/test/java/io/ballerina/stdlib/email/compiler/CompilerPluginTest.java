@@ -60,6 +60,15 @@ public class CompilerPluginTest {
     }
 
     @Test
+    public void testReadonlyHappyPath() {
+        Package currentPackage = loadPackage("sample_package_12");
+        PackageCompilation compilation = currentPackage.getCompilation();
+
+        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
+        Assert.assertEquals(diagnosticResult.errors().size(), 0);
+    }
+
+    @Test
     public void testRemoteFunctionsWithoutRemoteKeyword() {
         Package currentPackage = loadPackage("sample_package_2");
         PackageCompilation compilation = currentPackage.getCompilation();
