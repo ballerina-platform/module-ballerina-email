@@ -282,17 +282,28 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
     private boolean validateOnMessageParams(FunctionDefinitionNode functionDefinitionNode) {
         FunctionTypeSymbol functionTypeSymbol = ((MethodSymbol) ctx.semanticModel().symbol(functionDefinitionNode)
                 .get()).typeDescriptor();
-        List<ParameterSymbol> inputParams = functionTypeSymbol.params().get();
-        String moduleId = getModuleId(inputParams.get(0));
-        String typeDescriptorSignature = inputParams.get(0).typeDescriptor().signature();
-        return typeDescriptorSignature.equals(moduleId + ":" + EMAIL_MESSAGE);
+        List<ParameterSymbol> inputParams;
+        if (functionTypeSymbol.params().isPresent()) {
+            inputParams = functionTypeSymbol.params().get();
+            if (inputParams.size() != 1) {
+                return false;
+            }
+            String moduleId = getModuleId(inputParams.get(0));
+            String typeDescriptorSignature = inputParams.get(0).typeDescriptor().signature();
+            return typeDescriptorSignature.equals(moduleId + ":" + EMAIL_MESSAGE);
+        }
+        return false;
     }
 
     private String getModuleId(ParameterSymbol inputParam) {
         String moduleId = modulePrefix;
         if (inputParam.typeDescriptor().typeKind() == TypeDescKind.TYPE_REFERENCE
                 || inputParam.typeDescriptor().typeKind() == TypeDescKind.ERROR) {
-            moduleId = inputParam.typeDescriptor().getModule().get().id().toString();
+            if (inputParam.typeDescriptor().getModule().isPresent()) {
+                moduleId = inputParam.typeDescriptor().getModule().get().id().toString();
+            } else {
+                return "";
+            }
         }
         return moduleId;
     }
