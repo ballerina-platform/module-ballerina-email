@@ -288,24 +288,12 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             if (inputParams.size() != 1) {
                 return false;
             }
-            String moduleId = getModuleId(inputParams.get(0));
-            String typeDescriptorSignature = inputParams.get(0).typeDescriptor().signature();
-            return typeDescriptorSignature.equals(moduleId + ":" + EMAIL_MESSAGE);
+            if (inputParams.get(0).typeDescriptor().getName().isPresent()) {
+                return EMAIL_MESSAGE.equals(inputParams.get(0).typeDescriptor().getName().get());
+            }
+            return false;
         }
         return false;
-    }
-
-    private String getModuleId(ParameterSymbol inputParam) {
-        String moduleId = modulePrefix;
-        if (inputParam.typeDescriptor().typeKind() == TypeDescKind.TYPE_REFERENCE
-                || inputParam.typeDescriptor().typeKind() == TypeDescKind.ERROR) {
-            if (inputParam.typeDescriptor().getModule().isPresent()) {
-                moduleId = inputParam.typeDescriptor().getModule().get().id().toString();
-            } else {
-                return "";
-            }
-        }
-        return moduleId;
     }
 
     private void validateFunctionReturnTypeDesc(FunctionDefinitionNode functionDefinitionNode, String functionName) {
