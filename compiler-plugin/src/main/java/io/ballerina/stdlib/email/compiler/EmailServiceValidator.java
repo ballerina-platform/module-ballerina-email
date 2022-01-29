@@ -40,6 +40,7 @@ import io.ballerina.compiler.syntax.tree.ServiceDeclarationNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
+import io.ballerina.stdlib.email.util.EmailConstants;
 import io.ballerina.tools.diagnostics.Diagnostic;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
@@ -288,9 +289,17 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             if (inputParams.size() != 1) {
                 return false;
             }
-            if (inputParams.get(0).typeDescriptor().getName().isPresent()) {
-                return EMAIL_MESSAGE.equals(inputParams.get(0).typeDescriptor().getName().get());
+            boolean isModuleValid = false;
+            boolean isRecordValid = false;
+            if (inputParams.get(0).typeDescriptor().getModule().isPresent() && inputParams.get(0).typeDescriptor()
+                    .getModule().get().getName().isPresent()) {
+                isModuleValid = EmailConstants.MODULE_NAME.equals(inputParams.get(0).typeDescriptor().getModule().get()
+                        .getName().get());
             }
+            if (inputParams.get(0).typeDescriptor().getName().isPresent()) {
+                isRecordValid = EMAIL_MESSAGE.equals(inputParams.get(0).typeDescriptor().getName().get());
+            }
+            return isModuleValid && isRecordValid;
         }
         return false;
     }
