@@ -291,7 +291,6 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             if (inputParams.get(0).typeDescriptor().getName().isPresent()) {
                 return EMAIL_MESSAGE.equals(inputParams.get(0).typeDescriptor().getName().get());
             }
-            return false;
         }
         return false;
     }
