@@ -117,7 +117,6 @@ Closes the email folder and the store from the POP3 server.
 check popClient->close();
 ```
 
-
 ### 3.3 IMAP Client
 
 #### 3.3.1 `init` function
