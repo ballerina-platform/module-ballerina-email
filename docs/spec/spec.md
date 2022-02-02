@@ -1,9 +1,9 @@
 # Specification: Ballerina Email Library
 
-_Owners_: @Maninda @wggihan @shafreenAnfar
-_Reviewers_: @shafreenAnfar @Maninda
-_Created_: 2020/04/24
-_Updated_: 2022/01/31
+_Owners_: @Maninda @wggihan @shafreenAnfar   
+_Reviewers_: @shafreenAnfar @Maninda   
+_Created_: 2020/04/24   
+_Updated_: 2022/01/31   
 _Issue_: [#2194](https://github.com/ballerina-platform/ballerina-standard-library/issues/2194)
 
 # Introduction
