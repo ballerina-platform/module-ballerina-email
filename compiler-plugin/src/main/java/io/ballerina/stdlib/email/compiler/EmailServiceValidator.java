@@ -18,7 +18,10 @@
 
 package io.ballerina.stdlib.email.compiler;
 
+import io.ballerina.compiler.api.symbols.FunctionTypeSymbol;
+import io.ballerina.compiler.api.symbols.MethodSymbol;
 import io.ballerina.compiler.api.symbols.ModuleSymbol;
+import io.ballerina.compiler.api.symbols.ParameterSymbol;
 import io.ballerina.compiler.api.symbols.ServiceDeclarationSymbol;
 import io.ballerina.compiler.api.symbols.Symbol;
 import io.ballerina.compiler.api.symbols.TypeDescKind;
@@ -37,6 +40,7 @@ import io.ballerina.compiler.syntax.tree.ServiceDeclarationNode;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
+import io.ballerina.stdlib.email.util.EmailConstants;
 import io.ballerina.tools.diagnostics.Diagnostic;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
@@ -208,7 +212,7 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
             if (hasNoParameters(parameterNodes, functionDefinitionNode, functionName)) {
                 return;
             }
-            validateParameter(parameterNodes, functionName);
+            validateParameter(functionDefinitionNode, parameterNodes, functionName);
             validateFunctionReturnTypeDesc(functionDefinitionNode, functionName);
         }
     }
@@ -248,13 +252,13 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
         return false;
     }
 
-    private void validateParameter(SeparatedNodeList<ParameterNode> parameterNodes, String functionName) {
+    private void validateParameter(FunctionDefinitionNode functionDefinitionNode,
+                                   SeparatedNodeList<ParameterNode> parameterNodes, String functionName) {
         for (ParameterNode parameterNode : parameterNodes) {
             RequiredParameterNode requiredParameterNode = (RequiredParameterNode) parameterNode;
             Node parameterTypeName = requiredParameterNode.typeName();
             DiagnosticInfo diagnosticInfo;
-            if (functionName.equals(ON_MESSAGE) && (!parameterTypeName.toString().contains(EMAIL_MESSAGE)
-                    || !parameterTypeName.toString().contains(MODULE_NAME))) {
+            if (functionName.equals(ON_MESSAGE) && !validateOnMessageParams(functionDefinitionNode)) {
                 diagnosticInfo = new DiagnosticInfo(CODE_104,
                         INVALID_PARAMETER_0_PROVIDED_FOR_1_FUNCTION_EXPECTS_2, DiagnosticSeverity.ERROR);
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(diagnosticInfo,
@@ -274,6 +278,30 @@ public class EmailServiceValidator implements AnalysisTask<SyntaxNodeAnalysisCon
                         modulePrefix + ERROR));
             }
         }
+    }
+
+    private boolean validateOnMessageParams(FunctionDefinitionNode functionDefinitionNode) {
+        FunctionTypeSymbol functionTypeSymbol = ((MethodSymbol) ctx.semanticModel().symbol(functionDefinitionNode)
+                .get()).typeDescriptor();
+        List<ParameterSymbol> inputParams;
+        if (functionTypeSymbol.params().isPresent()) {
+            inputParams = functionTypeSymbol.params().get();
+            if (inputParams.size() != 1) {
+                return false;
+            }
+            boolean isModuleValid = false;
+            boolean isRecordValid = false;
+            if (inputParams.get(0).typeDescriptor().getModule().isPresent() && inputParams.get(0).typeDescriptor()
+                    .getModule().get().getName().isPresent()) {
+                isModuleValid = EmailConstants.MODULE_NAME.equals(inputParams.get(0).typeDescriptor().getModule().get()
+                        .getName().get());
+            }
+            if (inputParams.get(0).typeDescriptor().getName().isPresent()) {
+                isRecordValid = EMAIL_MESSAGE.equals(inputParams.get(0).typeDescriptor().getName().get());
+            }
+            return isModuleValid && isRecordValid;
+        }
+        return false;
     }
 
     private void validateFunctionReturnTypeDesc(FunctionDefinitionNode functionDefinitionNode, String functionName) {

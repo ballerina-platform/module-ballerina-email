@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
  - [[#1574] Avoid POP listener continuously receiving the same email message](https://github.com/ballerina-platform/ballerina-standard-library/issues/1574)
  - [[#2055] Remove Java stacktrace getting logged while Ballerina code execution](https://github.com/ballerina-platform/ballerina-standard-library/issues/2055)
  - [[#1162] Automatically set the attachment file name from the attachment file path](https://github.com/ballerina-platform/ballerina-standard-library/issues/1162)
+ - [[#2633] `readonly & email:Message` type is accepted from the email listener](https://github.com/ballerina-platform/ballerina-standard-library/issues/2633)
 
 ### Changed
  - [[#2398] Mark Service type as distinct](https://github.com/ballerina-platform/ballerina-standard-library/issues/2398)
