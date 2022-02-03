@@ -3,4 +3,4 @@ id = "email-compiler-plugin"
 class = "io.ballerina.stdlib.email.compiler.EmailCompilerPlugin"
 
 [[dependency]]
-path = "../compiler-plugin/build/libs/email-compiler-plugin-2.2.0-SNAPSHOT.jar"
+path = "../compiler-plugin/build/libs/email-compiler-plugin-2.2.0.jar"
