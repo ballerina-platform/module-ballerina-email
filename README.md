@@ -7,11 +7,11 @@ Ballerina Email Library
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/email.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Femail)
   [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-email/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-email)
 
-This module provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
+This library provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
 ### Client
 
-This module supports the following three client types.
+This library supports the following three client types.
 
 **email:SmtpClient**: The client, which supports sending an email using the SMTP protocol.
 

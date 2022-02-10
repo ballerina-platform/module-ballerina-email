@@ -1,10 +1,10 @@
 ## Package Overview
 
-This module provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
+This package provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
 ### Client
 
-This module supports the following three client types.
+This package supports the following three client types.
 
 **email:SmtpClient**: The client, which supports sending an email using the SMTP protocol.
 
