@@ -170,7 +170,7 @@ service "emailObserver" on emailListener {
 
 ### Security and Authentication
 
-The `email` module supports both the TLS/SSL and STARTTLS as transport-level security protocols.
+The `email` library supports both the TLS/SSL and STARTTLS as transport-level security protocols.
 
 Transport-level security for all SMTP, POP3, and IMAP clients/listeners can be configured with the `secureSocket` field.
 
