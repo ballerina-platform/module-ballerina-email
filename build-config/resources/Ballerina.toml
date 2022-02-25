@@ -7,7 +7,7 @@ keywords = ["email", "SMTP", "POP", "POP3", "IMAP", "mail"]
 repository = "https://github.com/ballerina-platform/module-ballerina-email"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.0.0"
+distribution = "2201.0.1"
 
 [[platform.java11.dependency]]
 path = "./lib/javax.mail-1.6.2.jar"
