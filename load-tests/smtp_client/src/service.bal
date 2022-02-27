@@ -22,7 +22,7 @@ isolated boolean completed = false;
 final Counter resultCounter = new;
 
 service /perf\-test on new http:Listener(9090) {
-    resource function get 'start(decimal duration) returns http:Accepted|error? {
+    resource function get 'start(decimal duration) returns http:Accepted|error {
         _ = start startPerfTest(duration);
         return {};
     }
