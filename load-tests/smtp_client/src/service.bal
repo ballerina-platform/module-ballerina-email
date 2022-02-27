@@ -22,12 +22,12 @@ isolated boolean completed = false;
 final Counter resultCounter = new;
 
 service /perf\-test on new http:Listener(9090) {
-    resource function get 'start(decimal duration) returns http:Accepted|error {
+    resource function get 'start(decimal duration) returns http:Accepted {
         _ = start startPerfTest(duration);
         return {};
     }
 
-    resource function get status() returns http:Ok|error {
+    resource function get status() returns http:Ok {
         boolean loadTestCompleted = false;
         lock {
             loadTestCompleted = completed;
