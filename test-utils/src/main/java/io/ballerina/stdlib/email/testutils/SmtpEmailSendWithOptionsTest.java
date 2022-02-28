@@ -94,6 +94,11 @@ public class SmtpEmailSendWithOptionsTest {
         return null;
     }
 
+    public static Object getReceivedMessagesCount() {
+        MimeMessage[] messages = mailServer.getReceivedMessages();
+        return messages.length;
+    }
+
     public static Object validateSendWithOptionsEmails() {
         MimeMessage[] messages = mailServer.getReceivedMessages();
         assertNotNull(messages);

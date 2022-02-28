@@ -1,0 +1,3 @@
+resources:
+  - smtp_client.yaml
+  - service.yaml
