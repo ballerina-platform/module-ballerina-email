@@ -16,6 +16,7 @@
 
 import ballerina/time;
 import ballerina/email;
+import ballerina/log;
 import ballerina/http;
 
 isolated boolean completed = false;
@@ -37,7 +38,8 @@ service /perf\-test on new http:Listener(9090) {
                 body: {
                     completed: true,
                     sentCount: resultCounter.retrieveSentCount(),
-                    errorCount: resultCounter.retrieveErrorCount()
+                    errorCount: resultCounter.retrieveErrorCount(),
+                    receivedCount: resultCounter.retrieveReceivedCount()
                 }
             };
         }
@@ -49,17 +51,22 @@ service /perf\-test on new http:Listener(9090) {
     }
 }
 
-configurable string HOST = "client-svc.default.svc.cluster.local";
-configurable int PORT = 3025;
-configurable string USERNAME = "hascode";
-configurable string PASSWORD = "abcdef123";
+configurable string EMAIL_SERVER_HOST = "email-service";
+
+configurable int SMTP_PORT = 3025;
+configurable string SMTP_CLIENT_USER = "user1";
+configurable string SMTP_CLIENT_PASSWORD = "password1";
+
+configurable int IMAP_PORT = 3143;
+configurable string IMAP_CLIENT_USER = "user2";
+configurable string IMAP_CLIENT_PASSWORD = "password2";
 
 isolated function startPerfTest(decimal duration) returns error? {
     time:Utc startedTime = time:utcNow();
     time:Utc expiryTime = time:utcAddSeconds(startedTime, duration);
-    email:SmtpClient smtpClient = check new (HOST, USERNAME, PASSWORD, port = PORT, security = email:START_TLS_NEVER);
+    email:SmtpClient smtpClient = check new (EMAIL_SERVER_HOST, SMTP_CLIENT_USER, SMTP_CLIENT_PASSWORD, port = SMTP_PORT, security = email:START_TLS_NEVER);
     email:Message message = {
-        to: "someone@localhost",
+        to: "user2",
         'from: "perf.test@localhost",
         subject: "Email Performance Test",
         body: "This is a test email which is initiated from performance test workflow for ballerina email module."
@@ -68,6 +75,7 @@ isolated function startPerfTest(decimal duration) returns error? {
         resultCounter.incrementSentCount();
         email:Error? result = smtpClient->sendMessage(message);
         if result is email:Error {
+            log:printError("Error occurred while sending email", 'error = result);
             resultCounter.incrementErrorCount();
         }
     }
@@ -75,4 +83,19 @@ isolated function startPerfTest(decimal duration) returns error? {
         completed = true;
     }
     return;
+}
+
+listener email:ImapListener imapListener = check new ({
+    host: EMAIL_SERVER_HOST,
+    port: IMAP_PORT,
+    username: IMAP_CLIENT_USER,
+    password: IMAP_CLIENT_PASSWORD,
+    pollingInterval: 30,
+    security: email:START_TLS_NEVER
+});
+
+isolated service on imapListener {
+    isolated remote function onMessage(email:Message email) {
+        resultCounter.incrementReceivedCount();
+    }
 }
