@@ -17,7 +17,6 @@
 import ballerina/time;
 import ballerina/email;
 import ballerina/log;
-import ballerina/lang.runtime;
 import ballerina/http;
 
 isolated boolean completed = false;
