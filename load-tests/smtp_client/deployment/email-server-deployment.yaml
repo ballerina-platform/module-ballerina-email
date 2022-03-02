@@ -36,10 +36,10 @@ spec:
         image: greenmail/standalone:1.5.11
         imagePullPolicy: IfNotPresent
         ports:
-          - port: 3025
-            name: smtp
-          - port: 3143
-            name: imap
+        - containerPort: 3025
+          name: smtp
+        - containerPort: 3143
+          name: imap
         env:
           - name: GREENMAIL_OPTS
             value: "-Dgreenmail.verbose -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.users=user1:password1,user2:password2"
