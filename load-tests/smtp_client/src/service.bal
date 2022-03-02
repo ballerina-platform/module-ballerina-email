@@ -80,9 +80,15 @@ isolated function startPerfTest(decimal duration) returns error? {
             resultCounter.incrementErrorCount();
         }
     }
-    runtime:sleep(120);
-    lock {
-        completed = true;
+    email:Message completionEmail = {
+        to: "user2",
+        'from: "perf.test@localhost",
+        subject: "Load Test Completed",
+        body: "This is to inform that the load test is completed."
+    };
+    email:Error? result = smtpClient->sendMessage(completionEmail);
+    if result is email:Error {
+        log:printError("Error occurred while sending completion email", 'error = result);
     }
     return;
 }
@@ -98,6 +104,16 @@ listener email:ImapListener imapListener = check new ({
 
 isolated service on imapListener {
     isolated remote function onMessage(email:Message email) {
+        if isLoadTestCompleted(email.subject) {
+            lock {
+                completed = true;
+            }
+            return;
+        }
         resultCounter.incrementReceivedCount();
     }
+}
+
+isolated function isLoadTestCompleted(string subject) returns boolean {
+    return "Load Test Completed" == subject;
 }
