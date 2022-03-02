@@ -35,7 +35,6 @@ service /perf\-test on new http:Listener(9090) {
             loadTestCompleted = completed;
         }
         if loadTestCompleted {
-            runtime:sleep(120);
             return {
                 body: {
                     completed: true,
@@ -81,6 +80,7 @@ isolated function startPerfTest(decimal duration) returns error? {
             resultCounter.incrementErrorCount();
         }
     }
+    runtime:sleep(120);
     lock {
         completed = true;
     }
