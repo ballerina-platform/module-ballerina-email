@@ -1,3 +1,10 @@
 resources:
   - smtp_client.yaml
-  - service.yaml
+  - email-server-deployment.yaml
+patches:
+- path: deployment-patch.yaml
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: smtp-client-deployment

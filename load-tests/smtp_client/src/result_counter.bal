@@ -17,6 +17,7 @@
 isolated class Counter {
     private int sentCount = 0;
     private int errorCount = 0;
+    private int receivedCount = 0;
 
     public isolated function incrementSentCount() {
         lock {
@@ -30,6 +31,12 @@ isolated class Counter {
         }
     }
 
+    public isolated function incrementReceivedCount() {
+        lock {
+            self.receivedCount += 1;
+        }
+    }
+
     public isolated function retrieveSentCount() returns int {
         lock {
             return self.sentCount;
@@ -39,6 +46,12 @@ isolated class Counter {
     public isolated function retrieveErrorCount() returns int {
         lock {
             return self.errorCount;
+        }
+    }
+
+    public isolated function retrieveReceivedCount() returns int {
+        lock {
+            return self.receivedCount;
         }
     }
 }
