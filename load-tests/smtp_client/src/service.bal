@@ -17,6 +17,7 @@
 import ballerina/time;
 import ballerina/email;
 import ballerina/log;
+import ballerina/lang.runtime;
 import ballerina/http;
 
 isolated boolean completed = false;
@@ -34,6 +35,7 @@ service /perf\-test on new http:Listener(9090) {
             loadTestCompleted = completed;
         }
         if loadTestCompleted {
+            runtime:sleep(120);
             return {
                 body: {
                     completed: true,
