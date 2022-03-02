@@ -17,6 +17,7 @@
 import ballerina/time;
 import ballerina/email;
 import ballerina/log;
+import ballerina/lang.runtime;
 import ballerina/http;
 
 isolated boolean completed = false;
@@ -78,6 +79,7 @@ isolated function startPerfTest(decimal duration) returns error? {
             log:printError("Error occurred while sending email", 'error = result);
             resultCounter.incrementErrorCount();
         }
+        runtime:sleep(0.1);
     }
     email:Message completionEmail = {
         to: "user2",
@@ -97,11 +99,11 @@ listener email:ImapListener imapListener = check new ({
     port: IMAP_PORT,
     username: IMAP_CLIENT_USER,
     password: IMAP_CLIENT_PASSWORD,
-    pollingInterval: 30,
+    pollingInterval: 0.25,
     security: email:START_TLS_NEVER
 });
 
-isolated service on imapListener {
+service "TestImapClient" on imapListener {
     isolated remote function onMessage(email:Message email) {
         if isLoadTestCompleted(email.subject) {
             lock {
