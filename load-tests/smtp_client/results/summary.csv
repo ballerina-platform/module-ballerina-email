@@ -1,3 +1,4 @@
 Label,# Samples,Average,Median,90% Line,95% Line,99% Line,Min,Max,Error %,Throughput,Received KB/sec,Std. Dev.,Date,Payload,Users
 
 Simple SMTP Client,1741,0.34285714285714286,0,0,0,0,0,0,0.0,2.9166666666666665,0,0,1646279947,0,1
+Simple SMTP Client,2202,0.27958993476234856,0,0,0,0,0,0,0.0,3.5766666666666667,0,0,1646356709,0,1
