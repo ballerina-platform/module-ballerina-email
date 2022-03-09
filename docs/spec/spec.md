@@ -101,8 +101,6 @@ This method can be in simple cases.
 check smtpClient->send("receiver@email.com", "Sample Email Subject", "author@email.com", "This is a sample email.");
 ```
 
-If `body`, `htmlBody`, and `attachments` are empty then the client will send `CRLF` token which denotes end-of-message according to [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322#section-3.5).
-
 ### 3.2 POP3 Client
 
 #### 3.2.1 `init` function
