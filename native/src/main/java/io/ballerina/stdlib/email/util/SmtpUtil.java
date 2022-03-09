@@ -175,6 +175,9 @@ public class SmtpUtil {
                 }
             } else if (hasTextBody) { // hasHtmlBody is also implicitly true
                 emailMessage.setContent(getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
+            } else {
+                // set `CRLF` for empty body
+                emailMessage.setContent("\r\n", TEXT_PLAIN);
             }
         } else {
             addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, attachments);
