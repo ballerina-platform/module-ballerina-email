@@ -18,7 +18,22 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 import ballerina/test;
 
+@test:BeforeGroups {
+    value: ["complexEmails"]
+}
+function beforeComlexEmailTests() returns error? {
+    _ = check startComplexSmtpServer();
+}
+
+@test:AfterGroups {
+    value: ["complexEmails"]
+}
+function afterComlexEmailTests() returns error? {
+    _ = check stopComplexSmtpServer();
+}
+
 @test:Config {
+    groups: ["complexEmails"],
     dependsOn: [
         testSendEmailWithOptions
     ]
@@ -38,8 +53,6 @@ function testSendComplexEmail() returns error? {
     string[] ccAddresses = ["hascode3@localhost", "hascode4@localhost"];
     string[] bccAddresses = ["hascode5@localhost", "hascode6@localhost"];
     string[] replyToAddresses = ["reply1@abc.com", "reply2@abc.com"];
-
-    error? serverStatus = startComplexSmtpServer();
 
     SmtpConfiguration smtpConfig = {
         port: 3025,
@@ -128,10 +141,47 @@ function testSendComplexEmail() returns error? {
     if (emailValidation is Error) {
         test:assertFail(msg = "Error while validating the received email.");
     }
-    serverStatus = stopComplexSmtpServer();
-    if (serverStatus is error) {
-        test:assertFail(msg = "Error while stopping complex SMTP server.");
-    }
+}
+
+@test:Config {
+    groups: ["complexEmails"],
+    dependsOn: [
+        testSendComplexEmail
+    ]
+}
+function testSendEmailWithoutBody() returns error? {
+    string host = "127.0.0.1";
+    string username = "hascode";
+    string password = "abcdef123";
+    string subject = "Test E-Mail";
+    string contentType = "text/html";
+    string fromAddress = "someone1@localhost.com";
+    string sender = "someone2@localhost.com";
+    string[] toAddresses = ["hascode1@localhost", "hascode2@localhost"];
+    string[] ccAddresses = ["hascode3@localhost", "hascode4@localhost"];
+    string[] bccAddresses = ["hascode5@localhost", "hascode6@localhost"];
+    string[] replyToAddresses = ["reply1@abc.com", "reply2@abc.com"];
+
+    SmtpConfiguration smtpConfig = {
+        port: 3025,
+        security: START_TLS_AUTO
+    };
+
+    SmtpClient smtpClient = check new (host, username,  password, smtpConfig);
+
+    Message email = {
+        to: toAddresses,
+        cc: ccAddresses,
+        bcc: bccAddresses,
+        subject: subject,
+        contentType: contentType,
+        headers: {header1_name: "header1_value"},
+        'from: fromAddress,
+        sender: sender,
+        replyTo: replyToAddresses
+    };
+
+    _ = check smtpClient->sendMessage(email);
 }
 
 public function startComplexSmtpServer() returns Error? = @java:Method {

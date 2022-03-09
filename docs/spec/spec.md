@@ -92,6 +92,8 @@ Then the above record can be used to send using the SMTP client.
 check smtpClient->sendMessage(emailMessage);
 ```
 
+If `body`, `htmlBody`, and `attachments` are empty then the client will send `CRLF` token which denotes end-of-message according to [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322#section-3.5).
+
 #### 3.1.3 `send` function
 Instead of defining a record related to the email message the email can be sent directly.
 This method can be in simple cases.
