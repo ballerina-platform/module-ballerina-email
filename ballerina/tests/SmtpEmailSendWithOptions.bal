@@ -18,7 +18,22 @@ import ballerina/jballerina.java;
 import ballerina/mime;
 import ballerina/test;
 
+@test:BeforeGroups {
+    value: ["smtpOptions"]
+}
+function beforeSmtpOptionsTests() returns error? {
+    _ = check startSendWithOptionsSmtpServer();
+}
+
+@test:AfterGroups {
+    value: ["smtpOptions"]
+}
+function afterSmtpOptionsTests() returns error? {
+    _ = check stopSendWithOptionsSmtpServer();
+}
+
 @test:Config {
+    groups: ["smtpOptions"],
     dependsOn: [testSendSimpleEmail]
 }
 function testSendEmailWithOptions() returns error? {
@@ -36,8 +51,6 @@ function testSendEmailWithOptions() returns error? {
     string[] ccAddresses = ["hascode3@localhost", "hascode4@localhost"];
     string[] bccAddresses = ["hascode5@localhost", "hascode6@localhost"];
     string[] replyToAddresses = ["reply1@abc.com", "reply2@abc.com"];
-
-    error? serverStatus = startSendWithOptionsSmtpServer();
 
     SmtpConfiguration smtpConfig = {
         port: 3025,
@@ -100,10 +113,35 @@ function testSendEmailWithOptions() returns error? {
     if (emailValidation is Error) {
         test:assertFail(msg = "Error while validating the received email.");
     }
-    serverStatus = stopSendWithOptionsSmtpServer();
-    if (serverStatus is error) {
-        test:assertFail(msg = "Error while stopping send-with-options SMTP server.");
-    }
+}
+
+@test:Config {
+    groups: ["smtpOptions"],
+    dependsOn: [testSendEmailWithOptions]
+}
+function testSendEmailWithOptionsWithoutBody() returns error? {
+    string host = "127.0.0.1";
+    string username = "hascode";
+    string password = "abcdef123";
+    string subject = "Test E-Mail";
+    string contentType = "text/html";
+    string fromAddress = "someone1@localhost.com";
+    string sender = "someone2@localhost.com";
+    string[] toAddresses = ["hascode1@localhost", "hascode2@localhost"];
+    string[] ccAddresses = ["hascode3@localhost", "hascode4@localhost"];
+    string[] bccAddresses = ["hascode5@localhost", "hascode6@localhost"];
+    string[] replyToAddresses = ["reply1@abc.com", "reply2@abc.com"];
+
+    SmtpConfiguration smtpConfig = {
+        port: 3025,
+        security: START_TLS_NEVER
+    };
+
+    SmtpClient smtpClient = check new (host, username, password, smtpConfig);
+
+    _ = check smtpClient->send(toAddresses, subject, fromAddress, cc = ccAddresses, bcc = bccAddresses,
+                contentType = contentType, headers = {header1_name: "header1_value"},
+                sender = sender, replyTo = replyToAddresses);
 }
 
 public function startSendWithOptionsSmtpServer() returns Error? = @java:Method {
