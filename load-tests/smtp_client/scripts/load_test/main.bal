@@ -41,9 +41,11 @@ public function main(string label, string output_csv_path) returns error? {
 
     runtime:sleep(loadTestDuration);
     TestResults testResults = check loadTestClient->get("/status");
+    log:printInfo("Received initial load-test results", result = testResults);
     while !testResults.completed {
         runtime:sleep(60);
         testResults = check loadTestClient->get("/status");
+        log:printInfo("Received load-test results", result = testResults);
     }
 
     int sentCount = check value:ensureType(testResults?.sentCount);
