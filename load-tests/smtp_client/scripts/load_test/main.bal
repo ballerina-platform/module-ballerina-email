@@ -32,7 +32,7 @@ configurable string URL = "http://smtp-client-svc.default.svc.cluster.local:9090
 
 public function main(string label, string output_csv_path) returns error? {
     http:Client loadTestClient = check new (URL);
-    decimal loadTestDuration = 3600;
+    decimal loadTestDuration = 300;
     http:Response response = check loadTestClient->get(string `/start?duration=${loadTestDuration}`);
     if response.statusCode != http:STATUS_ACCEPTED {
         log:printError("Unaccepted response code received for load-test initiation, hence aborting", code = response.statusCode);
@@ -41,9 +41,11 @@ public function main(string label, string output_csv_path) returns error? {
 
     runtime:sleep(loadTestDuration);
     TestResults testResults = check loadTestClient->get("/status");
+    log:printInfo("Received initial load-test results", result = testResults);
     while !testResults.completed {
         runtime:sleep(60);
         testResults = check loadTestClient->get("/status");
+        log:printInfo("Received load-test results", result = testResults);
     }
 
     int sentCount = check value:ensureType(testResults?.sentCount);
