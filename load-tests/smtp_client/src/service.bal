@@ -25,6 +25,7 @@ final Counter resultCounter = new;
 
 service /perf\-test on new http:Listener(9090) {
     resource function get 'start(decimal duration) returns http:Accepted {
+        log:printInfo("Received perf-test init request", testDuration = duration);
         _ = start startPerfTest(duration);
         return {};
     }
@@ -34,7 +35,9 @@ service /perf\-test on new http:Listener(9090) {
         lock {
             loadTestCompleted = completed;
         }
+        log:printInfo("Received perf-test status request", completed = loadTestCompleted);
         if loadTestCompleted {
+            log:printInfo("Perf test is completed hence responding with success results");
             return {
                 body: {
                     completed: true,
@@ -44,6 +47,7 @@ service /perf\-test on new http:Listener(9090) {
                 }
             };
         }
+        log:printInfo("Perf test is not completed yet");
         return {
             body: {
                 completed: false
