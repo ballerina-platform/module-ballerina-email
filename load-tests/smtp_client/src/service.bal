@@ -85,7 +85,7 @@ isolated function startPerfTest(decimal duration) returns error? {
         }
         runtime:sleep(0.2);
     }
-    log:printInfo("Completed the perf-test, hence sending the completion-request");
+    log:printInfo("Completed sending requests, hence sending the completion-request");
     email:Message completionEmail = {
         to: "user2",
         'from: "perf.test@localhost",
@@ -96,6 +96,7 @@ isolated function startPerfTest(decimal duration) returns error? {
     if result is email:Error {
         log:printError("Error occurred while sending completion email", 'error = result);
     }
+    log:printInfo("Perf-test is completed");
     return;
 }
 
