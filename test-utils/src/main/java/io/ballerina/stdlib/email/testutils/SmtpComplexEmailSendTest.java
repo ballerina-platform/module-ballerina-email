@@ -67,9 +67,10 @@ public class SmtpComplexEmailSendTest {
     private static final String EMAIL_FROM = "someone1@localhost.com";
     private static final String EMAIL_SENDER = "someone2@localhost.com";
     private static final String EMAIL_SUBJECT = "Test E-Mail";
+    private static final String EMAIL_SUBJECT_HTML_ONLY = "Test E-Mail for HTML Content";
     private static final String EMAIL_TEXT = "This is a test e-mail.";
     private static final String EMAIL_HTML = "<h1>This message is embedded in HTML tags.</h1>";
-    private static final String EMAIL_CONTENT_TYPE = "text/html";
+    private static final String HTML_CONTENT_TYPE = "text/html";
     private static final String HEADER1_NAME = "header1_name";
     private static final String HEADER1_VALUE = "header1_value";
     private static final String[] EMAIL_TO_ADDRESSES = {"hascode1@localhost", "hascode2@localhost"};
@@ -133,6 +134,24 @@ public class SmtpComplexEmailSendTest {
         return null;
     }
 
+    public static Object validateEmailsWithHtmlBodies() {
+        MimeMessage[] messages = mailServer.getReceivedMessages();
+        assertNotNull(messages);
+        for (MimeMessage currentMessage: messages) {
+            try {
+                if (!EMAIL_SUBJECT_HTML_ONLY.equals(currentMessage.getSubject())) {
+                    continue;
+                }
+                assertEquals(HTML_CONTENT_TYPE, currentMessage.getContentType());
+                assertEquals(EMAIL_HTML, currentMessage.getContent());
+            } catch (MessagingException | IOException e) {
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "Error while validating the complex email: " + e.getMessage());
+            }
+        }
+        return null;
+    }
+
     private static void testMessageBody(MimeBodyPart bodyPart) throws IOException, MessagingException {
         assertEquals(EMAIL_TEXT, ((String) bodyPart.getContent()));
         assertTrue(bodyPart.getContentType().startsWith(MimeConstants.TEXT_PLAIN));
@@ -140,7 +159,7 @@ public class SmtpComplexEmailSendTest {
 
     private static void htmlMessageBody(MimeBodyPart bodyPart) throws IOException, MessagingException {
         assertEquals(EMAIL_HTML, ((String) bodyPart.getContent()));
-        assertTrue(bodyPart.getContentType().startsWith(EMAIL_CONTENT_TYPE));
+        assertTrue(bodyPart.getContentType().startsWith(HTML_CONTENT_TYPE));
     }
 
     private static void testAttachment1(MimeBodyPart bodyPart) throws IOException, MessagingException {
