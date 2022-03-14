@@ -168,7 +168,7 @@ function testSendEmailWithHtmlBody() returns error? {
         security: START_TLS_AUTO
     };
 
-    SmtpClient smtpClient = check new (host, username,  password, smtpConfig);
+    SmtpClient smtpClient = check new(host, username,  password, smtpConfig);
 
     Message email = {
         to: toAddresses,
