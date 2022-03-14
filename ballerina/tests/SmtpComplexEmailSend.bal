@@ -153,7 +153,7 @@ function testSendEmailWithHtmlBody() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
-    string subject = "Test E-Mail";
+    string subject = "Test E-Mail for HTML Content";
     string htmlBody = "<h1>This message is embedded in HTML tags.</h1>";
     string contentType = "text/html";
     string fromAddress = "someone1@localhost.com";

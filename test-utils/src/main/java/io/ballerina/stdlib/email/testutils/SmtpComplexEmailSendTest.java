@@ -142,8 +142,8 @@ public class SmtpComplexEmailSendTest {
                 if (!EMAIL_SUBJECT_HTML_ONLY.equals(currentMessage.getSubject())) {
                     continue;
                 }
-                assertEquals(HTML_CONTENT_TYPE, currentMessage.getContentType());
-                assertEquals(EMAIL_HTML, currentMessage.getContent());
+                assertTrue(currentMessage.getContentType().startsWith(HTML_CONTENT_TYPE));
+                assertEquals(EMAIL_HTML, ((String) currentMessage.getContent()).trim());
             } catch (MessagingException | IOException e) {
                 return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                         "Error while validating the complex email: " + e.getMessage());
