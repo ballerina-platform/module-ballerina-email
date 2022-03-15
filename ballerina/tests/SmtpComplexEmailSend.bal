@@ -149,6 +149,7 @@ function testSendComplexEmail() returns error? {
         testSendComplexEmail
     ]
 }
+
 function testSendEmailWithHtmlBody() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
