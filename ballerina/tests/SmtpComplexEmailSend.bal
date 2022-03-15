@@ -193,6 +193,52 @@ function testSendEmailWithHtmlBody() returns error? {
         testSendEmailWithHtmlBody
     ]
 }
+function testSendEmailWithTextAndHtmlBody() returns error? {
+    string host = "127.0.0.1";
+    string username = "hascode";
+    string password = "abcdef123";
+    string subject = "Test E-Mail for Text and HTML Content";
+    string body = "This is a test e-mail.";
+    string htmlBody = "<h1>This message is embedded in HTML tags.</h1>";
+    string contentType = "text/html";
+    string fromAddress = "someone1@localhost.com";
+    string sender = "someone2@localhost.com";
+    string[] toAddresses = ["hascode1@localhost", "hascode2@localhost"];
+    string[] ccAddresses = ["hascode3@localhost", "hascode4@localhost"];
+    string[] bccAddresses = ["hascode5@localhost", "hascode6@localhost"];
+    string[] replyToAddresses = ["reply1@abc.com", "reply2@abc.com"];
+
+    SmtpConfiguration smtpConfig = {
+        port: 3025,
+        security: START_TLS_AUTO
+    };
+
+    SmtpClient smtpClient = check new(host, username,  password, smtpConfig);
+
+    Message email = {
+        to: toAddresses,
+        cc: ccAddresses,
+        bcc: bccAddresses,
+        subject: subject,
+        body: body,
+        htmlBody: htmlBody,
+        contentType: contentType,
+        headers: {header1_name: "header1_value"},
+        'from: fromAddress,
+        sender: sender,
+        replyTo: replyToAddresses
+    };
+
+    _ = check smtpClient->sendMessage(email);
+    _ = check validateEmailsWithHtmlAndTextBodies();
+}
+
+@test:Config {
+    groups: ["complexEmails"],
+    dependsOn: [
+        testSendEmailWithHtmlBody
+    ]
+}
 function testSendEmailWithoutBody() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
@@ -241,5 +287,9 @@ public function validateComplexEmails() returns Error? = @java:Method {
 } external;
 
 public function validateEmailsWithHtmlBodies() returns Error? = @java:Method {
+    'class: "io.ballerina.stdlib.email.testutils.SmtpComplexEmailSendTest"
+} external;
+
+public function validateEmailsWithHtmlAndTextBodies() returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.email.testutils.SmtpComplexEmailSendTest"
 } external;
