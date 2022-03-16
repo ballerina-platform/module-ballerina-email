@@ -48,6 +48,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -192,9 +193,9 @@ public class EmailAccessUtil {
         valueMap.put(EmailConstants.MESSAGE_BCC.getValue(), bccAddressArrayValue);
         valueMap.put(EmailConstants.MESSAGE_REPLY_TO.getValue(), replyToAddressArrayValue);
         valueMap.put(EmailConstants.MESSAGE_SUBJECT.getValue(), subject);
-        if (CommonUtil.isJsonBased(messageContentType)) {
+        if (CommonUtil.isJsonBased(message.getContentType())) {
             valueMap.put(EmailConstants.MESSAGE_MESSAGE_BODY.getValue(), getJsonContent(messageBody));
-        } else if (CommonUtil.isXmlBased(messageContentType)) {
+        } else if (CommonUtil.isXmlBased(message.getContentType())) {
             valueMap.put(EmailConstants.MESSAGE_MESSAGE_BODY.getValue(), parseToXml(messageBody));
         } else {
             valueMap.put(EmailConstants.MESSAGE_MESSAGE_BODY.getValue(), messageBody);
@@ -351,8 +352,9 @@ public class EmailAccessUtil {
 
     private static String extractBodyFromMessage(Message message) throws MessagingException, IOException {
         String messageBody = "";
-        if (message.getContentType() != null && CommonUtil.isTextBased(message.getContentType().toLowerCase())) {
-            if (message.getContent() != null) {
+        if (message.getContentType() != null) {
+            String contentType = message.getContentType().toLowerCase(Locale.getDefault());
+            if (CommonUtil.isTextBased(contentType) && message.getContent() != null) {
                 messageBody = message.getContent().toString();
             }
         } else if (message.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
