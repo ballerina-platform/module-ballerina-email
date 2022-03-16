@@ -355,9 +355,9 @@ public class EmailAccessUtil {
 
     private static String extractBodyFromMessage(Message message) throws MessagingException, IOException {
         String messageBody = "";
-        if (message.getContentType() != null) {
-            String contentType = message.getContentType().toLowerCase(Locale.getDefault());
-            if (CommonUtil.isTextBased(contentType) && message.getContent() != null) {
+        String contentType = message.getContentType();
+        if (contentType != null && CommonUtil.isTextBased(contentType.toLowerCase(Locale.getDefault()))) {
+            if (message.getContent() != null) {
                 Object content = message.getContent();
                 if (content instanceof IMAPInputStream) {
                     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
