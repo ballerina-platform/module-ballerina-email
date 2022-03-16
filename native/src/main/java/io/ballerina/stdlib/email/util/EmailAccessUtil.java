@@ -18,7 +18,6 @@
 
 package io.ballerina.stdlib.email.util;
 
-import com.sun.mail.imap.IMAPInputStream;
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Message;
 import io.ballerina.runtime.api.PredefinedTypes;
@@ -46,6 +45,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -359,11 +359,11 @@ public class EmailAccessUtil {
         if (contentType != null && CommonUtil.isTextBased(contentType.toLowerCase(Locale.getDefault()))) {
             if (message.getContent() != null) {
                 Object content = message.getContent();
-                if (content instanceof IMAPInputStream) {
+                if (content instanceof InputStream) {
                     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                     int nRead;
                     byte[] data = new byte[1024];
-                    while ((nRead = ((IMAPInputStream) content).read(data, 0, data.length)) != -1) {
+                    while ((nRead = ((InputStream) content).read(data, 0, data.length)) != -1) {
                         buffer.write(data, 0, nRead);
                     }
                     buffer.flush();
