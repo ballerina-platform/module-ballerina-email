@@ -18,6 +18,7 @@
 
 package io.ballerina.stdlib.email.util;
 
+import com.sun.mail.imap.IMAPInputStream;
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Message;
 import io.ballerina.runtime.api.PredefinedTypes;
@@ -42,8 +43,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -355,7 +358,19 @@ public class EmailAccessUtil {
         if (message.getContentType() != null) {
             String contentType = message.getContentType().toLowerCase(Locale.getDefault());
             if (CommonUtil.isTextBased(contentType) && message.getContent() != null) {
-                messageBody = message.getContent().toString();
+                Object content = message.getContent();
+                if (content instanceof IMAPInputStream) {
+                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                    int nRead;
+                    byte[] data = new byte[1024];
+                    while ((nRead = ((IMAPInputStream) content).read(data, 0, data.length)) != -1) {
+                        buffer.write(data, 0, nRead);
+                    }
+                    buffer.flush();
+                    return buffer.toString(StandardCharsets.UTF_8);
+                } else {
+                    messageBody = content.toString();
+                }
             }
         } else if (message.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
