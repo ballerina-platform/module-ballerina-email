@@ -192,9 +192,9 @@ public class EmailAccessUtil {
         valueMap.put(EmailConstants.MESSAGE_BCC.getValue(), bccAddressArrayValue);
         valueMap.put(EmailConstants.MESSAGE_REPLY_TO.getValue(), replyToAddressArrayValue);
         valueMap.put(EmailConstants.MESSAGE_SUBJECT.getValue(), subject);
-        if (CommonUtil.isJsonBased(message.getContentType())) {
+        if (CommonUtil.isJsonBased(messageContentType)) {
             valueMap.put(EmailConstants.MESSAGE_MESSAGE_BODY.getValue(), getJsonContent(messageBody));
-        } else if (CommonUtil.isXmlBased(message.getContentType())) {
+        } else if (CommonUtil.isXmlBased(messageContentType)) {
             valueMap.put(EmailConstants.MESSAGE_MESSAGE_BODY.getValue(), parseToXml(messageBody));
         } else {
             valueMap.put(EmailConstants.MESSAGE_MESSAGE_BODY.getValue(), messageBody);
@@ -351,7 +351,7 @@ public class EmailAccessUtil {
 
     private static String extractBodyFromMessage(Message message) throws MessagingException, IOException {
         String messageBody = "";
-        if (message.getContentType() != null && CommonUtil.isTextBased(message.getContentType())) {
+        if (message.getContentType() != null && CommonUtil.isTextBased(message.getContentType().toLowerCase())) {
             if (message.getContent() != null) {
                 messageBody = message.getContent().toString();
             }
