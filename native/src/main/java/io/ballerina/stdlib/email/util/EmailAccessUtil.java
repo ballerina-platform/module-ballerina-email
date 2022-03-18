@@ -354,25 +354,24 @@ public class EmailAccessUtil {
     }
 
     private static String extractBodyFromMessage(Message message) throws MessagingException, IOException {
-        String messageBody = "";
         String contentType = message.getContentType();
         if (contentType != null && CommonUtil.isTextBased(contentType.toLowerCase(Locale.getDefault()))) {
-            if (message.getContent() != null) {
-                Object content = message.getContent();
-                if (content instanceof InputStream) {
-                    try (InputStream input = (InputStream) content) {
-                        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                        int nRead;
-                        byte[] data = new byte[1024];
-                        while ((nRead = input.read(data, 0, data.length)) != -1) {
-                            buffer.write(data, 0, nRead);
-                        }
-                        buffer.flush();
-                        return buffer.toString(StandardCharsets.UTF_8);
-                    }
-                } else {
-                    messageBody = content.toString();
+            Object content = message.getContent();
+            if (content == null) {
+                return "";
+            }
+            if (message.getContent() instanceof InputStream) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                int nRead;
+                byte[] data = new byte[1024];
+                while ((nRead = ((InputStream) content).read(data, 0, data.length)) != -1) {
+                    buffer.write(data, 0, nRead);
                 }
+                buffer.flush();
+                ((InputStream) content).close();
+                return buffer.toString(StandardCharsets.UTF_8);
+            } else {
+                return content.toString();
             }
         } else if (message.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
@@ -380,11 +379,11 @@ public class EmailAccessUtil {
                     && mimeMultipart.getBodyPart(0).getContent() != null) {
                 Object messageObject = mimeMultipart.getBodyPart(0).getContent();
                 if (messageObject instanceof String) {
-                    messageBody = (String) messageObject;
+                    return (String) messageObject;
                 }
             }
         }
-        return messageBody;
+        return "";
     }
 
     private static BArray extractAttachmentsFromMessage(Message message) throws MessagingException, IOException {
