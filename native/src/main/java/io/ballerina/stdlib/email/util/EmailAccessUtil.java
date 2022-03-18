@@ -360,14 +360,16 @@ public class EmailAccessUtil {
             if (message.getContent() != null) {
                 Object content = message.getContent();
                 if (content instanceof InputStream) {
-                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                    int nRead;
-                    byte[] data = new byte[1024];
-                    while ((nRead = ((InputStream) content).read(data, 0, data.length)) != -1) {
-                        buffer.write(data, 0, nRead);
+                    try (InputStream input = (InputStream) content) {
+                        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                        int nRead;
+                        byte[] data = new byte[1024];
+                        while ((nRead = input.read(data, 0, data.length)) != -1) {
+                            buffer.write(data, 0, nRead);
+                        }
+                        buffer.flush();
+                        return buffer.toString(StandardCharsets.UTF_8);
                     }
-                    buffer.flush();
-                    return buffer.toString(StandardCharsets.UTF_8);
                 } else {
                     messageBody = content.toString();
                 }
