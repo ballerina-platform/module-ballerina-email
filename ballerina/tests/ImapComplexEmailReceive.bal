@@ -21,7 +21,7 @@ import ballerina/test;
 
 @test:Config {
     dependsOn: [
-        testReceiveXmlEmailImap
+        testReceiveXmlEmailWithUpperCaseContentType
     ]
 }
 function testReceiveComplexEmailImap() returns error? {
