@@ -34,7 +34,7 @@ function afterImapSimpleEmailTests() returns error? {
 @test:Config {
     groups: ["imapSimpleEmails"]
 }
-function testReceiveTextEmailImap() returns error? {
+function testReceiveTextEmailWithUpperCaseContentType() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -60,10 +60,10 @@ function testReceiveTextEmailImap() returns error? {
 @test:Config {
     groups: ["imapSimpleEmails"],
     dependsOn: [
-        testReceiveTextEmailImap
+        testReceiveTextEmailWithUpperCaseContentType
     ]
 }
-function testReceiveJsonEmailImap() returns error? {
+function testReceiveJsonEmailWithUpperCaseContentType() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
@@ -89,10 +89,10 @@ function testReceiveJsonEmailImap() returns error? {
 @test:Config {
     groups: ["imapSimpleEmails"],    
     dependsOn: [
-        testReceiveJsonEmailImap
+        testReceiveJsonEmailWithUpperCaseContentType
     ]
 }
-function testReceiveXmlEmailImap() returns error? {
+function testReceiveXmlEmailWithUpperCaseContentType() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
