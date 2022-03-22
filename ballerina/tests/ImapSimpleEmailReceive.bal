@@ -17,52 +17,102 @@
 import ballerina/jballerina.java;
 import ballerina/test;
 
-@test:Config {}
-function testReceiveSimpleEmailImap() returns error? {
+@test:BeforeGroups {
+    value: ["imapSimpleEmails"]
+}
+function beforeImapSimpleEmailTests() returns error? {
+    _ = check startSimpleImapServer();
+}
+
+@test:AfterGroups {
+    value: ["imapSimpleEmails"]
+}
+function afterImapSimpleEmailTests() returns error? {
+    _ = check stopSimpleImapServer();
+}
+
+@test:Config {
+    groups: ["imapSimpleEmails"]
+}
+function testReceiveTextEmailWithUpperCaseContentType() returns error? {
     string host = "127.0.0.1";
     string username = "hascode";
     string password = "abcdef123";
-
-    Error? serverStatus = startSimpleImapServer();
-    if (serverStatus is Error) {
-        test:assertFail(msg = "Error while starting secure IMAP server.");
-    }
-
     ImapConfiguration imapConfig = {
          port: 3143,
          security: START_TLS_NEVER
     };
     ImapClient imapClient = check new (host, username, password, imapConfig);
-    Message|Error? email = imapClient->receiveMessage(timeout = 2);
-    if (email is Error) {
-        test:assertFail(msg = "Error while zero reading email in simple IMAP test.");
-    } else if (email is Message) {
+    Message? email = check imapClient->receiveMessage(timeout = 2);
+    if email is Message {
         test:assertFail(msg = "Non zero emails received in zero read IMAP test.");
     }
-    Error? emailSendStatus = sendEmailSimpleImapServer();
-    if (emailSendStatus is Error) {
-        test:assertFail(msg = "Error while sending email to secure IMAP server.");
-    }
-
-    email = imapClient->receiveMessage();
-    if (email is Error) {
-        test:assertFail(msg = "Error while reading email in simple IMAP test.");
-    } else if (email is ()) {
+    _ = check sendSimpleTextEmailImapServer();
+    email = check imapClient->receiveMessage();
+    if email is () {
         test:assertFail(msg = "No emails were read in IMAP test.");
-    } else {
-        test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
     }
+    test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
+    test:assertEquals(email.body, "This is a test e-mail.", msg = "Email body is not matched.");
+    _ = check imapClient->close();
+}
 
-    Error? closeStatus = imapClient->close();
-    if (closeStatus is Error) {
-        test:assertFail(msg = "Error while closing secure POP server.");
+@test:Config {
+    groups: ["imapSimpleEmails"],
+    dependsOn: [
+        testReceiveTextEmailWithUpperCaseContentType
+    ]
+}
+function testReceiveJsonEmailWithUpperCaseContentType() returns error? {
+    string host = "127.0.0.1";
+    string username = "hascode";
+    string password = "abcdef123";
+    ImapConfiguration imapConfig = {
+         port: 3143,
+         security: START_TLS_NEVER
+    };
+    ImapClient imapClient = check new (host, username, password, imapConfig);
+    Message? email = check imapClient->receiveMessage(timeout = 2);
+    if email is Message {
+        test:assertFail(msg = "Non zero emails received in zero read IMAP test.");
     }
-
-    serverStatus = stopSimpleImapServer();
-    if (serverStatus is error) {
-        test:assertFail(msg = "Error while stopping secure IMAP server.");
+    _ = check sendSimpleJsonEmailImapServer();
+    email = check imapClient->receiveMessage();
+    if email is () {
+        test:assertFail(msg = "No emails were read in IMAP test.");
     }
+    test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
+    test:assertEquals(email.body, "{\"multipartJson\":\"sampleValue\"}", msg = "Email body is not matched.");
+    _ = check imapClient->close();
+}
 
+@test:Config {
+    groups: ["imapSimpleEmails"],    
+    dependsOn: [
+        testReceiveJsonEmailWithUpperCaseContentType
+    ]
+}
+function testReceiveXmlEmailWithUpperCaseContentType() returns error? {
+    string host = "127.0.0.1";
+    string username = "hascode";
+    string password = "abcdef123";
+    ImapConfiguration imapConfig = {
+         port: 3143,
+         security: START_TLS_NEVER
+    };
+    ImapClient imapClient = check new (host, username, password, imapConfig);
+    Message? email = check imapClient->receiveMessage(timeout = 2);
+    if email is Message {
+        test:assertFail(msg = "Non zero emails received in zero read IMAP test.");
+    }
+    _ = check sendSimpleXmlEmailImapServer();
+    email = check imapClient->receiveMessage();
+    if email is () {
+        test:assertFail(msg = "No emails were read in IMAP test.");
+    }
+    test:assertEquals(email.subject, "Test E-Mail", msg = "Email subject is not matched.");
+    test:assertEquals(email.body, "<name>Ballerina Multipart XML</name>", msg = "Email body is not matched.");
+    _ = check imapClient->close();
 }
 
 public function startSimpleImapServer() returns Error? = @java:Method {
@@ -73,6 +123,16 @@ public function stopSimpleImapServer() returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
 } external;
 
-public function sendEmailSimpleImapServer() returns Error? = @java:Method {
+public function sendSimpleTextEmailImapServer() returns Error? = @java:Method {
+    'class: "io.ballerina.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
+} external;
+
+
+public function sendSimpleJsonEmailImapServer() returns Error? = @java:Method {
+    'class: "io.ballerina.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
+} external;
+
+
+public function sendSimpleXmlEmailImapServer() returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.email.testutils.ImapSimpleEmailReceiveTest"
 } external;
