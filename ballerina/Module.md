@@ -12,12 +12,12 @@ This module supports the following three client types.
 
 **email:ImapClient**: The client, which supports receiving an email using the IMAP4 protocol.
 
-#### SMTP Client
+#### SMTP client
 
 To send an email using the SMTP protocol, you must first create an `email:SmtpClient` object. The code for creating an `email:SmtpClient` can be found
  below.
 
-##### Creating a client
+##### Create a client
 
 The following code creates an SMTP client, which connects to the default port (i.e. 465) and enables SSL.
 ```ballerina
@@ -33,7 +33,7 @@ email:SmtpConfiguration smtpConfig = {
 email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
 ```
 
-##### Sending an email
+##### Send an email
 
 Once the `email:SmtpClient` is created, an email can be sent using the SMTP protocol through that client.
 Samples for this operation can be found below.
@@ -69,12 +69,12 @@ email:Error? response = smtpClient->send(
 );
 ```
 
-#### POP3 Client
+#### POP3 client
 
 To receive an email using the POP3 protocol, you must first create an `email:PopClient` object. The code for creating an
  `email:PopClient` can be found below.
 
-##### Creating a client
+##### Create a client
 
 The following code creates a POP3 client, which connects to the default port (i.e. 995) and enables SSL.
 ```ballerina
@@ -90,7 +90,7 @@ email:PopConfiguration popConfig = {
 email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pass456", popConfig);
 ```
 
-##### Receiving an email
+##### Receive an email
 Once the `email:PopClient` is created, emails can be received using the POP3 protocol through that client.
 Samples for this operation can be found below.
 
@@ -98,12 +98,12 @@ Samples for this operation can be found below.
 email:Message? emailResponse = check popClient->receiveMessage();
 ```
 
-#### IMAP4 Client
+#### IMAP4 client
 
 To receive an email using the IMAP4 protocol, you must first create an `email:ImapClient` object. The code for creating an
  `email:ImapClient` can be found below.
 
-##### Creating a client
+##### Create a client
 
 The following code creates an IMAP4 client, which connects to the default port (i.e. 993) and enables SSL.
 ```ballerina
@@ -119,7 +119,7 @@ email:ImapConfiguration imapConfig = {
 email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "pass456", imapConfig);
 ```
 
-##### Receiving an email
+##### Receive an email
 Once the `email:ImapClient` is created, emails can be received using the IMAP4 protocol through that client.
 Samples for this operation can be found below.
 
@@ -127,7 +127,7 @@ Samples for this operation can be found below.
 email:Message? emailResponse = check imapClient->receiveMessage();
 ```
 
-#### POP3 and IMAP Listeners
+#### POP3 and IMAP listeners
 
 As POP3 and IMAP4 protocols are similar in the listener use cases, POP3 is considered in the examples below.
 In order to receive emails one-by-one from a POP3 server, you must first create an `email:PopListener` object.
@@ -161,7 +161,7 @@ service "emailObserver" on emailListener {
 }
 ```
 
-### Security and Authentication
+### Security and authentication
 
 The `email` module supports both the TLS/SSL and STARTTLS as transport-level security protocols.
 
@@ -283,7 +283,7 @@ All the authentications are based on the username/password credentials.
 
 >**Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
 
-### Message Content and Attachments
+### Message content and 
 
 An `email:Message` prepared to be sent can have the text body content, `body`, and/or HTML body content (`htmlBody`).
 When emails are received with POP3 or IMAP, the text email bodies and HTML bodies of the email are captured by the `body` and `htmlBody` fields of the `email:Message` respectively.
