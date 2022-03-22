@@ -365,11 +365,11 @@ public class EmailAccessUtil {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
                 byte[] data = new byte[1024];
-                while ((nRead = (contentStream).read(data, 0, data.length)) != -1) {
+                while ((nRead = contentStream.read(data, 0, data.length)) != -1) {
                     buffer.write(data, 0, nRead);
                 }
                 buffer.flush();
-                (contentStream).close();
+                contentStream.close();
                 return buffer.toString(StandardCharsets.UTF_8);
             } else {
                 return content.toString();
