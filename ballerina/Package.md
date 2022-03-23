@@ -283,7 +283,7 @@ All the authentications are based on the username/password credentials.
 
 >**Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
 
-### Message content and 
+### Message content and attachments
 
 An `email:Message` prepared to be sent can have the text body content, `body`, and/or HTML body content (`htmlBody`).
 When emails are received with POP3 or IMAP, the text email bodies and HTML bodies of the email are captured by the `body` and `htmlBody` fields of the `email:Message` respectively.
