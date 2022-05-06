@@ -40,11 +40,9 @@ public isolated client class SmtpClient {
     # + email - An `email:Message` message, which needs to be sent to the recipient
     # + return - An `email:Error` if failed to send the message to the recipient or else `()`
     remote isolated function sendMessage(Message email) returns Error? {
-        if (email?.contentType == ()) {
-            email.contentType = "text/plain";
-        } else if (!self.containsType(email?.contentType, "text")) {
+        if email.contentType is string && !self.containsType(email?.contentType, "text") {
             return error Error("Content type of the email should be text.");
-        }
+        } 
         self.putAttachmentToArray(email);
         return send(self, email);
     }

@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -163,16 +164,14 @@ public class SmtpUtil {
             emailMessage.setSender(new InternetAddress(senderAddress));
         }
         Object attachments = message.get(EmailConstants.MESSAGE_ATTACHMENTS);
-
-        if (attachments == null) {
+        if (Objects.isNull(attachments)) {
             boolean hasTextBody = !messageBody.isEmpty();
             boolean hasHtmlBody = !htmlMessageBody.isEmpty();
-            if (hasTextBody && !hasHtmlBody || !hasTextBody && hasHtmlBody) {
-                if (bodyContentType.compareTo("") == 0) {
-                    emailMessage.setContent(messageBody, hasTextBody ? TEXT_PLAIN : HTML_CONTENT_TYPE);
-                } else {
-                    emailMessage.setContent(messageBody, bodyContentType);
-                }
+            String contentType = retrieveContentType(bodyContentType, hasTextBody, hasHtmlBody);
+            if (hasTextBody && !hasHtmlBody) {
+                emailMessage.setContent(messageBody, contentType);
+            } else if (hasHtmlBody && !hasTextBody) {
+                emailMessage.setContent(htmlMessageBody, contentType);
             } else if (hasTextBody) { // hasHtmlBody is also implicitly true
                 emailMessage.setContent(getAlternativeContentFromTextAndHtml(messageBody, htmlMessageBody));
             } else {
@@ -182,9 +181,15 @@ public class SmtpUtil {
         } else {
             addBodyAndAttachments(emailMessage, messageBody, htmlMessageBody, attachments);
         }
-
         addMessageHeaders(emailMessage, message);
         return emailMessage;
+    }
+
+    private static String retrieveContentType(String providedContentType, boolean hasTextBody, boolean hasHtmlBody) {
+        if (Objects.nonNull(providedContentType) && !providedContentType.isBlank()) {
+            return providedContentType;
+        }
+        return hasTextBody && !hasHtmlBody ? TEXT_PLAIN : hasHtmlBody && !hasTextBody ? HTML_CONTENT_TYPE : TEXT_PLAIN;
     }
 
     protected static void addCertificate(BMap<BString, Object> secureSocket, Properties properties)

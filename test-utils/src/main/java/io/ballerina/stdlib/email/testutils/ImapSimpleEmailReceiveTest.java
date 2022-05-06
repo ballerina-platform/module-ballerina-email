@@ -19,14 +19,12 @@
 package io.ballerina.stdlib.email.testutils;
 
 import com.icegreen.greenmail.user.GreenMailUser;
-import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetup;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import io.ballerina.stdlib.email.util.CommonUtil;
 import io.ballerina.stdlib.email.util.EmailConstants;
+import io.ballerina.stdlib.mime.util.MimeConstants;
 
-import java.security.Security;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -47,10 +45,15 @@ public class ImapSimpleEmailReceiveTest {
     private static final String EMAIL_FROM = "someone@localhost.com";
     private static final String EMAIL_SUBJECT = "Test E-Mail";
     private static final String EMAIL_TEXT = "This is a test e-mail.";
+    private static final String EMAIL_JSON_BODY = "{\"multipartJson\":\"sampleValue\"}";
+    private static final String EMAIL_XML_BODY = "<name>Ballerina Multipart XML</name>";
     private static GreenMail mailServer;
 
     public static Object startSimpleImapServer() {
-        startServer();
+        mailServer = new GreenMail(ServerSetupTest.IMAP);
+        mailServer.start();
+        user = mailServer.setUser(EMAIL_USER_ADDRESS, USER_NAME, USER_PASSWORD);
+        mailServer.setUser(EMAIL_USER_ADDRESS, USER_NAME, USER_PASSWORD);
         return null;
     }
 
@@ -59,9 +62,14 @@ public class ImapSimpleEmailReceiveTest {
         return null;
     }
 
-    public static Object sendEmailSimpleImapServer() {
+    public static Object sendSimpleTextEmailImapServer() {
         try {
-            sendEmail();
+            MimeMessage message = new MimeMessage((Session) null);
+            message.setFrom(new InternetAddress(EMAIL_FROM));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(EMAIL_USER_ADDRESS));
+            message.setSubject(EMAIL_SUBJECT);
+            message.setText(EMAIL_TEXT);
+            user.deliver(message);
         } catch (MessagingException e) {
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                     "Error while sending email: " + e.getMessage());
@@ -69,20 +77,33 @@ public class ImapSimpleEmailReceiveTest {
         return null;
     }
 
-    private static void startServer() {
-        mailServer = new GreenMail(ServerSetupTest.IMAP);
-        mailServer.start();
-        user = mailServer.setUser(EMAIL_USER_ADDRESS, USER_NAME, USER_PASSWORD);
-        mailServer.setUser(EMAIL_USER_ADDRESS, USER_NAME, USER_PASSWORD);
+    public static Object sendSimpleJsonEmailImapServer() {
+        try {
+            MimeMessage message = new MimeMessage((Session) null);
+            message.setFrom(new InternetAddress(EMAIL_FROM));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(EMAIL_USER_ADDRESS));
+            message.setSubject(EMAIL_SUBJECT);
+            message.setContent(EMAIL_JSON_BODY, MimeConstants.APPLICATION_JSON);
+            user.deliver(message);
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
+        return null;
     }
 
-    private static void sendEmail() throws MessagingException {
-        MimeMessage message = new MimeMessage((Session) null);
-        message.setFrom(new InternetAddress(EMAIL_FROM));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(EMAIL_USER_ADDRESS));
-        message.setSubject(EMAIL_SUBJECT);
-        message.setText(EMAIL_TEXT);
-        user.deliver(message);
+    public static Object sendSimpleXmlEmailImapServer() {
+        try {
+            MimeMessage message = new MimeMessage((Session) null);
+            message.setFrom(new InternetAddress(EMAIL_FROM));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(EMAIL_USER_ADDRESS));
+            message.setSubject(EMAIL_SUBJECT);
+            message.setContent(EMAIL_XML_BODY, MimeConstants.APPLICATION_XML);
+            user.deliver(message);
+        } catch (MessagingException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending email: " + e.getMessage());
+        }
+        return null;
     }
-
 }

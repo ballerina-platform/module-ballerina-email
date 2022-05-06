@@ -42,12 +42,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -350,10 +354,25 @@ public class EmailAccessUtil {
     }
 
     private static String extractBodyFromMessage(Message message) throws MessagingException, IOException {
-        String messageBody = "";
-        if (message.getContentType() != null && CommonUtil.isTextBased(message.getContentType())) {
-            if (message.getContent() != null) {
-                messageBody = message.getContent().toString();
+        String contentType = message.getContentType();
+        if (contentType != null && CommonUtil.isTextBased(contentType.toLowerCase(Locale.getDefault()))) {
+            Object content = message.getContent();
+            if (content == null) {
+                return "";
+            }
+            if (content instanceof InputStream) {
+                InputStream contentStream = (InputStream) content;
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                int nRead;
+                byte[] data = new byte[1024];
+                while ((nRead = contentStream.read(data, 0, data.length)) != -1) {
+                    buffer.write(data, 0, nRead);
+                }
+                buffer.flush();
+                contentStream.close();
+                return buffer.toString(StandardCharsets.UTF_8);
+            } else {
+                return content.toString();
             }
         } else if (message.isMimeType(EmailConstants.MIME_CONTENT_TYPE_PATTERN)) {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
@@ -361,11 +380,11 @@ public class EmailAccessUtil {
                     && mimeMultipart.getBodyPart(0).getContent() != null) {
                 Object messageObject = mimeMultipart.getBodyPart(0).getContent();
                 if (messageObject instanceof String) {
-                    messageBody = (String) messageObject;
+                    return (String) messageObject;
                 }
             }
         }
-        return messageBody;
+        return "";
     }
 
     private static BArray extractAttachmentsFromMessage(Message message) throws MessagingException, IOException {

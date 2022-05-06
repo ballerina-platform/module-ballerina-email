@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Fixed
+- [[#2820] Html content sends as raw text if content type is not provided](https://github.com/ballerina-platform/ballerina-standard-library/issues/2820)
+
+## [2.2.3] - 2022-03-23
+
+### Fixed
+- [[#2778] Could not able to send html template as the email body](https://github.com/ballerina-platform/ballerina-standard-library/issues/2778)
+- [[#2777] IMAP listener could not properly identify the content-type of the received emails](https://github.com/ballerina-platform/ballerina-standard-library/issues/2777)
+
+## [2.2.2] - 2022-03-09
+
+### Fixed
 - [[#2739] Error when optional body not present in sendMessage of email module](https://github.com/ballerina-platform/ballerina-standard-library/issues/2739)
 
 ## [0.2.0-beta.1] - 2021-06-02
