@@ -83,7 +83,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "log"
-version = "2.2.1"
+version = "2.3.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -97,7 +97,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "mime"
-version = "2.2.2"
+version = "2.3.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
