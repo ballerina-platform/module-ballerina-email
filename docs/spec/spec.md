@@ -5,9 +5,8 @@ _Reviewers_: @shafreenAnfar @Maninda
 _Created_: 2020/04/24   
 _Updated_: 2022/02/17  
 _Edition_: Swan Lake  
-_Issue_: [#2194](https://github.com/ballerina-platform/ballerina-standard-library/issues/2194)
 
-# Introduction
+## Introduction
 
 This is the specification for the Email standard library of [Ballerina language](https://ballerina.io/), which provides functionalities related to
 sending/receiving emails via SMTP, POP3, and IMAP protocols.  
@@ -18,7 +17,7 @@ If you have any feedback or suggestions about the library, start a discussion vi
 
 The conforming implementation of the specification is released and included in the distribution. Any deviation from the specification is considered a bug.
 
-# Contents
+## Contents
 
 1. [Overview](#1-overview)
 2. [SMTP, POP3 and IMAP Protocols](#2-smtp-pop3-and-imap-protocols)
