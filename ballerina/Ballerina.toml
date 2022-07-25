@@ -37,11 +37,11 @@ path = "./lib/testng-7.4.0.jar"
 groupId = "io.ballerina.stdlib"
 artifactId = "email-native"
 version = "2.4.0"
-path = "../native/build/libs/email-native-2.4.0.jar"
+path = "../native/build/libs/email-native-2.4.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-test-utils"
 version = "2.4.0"
-path = "../test-utils/build/libs/email-test-utils-2.4.0.jar"
+path = "../test-utils/build/libs/email-test-utils-2.4.0-SNAPSHOT.jar"
 scope = "testOnly"
