@@ -10,20 +10,38 @@ license = ["Apache-2.0"]
 distribution = "2201.2.0"
 
 [[platform.java11.dependency]]
+groupId = "com.sun.mail"
+artifactId = "javax.mail"
+version = "1.6.2"
 path = "./lib/javax.mail-1.6.2.jar"
 
 [[platform.java11.dependency]]
+groupId = "com.icegreen"
+artifactId = "greenmail"
+version = "1.5.11"
 path = "./lib/greenmail-1.5.11.jar"
 
 [[platform.java11.dependency]]
+groupId = "org.jvnet.mimepull"
+artifactId = "mimepull"
+version = "1.9.11"
 path = "./lib/mimepull-1.9.11.jar"
 
 [[platform.java11.dependency]]
+groupId = "org.testng"
+artifactId = "testng"
+version = "7.4.0"
 path = "./lib/testng-7.4.0.jar"
 
 [[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "email-native"
+version = "@toml.version@"
 path = "../native/build/libs/email-native-@project.version@.jar"
 
 [[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "email-test-utils"
+version = "@toml.version@"
 path = "../test-utils/build/libs/email-test-utils-@project.version@.jar"
 scope = "testOnly"
