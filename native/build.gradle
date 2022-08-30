@@ -33,7 +33,6 @@ dependencies {
     implementation group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
     implementation group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
 
-    implementation group: 'org.ballerinalang', name: 'ballerina-core', version: "${ballerinaLangVersion}"
     implementation group: 'io.ballerina.stdlib', name: 'io-native', version: "${stdlibIoVersion}"
     implementation group: 'io.ballerina.stdlib', name: 'mime-native', version: "${stdlibMimeVersion}"
 
