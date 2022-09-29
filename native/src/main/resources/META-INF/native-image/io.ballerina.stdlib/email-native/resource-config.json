@@ -15,10 +15,7 @@
     }, 
     {
       "pattern":"\\QMETA-INF/services/javax.mail.Provider\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/quartz/core/quartz-build.properties\\E"
-    }, 
+    },
     {
       "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
     }
