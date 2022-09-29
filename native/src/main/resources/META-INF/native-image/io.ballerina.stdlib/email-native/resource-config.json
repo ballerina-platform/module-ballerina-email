@@ -15,9 +15,6 @@
       },
       {
         "pattern": "\\QMETA-INF/services/javax.mail.Provider\\E"
-      },
-      {
-        "pattern": "\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
       }
     ]
   }
