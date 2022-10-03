@@ -1,5 +1,113 @@
 [
   {
+    "name": "com.icegreen.greenmail.imap.commands.CapabilityCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.CloseCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.ExamineCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.FetchCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.LoginCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.LogoutCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.NoopCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.SearchCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.SelectCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.icegreen.greenmail.imap.commands.StoreCommand",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.sun.mail.handlers.multipart_mixed",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.sun.mail.handlers.text_html",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "com.sun.mail.handlers.text_plain",
     "methods": [
       {
@@ -10,6 +118,18 @@
   },
   {
     "name": "com.sun.mail.imap.IMAPStore",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "javax.mail.Session",
+          "javax.mail.URLName"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.sun.mail.pop3.POP3Store",
     "methods": [
       {
         "name": "<init>",

@@ -2,6 +2,9 @@
   "resources": {
     "includes": [
       {
+        "pattern":"\\Qgreenmail.p12\\E"
+      },
+      {
         "pattern": "\\QMETA-INF/javamail.charset.map\\E"
       },
       {
@@ -14,7 +17,16 @@
         "pattern": "\\QMETA-INF/mailcap\\E"
       },
       {
+        "pattern":"\\QMETA-INF/mimetypes.default\\E"
+      },
+      {
         "pattern": "\\QMETA-INF/services/javax.mail.Provider\\E"
+      },
+      {
+        "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
+      }, 
+      {
+        "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLOutputFactory\\E"
       }
     ]
   }
