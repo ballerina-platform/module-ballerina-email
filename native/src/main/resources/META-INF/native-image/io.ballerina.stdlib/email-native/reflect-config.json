@@ -1,0 +1,35 @@
+[
+  {
+    "name": "com.sun.mail.handlers.text_plain",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "com.sun.mail.imap.IMAPStore",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "javax.mail.Session",
+          "javax.mail.URLName"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.sun.mail.smtp.SMTPTransport",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "javax.mail.Session",
+          "javax.mail.URLName"
+        ]
+      }
+    ]
+  }
+]
