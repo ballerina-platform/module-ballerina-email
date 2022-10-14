@@ -333,5 +333,5 @@ To report bugs, request new features, start new discussions, view project boards
 
 ## Useful links
 
-- Chat live with us via our <a target="_blank" href="https://ballerina.io/community/slack/">Slack channel</a>.
+- Chat live with us via our [Discord server](https://discord.gg/ballerinalang).
 - Post all technical questions on Stack Overflow with the <a target="_blank" href="https://stackoverflow.com/questions/tagged/ballerina">#ballerina</a> tag.
