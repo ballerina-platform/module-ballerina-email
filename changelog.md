@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+- [API Docs Updated](https://github.com/ballerina-platform/ballerina-standard-library/issues/3463)
+
+## [2.2.4] - 2022-04-15
+
 ### Fixed
 - [[#2820] Html content sends as raw text if content type is not provided](https://github.com/ballerina-platform/ballerina-standard-library/issues/2820)
 
