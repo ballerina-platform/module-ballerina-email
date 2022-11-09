@@ -2,10 +2,11 @@ Ballerina Email Library
 =======================
 
   [![Build](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml)
+  [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-email/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-email)
   [![Trivy](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/trivy-scan.yml)
+  [![GraalVM Check](https://img.shields.io/github/workflow/status/ballerina-platform/module-ballerina-email/Build%20with%20bal%20test%20native?label=GraalVM%20Check)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-with-bal-test-native.yml)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-email.svg)](https://github.com/ballerina-platform/module-ballerina-email/commits/master)
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/email.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Femail)
-  [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-email/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-email)
 
 This library provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
