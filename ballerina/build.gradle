@@ -75,9 +75,6 @@ dependencies {
     externalJars(group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}") {
         transitive = false
     }
-    externalJars(group: 'org.testng', name: 'testng', version: "${testngVersion}") {
-        transitive = false
-    }
     externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
         transitive = false
     }

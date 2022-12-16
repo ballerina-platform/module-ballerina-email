@@ -30,9 +30,9 @@ import java.security.Security;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static io.ballerina.stdlib.email.testutils.Assert.assertEquals;
+import static io.ballerina.stdlib.email.testutils.Assert.assertNotNull;
+import static io.ballerina.stdlib.email.testutils.Assert.assertTrue;
 
 /**
  * Test class for email send using SMTP with least number of parameters with SSL.
