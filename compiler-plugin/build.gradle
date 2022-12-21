@@ -24,7 +24,6 @@ plugins {
 description = 'Ballerina - Email Compiler Plugin'
 
 dependencies {
-    implementation "org.testng:testng:${testngVersion}"
     checkstyle project(':checkstyle')
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
     implementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"

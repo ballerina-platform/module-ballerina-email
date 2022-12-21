@@ -27,7 +27,6 @@ dependencies {
     implementation group: 'com.sun.mail', name: 'javax.mail', version: "${javaMailVersion}"
     implementation group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}"
     implementation group: 'io.ballerina.stdlib', name: 'mime-native', version: "${stdlibMimeVersion}"
-    implementation group: 'org.testng', name: 'testng', version: "${testngVersion}"
     implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
     implementation group: 'com.icegreen', name: 'greenmail', version: "${greenmailVersion}"
     implementation project(":email-native")

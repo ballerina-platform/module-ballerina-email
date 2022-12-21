@@ -39,10 +39,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.SharedByteArrayInputStream;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import static io.ballerina.stdlib.email.testutils.Assert.assertEquals;
+import static io.ballerina.stdlib.email.testutils.Assert.assertNotNull;
+import static io.ballerina.stdlib.email.testutils.Assert.assertTrue;
+import static io.ballerina.stdlib.email.testutils.Assert.fail;
 
 /**
  * Test class for email send using SMTP with all the parameters.
