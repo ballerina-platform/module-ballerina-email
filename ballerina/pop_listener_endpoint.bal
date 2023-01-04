@@ -171,7 +171,7 @@ public type PopListenerConfiguration record {|
     string host;
     string username;
     string password;
-    decimal pollingInterval = 60;
+    decimal pollingInterval = 30;
     int port = 995;
     Security security = SSL;
     SecureSocket secureSocket?;
