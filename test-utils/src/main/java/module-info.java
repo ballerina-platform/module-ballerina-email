@@ -22,6 +22,5 @@ module io.ballerina.stdlib.email.testutils {
     requires io.ballerina.stdlib.mime;
     requires java.mail;
     requires io.ballerina.stdlib.email;
-    requires org.testng;
     exports io.ballerina.stdlib.email.testutils;
 }
