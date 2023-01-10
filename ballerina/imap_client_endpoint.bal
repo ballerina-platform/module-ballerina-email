@@ -40,7 +40,7 @@ public isolated client class ImapClient {
     # + timeout - Polling timeout period in seconds.
     # + return - An `email:Message` if reading the message is successful, `()` if there are no emails in the specified
     #            folder, or else an `email:Error` if the recipient failed to receive the message
-    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER, decimal timeout = 0)
+    remote isolated function receiveMessage(string folder = DEFAULT_FOLDER, decimal timeout = 30)
             returns Message|Error? {
         return imapRead(self, folder, timeout);
     }
