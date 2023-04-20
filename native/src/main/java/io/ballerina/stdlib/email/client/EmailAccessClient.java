@@ -18,6 +18,7 @@
 
 package io.ballerina.stdlib.email.client;
 
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
@@ -219,7 +220,7 @@ public class EmailAccessClient {
                 if (messages.length > 0) {
                     mapValue = EmailAccessUtil.getMapValue(messages[0]);
                     Flags flags = new Flags();
-                    if (EmailConstants.POP_CLIENT.equals(clientConnector.getType().getName())) {
+                    if (EmailConstants.POP_CLIENT.equals(TypeUtils.getType(clientConnector).getName())) {
                         flags.add(Flags.Flag.DELETED);
                     } else {
                         flags.add(Flags.Flag.SEEN);

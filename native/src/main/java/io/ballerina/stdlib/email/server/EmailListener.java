@@ -111,13 +111,16 @@ public class EmailListener {
     }
 
     protected void addService(BObject service) {
-        if (service != null && service.getType() != null && service.getType().getName() != null) {
-            registeredServices.put(service.getType().getName(), service);
+        if (service != null) {
+            ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
+            if (serviceType != null && serviceType.getName() != null) {
+                registeredServices.put(serviceType.getName(), service);
+            }
         }
     }
 
     private void invokeAsyncCall(BObject service, String methodName, StrandMetadata metadata, Object arg) {
-        ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(service.getType());
+        ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
         if (serviceType.isIsolated() && serviceType.isIsolated(methodName)) {
             runtime.invokeMethodAsyncConcurrently(service, methodName,
                     null, metadata, null, null, null, arg, true);
