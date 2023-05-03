@@ -27,6 +27,7 @@ import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.JsonUtils;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.utils.XmlUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
@@ -474,7 +475,7 @@ public class EmailAccessUtil {
     }
 
     private static BArray getArrayOfEntities(ArrayList<BObject> entities) {
-        Type typeOfEntity = entities.get(0).getType();
+        Type typeOfEntity = TypeUtils.getType(entities.get(0));
         BObject[] result = entities.toArray(new BObject[entities.size()]);
         return ValueCreator.createArrayValue(result, TypeCreator.createArrayType(typeOfEntity));
     }
