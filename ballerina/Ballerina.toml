@@ -31,11 +31,11 @@ path = "./lib/mimepull-1.9.11.jar"
 groupId = "io.ballerina.stdlib"
 artifactId = "email-native"
 version = "2.7.1"
-path = "../native/build/libs/email-native-2.7.1-SNAPSHOT.jar"
+path = "../native/build/libs/email-native-2.7.1.jar"
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-test-utils"
 version = "2.7.1"
-path = "../test-utils/build/libs/email-test-utils-2.7.1-SNAPSHOT.jar"
+path = "../test-utils/build/libs/email-test-utils-2.7.1.jar"
 scope = "testOnly"
