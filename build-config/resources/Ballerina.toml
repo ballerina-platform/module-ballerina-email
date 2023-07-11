@@ -31,6 +31,12 @@ version = "1.9.11"
 path = "./lib/mimepull-1.9.11.jar"
 
 [[platform.java17.dependency]]
+groupId = "javax.activation"
+artifactId = "activation"
+version = "1.1.1"
+path = "./lib/activation-1.1.1.jar"
+
+[[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-native"
 version = "@toml.version@"
