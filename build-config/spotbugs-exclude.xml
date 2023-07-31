@@ -25,4 +25,8 @@
         <Class name="io.ballerina.stdlib.email.server.EmailListener"/>
         <Bug code="SIC" />
     </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.email.server.EmailConsumer"/>
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
 </FindBugsFilter>
