@@ -10,7 +10,7 @@ distribution-version = "2201.7.0"
 [[package]]
 org = "ballerina"
 name = "email"
-version = "2.8.0"
+version = "2.8.1"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.runtime"},
@@ -119,7 +119,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "log"
-version = "2.8.0"
+version = "2.8.1"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
