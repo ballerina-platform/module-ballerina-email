@@ -78,6 +78,9 @@ dependencies {
     externalJars(group: 'org.jvnet.mimepull', name: 'mimepull', version: "${mimepullVersion}") {
         transitive = false
     }
+    externalJars(group: 'javax.activation', name: 'activation', version: "${javaxActivationVersion}") {
+        transitive = false
+    }
 }
 
 task updateTomlFiles {
