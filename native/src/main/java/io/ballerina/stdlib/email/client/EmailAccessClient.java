@@ -53,19 +53,19 @@ public class EmailAccessClient {
 
     private EmailAccessClient() {}
 
-    static {
-        Class<?> hostNameCheckerClass = null;
-        try {
-            hostNameCheckerClass = Class.forName(EmailConstants.HOSTNAME_CHECKER_CLASS);
-        } catch (ClassNotFoundException e) {
-            log.error("sun.security.util.HostnameChecker class was not found from EmailAccessClient.");
-        }
-        if (hostNameCheckerClass != null) {
-            String hostNameCheckerPackageName = hostNameCheckerClass.getPackageName();
-            Module emailAccessClientModule = EmailAccessClient.class.getModule();
-            hostNameCheckerClass.getModule().addOpens(hostNameCheckerPackageName, emailAccessClientModule);
-        }
-    }
+//    static {
+//        Class<?> hostNameCheckerClass = null;
+//        try {
+//            hostNameCheckerClass = Class.forName(EmailConstants.HOSTNAME_CHECKER_CLASS);
+//        } catch (ClassNotFoundException e) {
+//            log.error("sun.security.util.HostnameChecker class was not found from EmailAccessClient.");
+//        }
+//        if (hostNameCheckerClass != null) {
+//            String hostNameCheckerPackageName = hostNameCheckerClass.getPackageName();
+//            Module emailAccessClientModule = EmailAccessClient.class.getModule();
+//            hostNameCheckerClass.getModule().addOpens(hostNameCheckerPackageName, emailAccessClientModule);
+//        }
+//    }
 
     /**
      * Initializes the BObject object with the POP properties.
