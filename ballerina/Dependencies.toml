@@ -5,7 +5,7 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.8.0-20230830-220400-8a7556d8"
+distribution-version = "2201.7.0"
 
 [[package]]
 org = "ballerina"
@@ -27,7 +27,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "io"
-version = "1.6.0"
+version = "1.5.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.value"}
@@ -119,7 +119,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "log"
-version = "2.9.0"
+version = "2.8.1"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -133,7 +133,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "mime"
-version = "2.9.0"
+version = "2.8.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -146,7 +146,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "observe"
-version = "1.2.0"
+version = "1.1.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
@@ -154,7 +154,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "task"
-version = "2.5.0"
+version = "2.4.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "time"}
@@ -179,7 +179,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "time"
-version = "2.4.0"
+version = "2.3.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
