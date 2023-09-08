@@ -18,10 +18,6 @@ groupId = "com.sun.mail"
 artifactId = "jakarta.mail"
 version = "2.0.1"
 
-# [[platform.java17.dependency]]
-# path = "./lib/javax.mail-1.6.2.jar"
-# scope = "testOnly"
-
 [[platform.java17.dependency]]
 groupId = "com.icegreen"
 artifactId = "greenmail"
