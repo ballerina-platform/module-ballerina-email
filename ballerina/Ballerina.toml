@@ -31,16 +31,10 @@ version = "1.9.11"
 path = "./lib/mimepull-1.9.11.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/jakarta.activation-2.0.1.jar"
-groupId = "com.sun.activation"
-artifactId = "jakarta.activation"
-version = "2.0.1"
-
-[[platform.java11.dependency]]
-path = "./lib/jakarta.activation-2.1.2.jar"
-groupId = "jakarta.activation"
-artifactId = "jakarta.activation-api"
-version = "2.1.2"
+groupId = "javax.activation"
+artifactId = "activation"
+version = "1.1.1"
+path = "./lib/activation-1.1.1.jar"
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
