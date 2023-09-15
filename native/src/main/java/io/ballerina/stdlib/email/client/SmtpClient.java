@@ -47,20 +47,6 @@ public class SmtpClient {
 
     private SmtpClient() {}
 
-//    static {
-//        Class<?> hostNameCheckerClass = null;
-//        try {
-//            hostNameCheckerClass = Class.forName(EmailConstants.HOSTNAME_CHECKER_CLASS);
-//        } catch (ClassNotFoundException e) {
-//            log.error("sun.security.util.HostnameChecker class was not found from SmtpClient.");
-//        }
-//        if (hostNameCheckerClass != null) {
-//            String hostNameCheckerPackageName = hostNameCheckerClass.getPackageName();
-//            Module smtpClientModule = SmtpClient.class.getModule();
-//            hostNameCheckerClass.getModule().addOpens(hostNameCheckerPackageName, smtpClientModule);
-//        }
-//    }
-
     /**
      * Initializes the BObject object with the SMTP Properties.
      * @param clientEndpoint Represents the SMTP Client class
