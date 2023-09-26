@@ -279,7 +279,7 @@ Similarly, other client/listener configuration types can also be defined with th
 
 **Note**: Make sure the port number is changed accordingly depending on the protocol used.
 
-Standard port numbers used for each of the protocol for each type of transport security are as given below.
+ port numbers used for each of the protocol for each type of transport security are as given below.
 
 | Protocol/Security | SSL | STARTTLS | Unsecure |
 |-------------------|-----|----------|----------|
@@ -337,7 +337,7 @@ email:Message email = {
 
 ## Issues and projects 
 
-Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Standard Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library). 
+Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit the Ballerina library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library). 
 
 This repository only contains the source code for the package.
 
