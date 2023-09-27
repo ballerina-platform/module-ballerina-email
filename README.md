@@ -279,7 +279,7 @@ Similarly, other client/listener configuration types can also be defined with th
 
 **Note**: Make sure the port number is changed accordingly depending on the protocol used.
 
- port numbers used for each of the protocol for each type of transport security are as given below.
+ Standard port numbers used for each of the protocol for each type of transport security are as given below.
 
 | Protocol/Security | SSL | STARTTLS | Unsecure |
 |-------------------|-----|----------|----------|
