@@ -35,7 +35,9 @@ import javax.mail.internet.MimeMessage;
  *
  * @since slbeta
  */
-public class PopSimpleEmailReceiveTest {
+public final class PopSimpleEmailReceiveTest {
+
+    private PopSimpleEmailReceiveTest() {}
 
     private static GreenMailUser user;
     private static final String USER_PASSWORD = "abcdef123";

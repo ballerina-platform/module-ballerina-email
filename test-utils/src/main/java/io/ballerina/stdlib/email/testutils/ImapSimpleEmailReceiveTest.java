@@ -36,7 +36,9 @@ import javax.mail.internet.MimeMessage;
  *
  * @since slbeta
  */
-public class ImapSimpleEmailReceiveTest {
+public final class ImapSimpleEmailReceiveTest {
+
+    private ImapSimpleEmailReceiveTest() {}
 
     private static GreenMailUser user;
     private static final String USER_PASSWORD = "abcdef123";

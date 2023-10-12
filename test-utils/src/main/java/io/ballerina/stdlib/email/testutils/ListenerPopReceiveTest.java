@@ -38,7 +38,9 @@ import javax.mail.internet.MimeMessage;
  *
  * @since slp4
  */
-public class ListenerPopReceiveTest {
+public final class ListenerPopReceiveTest {
+
+    private ListenerPopReceiveTest() {}
 
     private static GreenMailUser user;
     private static final int PORT_NUMBER = 3995;

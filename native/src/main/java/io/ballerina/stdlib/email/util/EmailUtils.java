@@ -25,7 +25,9 @@ import io.ballerina.runtime.api.Module;
  *
  * @since 1.2.0
  */
-public class EmailUtils {
+public final class EmailUtils {
+
+    private EmailUtils() {}
 
     /**
      * Gets ballerina email package.

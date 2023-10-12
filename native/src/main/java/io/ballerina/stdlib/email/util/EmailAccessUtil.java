@@ -84,7 +84,9 @@ import static io.ballerina.stdlib.mime.util.MimeConstants.MEDIA_TYPE;
  *
  * @since 1.2.0
  */
-public class EmailAccessUtil {
+public final class EmailAccessUtil {
+
+    private EmailAccessUtil() {}
 
     private static final Logger log = LoggerFactory.getLogger(EmailAccessUtil.class);
     private static final ArrayType stringArrayType = TypeCreator.createArrayType(PredefinedTypes.TYPE_STRING);

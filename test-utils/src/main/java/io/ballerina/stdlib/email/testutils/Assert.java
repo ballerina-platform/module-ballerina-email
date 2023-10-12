@@ -22,6 +22,8 @@ package io.ballerina.stdlib.email.testutils;
  *  {@code Assert} contains the functionality related to assertions.
  */
 public final class Assert {
+    private Assert() {}
+
     public static void assertTrue(String message, boolean condition) {
         if (!condition) {
             fail(message);
