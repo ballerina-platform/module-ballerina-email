@@ -38,7 +38,9 @@ import static io.ballerina.stdlib.email.testutils.Assert.assertTrue;
  *
  * @since slbeta1
  */
-public class SmtpSimpleSecureEmailSendWithOptionsTest {
+public final class SmtpSimpleSecureEmailSendWithOptionsTest {
+
+    private SmtpSimpleSecureEmailSendWithOptionsTest() {}
 
     private static final int PORT_NUMBER = 3465;
     private static final String USER_PASSWORD = "abcdef123";

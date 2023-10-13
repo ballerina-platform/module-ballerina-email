@@ -49,7 +49,9 @@ import static io.ballerina.stdlib.email.testutils.Assert.fail;
  *
  * @since slp9
  */
-public class SmtpEmailSendWithOptionsTest {
+public final class SmtpEmailSendWithOptionsTest {
+
+    private SmtpEmailSendWithOptionsTest() {}
 
     private static final String USER_PASSWORD = "abcdef123";
     private static final String USER_NAME = "hascode";

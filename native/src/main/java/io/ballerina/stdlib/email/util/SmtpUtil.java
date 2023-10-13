@@ -74,7 +74,9 @@ import static io.ballerina.stdlib.mime.util.MimeUtil.getContentTypeWithParameter
  *
  * @since 1.2.0
  */
-public class SmtpUtil {
+public final class SmtpUtil {
+
+    private SmtpUtil() {}
 
     private static final Logger log = LoggerFactory.getLogger(SmtpUtil.class);
 

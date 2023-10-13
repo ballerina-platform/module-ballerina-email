@@ -37,7 +37,9 @@ import java.security.Security;
  *
  * @since slp4
  */
-public class PopSimpleSecureEmailReceiveTest {
+public final class PopSimpleSecureEmailReceiveTest {
+
+    private PopSimpleSecureEmailReceiveTest() {}
 
     private static GreenMailUser user;
     private static final int PORT_NUMBER = 3995;

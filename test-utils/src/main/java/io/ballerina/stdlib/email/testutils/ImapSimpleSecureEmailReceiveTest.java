@@ -38,7 +38,9 @@ import javax.mail.internet.MimeMessage;
  *
  * @since slp4
  */
-public class ImapSimpleSecureEmailReceiveTest {
+public final class ImapSimpleSecureEmailReceiveTest {
+
+    private ImapSimpleSecureEmailReceiveTest() {}
 
     private static GreenMailUser user;
     private static final int PORT_NUMBER = 3993;

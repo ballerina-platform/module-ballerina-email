@@ -41,7 +41,9 @@ import javax.mail.internet.MimeMultipart;
  *
  * @since slp4
  */
-public class PopComplexEmailReceiveTest {
+public final class PopComplexEmailReceiveTest {
+
+    private PopComplexEmailReceiveTest() {}
 
     private static GreenMailUser user;
     private static final String USER_PASSWORD = "abcdef123";
