@@ -29,10 +29,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
+import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
+import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 
@@ -91,6 +95,12 @@ public class SmtpClient {
                     (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION),
                     (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue()), message));
             return null;
+        } catch (SendFailedException e) {
+            String inValidAddresses = Arrays.stream(e.getInvalidAddresses())
+                    .map((Address::toString))
+                    .collect(Collectors.joining(","));
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Error while sending the message to SMTP server : " + e.getMessage() + " " + inValidAddresses);
         } catch (MessagingException | IOException e) {
             log.debug("Error while sending the message to SMTP server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
