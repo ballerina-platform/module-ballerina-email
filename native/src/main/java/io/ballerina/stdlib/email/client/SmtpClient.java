@@ -96,11 +96,11 @@ public class SmtpClient {
                     (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue()), message));
             return null;
         } catch (SendFailedException e) {
-            String inValidAddresses = Arrays.stream(e.getInvalidAddresses())
+            String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
                     .map((Address::toString))
                     .collect(Collectors.joining(","));
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
-                    "Error while sending the message to SMTP server : " + e.getMessage() + " " + inValidAddresses);
+                    "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
         } catch (MessagingException | IOException e) {
             log.debug("Error while sending the message to SMTP server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
