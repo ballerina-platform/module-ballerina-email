@@ -21,6 +21,7 @@ package io.ballerina.stdlib.email.server;
 import io.ballerina.runtime.api.Runtime;
 import io.ballerina.runtime.api.async.StrandMetadata;
 import io.ballerina.runtime.api.types.ObjectType;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
@@ -122,10 +123,9 @@ public class EmailListener {
     private void invokeAsyncCall(BObject service, String methodName, StrandMetadata metadata, Object arg) {
         ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
         if (serviceType.isIsolated() && serviceType.isIsolated(methodName)) {
-            runtime.startIsolatedWorker(service, methodName, null, metadata, null, null, null, arg, true);
+            runtime.startIsolatedWorker(service, methodName, null, metadata, null,  arg);
         } else {
-            runtime.startNonIsolatedWorker(service, methodName,
-                    null, metadata, null, null, null, arg, true);
+            runtime.startNonIsolatedWorker(service, methodName, null, metadata, null, arg);
         }
     }
 
