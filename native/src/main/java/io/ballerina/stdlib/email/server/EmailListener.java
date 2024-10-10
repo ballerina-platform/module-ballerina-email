@@ -122,7 +122,7 @@ public class EmailListener {
     private void invokeAsyncCall(BObject service, String methodName, StrandMetadata metadata, Object arg) {
         ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
         if (serviceType.isIsolated() && serviceType.isIsolated(methodName)) {
-            runtime.startIsolatedWorker(service, methodName, null, metadata, null,  arg);
+            runtime.call(service, methodName, null, metadata, null,  arg);
         } else {
             runtime.startNonIsolatedWorker(service, methodName, null, metadata, null, arg);
         }
