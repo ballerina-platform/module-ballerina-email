@@ -19,7 +19,6 @@
 package io.ballerina.stdlib.email.server;
 
 import io.ballerina.runtime.api.Runtime;
-import io.ballerina.runtime.api.async.StrandMetadata;
 import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
@@ -32,10 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static io.ballerina.stdlib.email.util.EmailConstants.ON_CLOSE_METADATA;
-import static io.ballerina.stdlib.email.util.EmailConstants.ON_ERROR_METADATA;
 import static io.ballerina.stdlib.email.util.EmailConstants.ON_MESSAGE;
-import static io.ballerina.stdlib.email.util.EmailConstants.ON_MESSAGE_METADATA;
 
 /**
  * Email connector listener for Ballerina.
@@ -68,7 +64,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), ON_MESSAGE, ON_MESSAGE_METADATA, email);
+                invokeAsyncCall(service.getValue(), ON_MESSAGE, email);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -85,7 +81,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), EmailConstants.ON_ERROR, ON_ERROR_METADATA, error);
+                invokeAsyncCall(service.getValue(), EmailConstants.ON_ERROR, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -103,7 +99,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), EmailConstants.ON_CLOSE, ON_CLOSE_METADATA, error);
+                invokeAsyncCall(service.getValue(), EmailConstants.ON_CLOSE, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -119,7 +115,7 @@ public class EmailListener {
         }
     }
 
-    private void invokeAsyncCall(BObject service, String methodName, StrandMetadata metadata, Object arg) {
+    private void invokeAsyncCall(BObject service, String methodName, Object arg) {
         runtime.call(service, methodName, arg);
     }
 
