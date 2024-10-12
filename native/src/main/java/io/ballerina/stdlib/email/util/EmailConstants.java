@@ -19,7 +19,6 @@
 package io.ballerina.stdlib.email.util;
 
 import io.ballerina.runtime.api.Module;
-import io.ballerina.runtime.api.async.StrandMetadata;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
 
@@ -151,15 +150,5 @@ public class EmailConstants {
 
     public static final String EMAIL_MESSAGE = "Message";
     public static final String ERROR = "Error";
-
-    // Strand meta data
-    public static final StrandMetadata ON_MESSAGE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_MESSAGE);
-
-    public static final StrandMetadata ON_ERROR_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_ERROR);
-
-    public static final StrandMetadata ON_CLOSE_METADATA = new StrandMetadata(BALLERINA_BUILTIN_PKG_PREFIX,
-            MODULE_NAME, EmailUtils.getEmailPackage().getVersion(), ON_CLOSE);
 
 }
