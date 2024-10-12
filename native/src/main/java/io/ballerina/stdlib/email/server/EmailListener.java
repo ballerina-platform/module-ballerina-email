@@ -23,7 +23,6 @@ import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.stdlib.email.util.EmailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static io.ballerina.stdlib.email.util.EmailConstants.ON_CLOSE;
+import static io.ballerina.stdlib.email.util.EmailConstants.ON_ERROR;
 import static io.ballerina.stdlib.email.util.EmailConstants.ON_MESSAGE;
 
 /**
@@ -64,7 +65,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), ON_MESSAGE, email);
+                runtime.call(service.getValue(), ON_MESSAGE, email);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -81,7 +82,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), EmailConstants.ON_ERROR, error);
+                runtime.call(service.getValue(), ON_ERROR, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -99,7 +100,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), EmailConstants.ON_CLOSE, error);
+                runtime.call(service.getValue(), ON_CLOSE, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -113,10 +114,6 @@ public class EmailListener {
                 registeredServices.put(serviceType.getName(), service);
             }
         }
-    }
-
-    private void invokeAsyncCall(BObject service, String methodName, Object arg) {
-        runtime.call(service, methodName, arg);
     }
 
 }
