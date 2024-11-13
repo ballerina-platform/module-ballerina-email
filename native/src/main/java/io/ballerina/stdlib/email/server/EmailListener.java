@@ -65,7 +65,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.call(service.getValue(), ON_MESSAGE, email);
+                runtime.callMethod(service.getValue(), ON_MESSAGE, null, email);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -82,7 +82,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.call(service.getValue(), ON_ERROR, error);
+                runtime.callMethod(service.getValue(), ON_ERROR, null, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -100,7 +100,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                runtime.call(service.getValue(), ON_CLOSE, error);
+                runtime.callMethod(service.getValue(), ON_CLOSE, null, error);
             }
         } else {
             log.error("Runtime should not be null.");
