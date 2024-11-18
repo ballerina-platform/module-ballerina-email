@@ -18,7 +18,7 @@
 
 package io.ballerina.stdlib.email.server;
 
-import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -45,9 +45,9 @@ public class EmailListenerHelper {
      * @param serviceEndpointConfig Email server endpoint configuration
      * @throws EmailConnectorException If the given protocol is invalid
      */
-    public static Object init(BObject emailListener, BMap<BString, Object> serviceEndpointConfig,
-                            BMap<BString, Object> protocolConfig, BString protocol) {
-        final EmailListener listener = new EmailListener(Runtime.getCurrentRuntime());
+    public static Object init(Environment env, BObject emailListener, BMap<BString, Object> serviceEndpointConfig,
+                              BMap<BString, Object> protocolConfig, BString protocol) {
+        final EmailListener listener = new EmailListener(env.getRuntime());
         Map<String, Object> paramMap = getServerConnectorParamMap(serviceEndpointConfig, protocolConfig,
                 protocol.getValue());
         EmailConnector emailConnector = null;

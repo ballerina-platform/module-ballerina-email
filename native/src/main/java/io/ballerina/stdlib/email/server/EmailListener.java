@@ -19,12 +19,10 @@
 package io.ballerina.stdlib.email.server;
 
 import io.ballerina.runtime.api.Runtime;
-import io.ballerina.runtime.api.async.StrandMetadata;
 import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.stdlib.email.util.EmailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static io.ballerina.stdlib.email.util.EmailConstants.ON_CLOSE_METADATA;
-import static io.ballerina.stdlib.email.util.EmailConstants.ON_ERROR_METADATA;
+import static io.ballerina.stdlib.email.util.EmailConstants.ON_CLOSE;
+import static io.ballerina.stdlib.email.util.EmailConstants.ON_ERROR;
 import static io.ballerina.stdlib.email.util.EmailConstants.ON_MESSAGE;
-import static io.ballerina.stdlib.email.util.EmailConstants.ON_MESSAGE_METADATA;
 
 /**
  * Email connector listener for Ballerina.
@@ -68,7 +65,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), ON_MESSAGE, ON_MESSAGE_METADATA, email);
+                runtime.callMethod(service.getValue(), ON_MESSAGE, null, email);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -85,7 +82,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), EmailConstants.ON_ERROR, ON_ERROR_METADATA, error);
+                runtime.callMethod(service.getValue(), ON_ERROR, null, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -103,7 +100,7 @@ public class EmailListener {
         if (runtime != null) {
             Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
             for (Map.Entry<String, BObject> service : services) {
-                invokeAsyncCall(service.getValue(), EmailConstants.ON_CLOSE, ON_CLOSE_METADATA, error);
+                runtime.callMethod(service.getValue(), ON_CLOSE, null, error);
             }
         } else {
             log.error("Runtime should not be null.");
@@ -116,17 +113,6 @@ public class EmailListener {
             if (serviceType != null && serviceType.getName() != null) {
                 registeredServices.put(serviceType.getName(), service);
             }
-        }
-    }
-
-    private void invokeAsyncCall(BObject service, String methodName, StrandMetadata metadata, Object arg) {
-        ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
-        if (serviceType.isIsolated() && serviceType.isIsolated(methodName)) {
-            runtime.invokeMethodAsyncConcurrently(service, methodName,
-                    null, metadata, null, null, null, arg, true);
-        } else {
-            runtime.invokeMethodAsyncSequentially(service, methodName,
-                    null, metadata, null, null, null, arg, true);
         }
     }
 
