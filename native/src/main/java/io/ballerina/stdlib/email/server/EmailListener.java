@@ -67,7 +67,7 @@ public class EmailListener {
             if (runtime != null) {
                 Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
                 for (Map.Entry<String, BObject> service : services) {
-                    runtime.callMethod(service.getValue(), ON_MESSAGE, new StrandMetadata(true, null), email);
+                    callMethod(service.getValue(), ON_MESSAGE, email);
                 }
             } else {
                 log.error("Runtime should not be null.");
@@ -86,7 +86,7 @@ public class EmailListener {
             if (runtime != null) {
                 Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
                 for (Map.Entry<String, BObject> service : services) {
-                    runtime.callMethod(service.getValue(), ON_ERROR, new StrandMetadata(true, null), error);
+                    callMethod(service.getValue(), ON_ERROR, error);
                 }
             } else {
                 log.error("Runtime should not be null.");
@@ -106,7 +106,7 @@ public class EmailListener {
             if (runtime != null) {
                 Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
                 for (Map.Entry<String, BObject> service : services) {
-                    runtime.callMethod(service.getValue(), ON_CLOSE, new StrandMetadata(true, null), error);
+                    callMethod(service.getValue(), ON_CLOSE, error);
                 }
             } else {
                 log.error("Runtime should not be null.");
@@ -121,6 +121,12 @@ public class EmailListener {
                 registeredServices.put(serviceType.getName(), service);
             }
         }
+    }
+
+    private void callMethod(BObject service, String methodName, Object args) {
+        ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
+        boolean isConcurrentSafe = serviceType.isIsolated() && serviceType.isIsolated(methodName);
+        runtime.callMethod(service, methodName, new StrandMetadata(isConcurrentSafe, null), args);
     }
 
 }
