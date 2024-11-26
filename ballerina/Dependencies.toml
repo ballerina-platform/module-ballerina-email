@@ -5,12 +5,12 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.11.0-20241112-214900-6b80ab87"
+distribution-version = "2201.11.0-20241121-075100-c4c87cbc"
 
 [[package]]
 org = "ballerina"
 name = "email"
-version = "2.10.1"
+version = "2.11.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.runtime"},
@@ -27,7 +27,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "io"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.value"}
@@ -129,7 +129,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "log"
-version = "2.10.1"
+version = "2.11.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -143,7 +143,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "mime"
-version = "2.10.2"
+version = "2.11.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -165,7 +165,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "task"
-version = "2.5.1"
+version = "2.6.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "time"}
