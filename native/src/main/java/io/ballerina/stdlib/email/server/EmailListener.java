@@ -19,6 +19,7 @@
 package io.ballerina.stdlib.email.server;
 
 import io.ballerina.runtime.api.Runtime;
+import io.ballerina.runtime.api.concurrent.StrandMetadata;
 import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
@@ -61,15 +62,17 @@ public class EmailListener {
      * @return If successful return true
      */
     public boolean onMessage(EmailEvent emailEvent) {
-        Object email = emailEvent.getEmailObject();
-        if (runtime != null) {
-            Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
-            for (Map.Entry<String, BObject> service : services) {
-                runtime.callMethod(service.getValue(), ON_MESSAGE, null, email);
+        Thread.startVirtualThread(() -> {
+            Object email = emailEvent.getEmailObject();
+            if (runtime != null) {
+                Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
+                for (Map.Entry<String, BObject> service : services) {
+                    callMethod(service.getValue(), ON_MESSAGE, email);
+                }
+            } else {
+                log.error("Runtime should not be null.");
             }
-        } else {
-            log.error("Runtime should not be null.");
-        }
+        });
         return true;
     }
 
@@ -78,15 +81,17 @@ public class EmailListener {
      * @param error Email object to be received
      */
     public void onError(Object error) {
-        log.error(((BError) error).getMessage());
-        if (runtime != null) {
-            Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
-            for (Map.Entry<String, BObject> service : services) {
-                runtime.callMethod(service.getValue(), ON_ERROR, null, error);
+        Thread.startVirtualThread(() -> {
+            log.error(((BError) error).getMessage());
+            if (runtime != null) {
+                Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
+                for (Map.Entry<String, BObject> service : services) {
+                    callMethod(service.getValue(), ON_ERROR, error);
+                }
+            } else {
+                log.error("Runtime should not be null.");
             }
-        } else {
-            log.error("Runtime should not be null.");
-        }
+        });
     }
 
     /**
@@ -94,17 +99,19 @@ public class EmailListener {
      * @param error Email object to be received
      */
     public void onClose(Object error) {
-        if (error != null) {
-            log.error(((BError) error).getMessage());
-        }
-        if (runtime != null) {
-            Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
-            for (Map.Entry<String, BObject> service : services) {
-                runtime.callMethod(service.getValue(), ON_CLOSE, null, error);
+        Thread.startVirtualThread(() -> {
+            if (error != null) {
+                log.error(((BError) error).getMessage());
             }
-        } else {
-            log.error("Runtime should not be null.");
-        }
+            if (runtime != null) {
+                Set<Map.Entry<String, BObject>> services = registeredServices.entrySet();
+                for (Map.Entry<String, BObject> service : services) {
+                    callMethod(service.getValue(), ON_CLOSE, error);
+                }
+            } else {
+                log.error("Runtime should not be null.");
+            }
+        });
     }
 
     protected void addService(BObject service) {
@@ -114,6 +121,12 @@ public class EmailListener {
                 registeredServices.put(serviceType.getName(), service);
             }
         }
+    }
+
+    private void callMethod(BObject service, String methodName, Object args) {
+        ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(service));
+        boolean isConcurrentSafe = serviceType.isIsolated() && serviceType.isIsolated(methodName);
+        runtime.callMethod(service, methodName, new StrandMetadata(isConcurrentSafe, null), args);
     }
 
 }
