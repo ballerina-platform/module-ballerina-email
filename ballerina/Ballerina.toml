@@ -40,11 +40,11 @@ path = "./lib/activation-1.1.1.jar"
 groupId = "io.ballerina.stdlib"
 artifactId = "email-native"
 version = "2.11.0"
-path = "../native/build/libs/email-native-2.11.0-SNAPSHOT.jar"
+path = "../native/build/libs/email-native-2.11.0.jar"
 
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-test-utils"
 version = "2.11.0"
-path = "../test-utils/build/libs/email-test-utils-2.11.0-SNAPSHOT.jar"
+path = "../test-utils/build/libs/email-test-utils-2.11.0.jar"
 scope = "testOnly"
