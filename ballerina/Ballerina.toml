@@ -1,7 +1,7 @@
 [package]
 org = "ballerina"
 name = "email"
-version = "2.11.0"
+version = "2.11.1"
 authors = ["Ballerina"]
 keywords = ["email", "SMTP", "POP", "POP3", "IMAP", "mail"]
 repository = "https://github.com/ballerina-platform/module-ballerina-email"
@@ -39,12 +39,12 @@ path = "./lib/activation-1.1.1.jar"
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-native"
-version = "2.11.0"
-path = "../native/build/libs/email-native-2.11.0.jar"
+version = "2.11.1"
+path = "../native/build/libs/email-native-2.11.1-SNAPSHOT.jar"
 
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-test-utils"
-version = "2.11.0"
-path = "../test-utils/build/libs/email-test-utils-2.11.0.jar"
+version = "2.11.1"
+path = "../test-utils/build/libs/email-test-utils-2.11.1-SNAPSHOT.jar"
 scope = "testOnly"
