@@ -1,0 +1,7 @@
+[
+  {
+    "id": 1,
+    "kind": "VULNERABILITY",
+    "description": "Avoid unverified server hostnames during SSL/TLS connections"
+  }
+]

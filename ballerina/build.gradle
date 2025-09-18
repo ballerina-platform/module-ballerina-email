@@ -83,13 +83,15 @@ dependencies {
     }
 }
 
-task updateTomlFiles {
+tasks.register('updateTomlFiles') {
     doLast {
+        def stdlibDependentBouncycastleVersion = project.bouncycastleVersion
+
         def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
-        ballerinaTomlFile.text = newBallerinaToml
-
+        newBallerinaToml = newBallerinaToml.replace("@bouncycastle.version@", stdlibDependentBouncycastleVersion)
         def newCompilerPluginToml = compilerPluginTomlFilePlaceHolder.text.replace("@project.version@", project.version)
+        ballerinaTomlFile.text = newBallerinaToml
         compilerPluginTomlFile.text = newCompilerPluginToml
     }
 }

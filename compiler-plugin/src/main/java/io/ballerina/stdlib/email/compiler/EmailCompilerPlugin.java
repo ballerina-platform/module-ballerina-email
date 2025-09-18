@@ -20,14 +20,20 @@ package io.ballerina.stdlib.email.compiler;
 
 import io.ballerina.projects.plugins.CompilerPlugin;
 import io.ballerina.projects.plugins.CompilerPluginContext;
+import io.ballerina.scan.ScannerContext;
 
 /**
  * Email Compiler plugin.
  */
 public class EmailCompilerPlugin extends CompilerPlugin {
+    private static final String SCANNER_CONTEXT = "ScannerContext";
 
     @Override
-    public void init(CompilerPluginContext compilerPluginContext) {
-        compilerPluginContext.addCodeAnalyzer(new EmailCodeAnalyzer());
+    public void init(CompilerPluginContext context) {
+        context.addCodeAnalyzer(new EmailCodeAnalyzer());
+        Object object = context.userData().get(SCANNER_CONTEXT);
+        if (object instanceof ScannerContext scannerContext) {
+            context.addCodeAnalyzer(new EmailScanCodeAnalyzer(scannerContext.getReporter()));
+        }
     }
 }

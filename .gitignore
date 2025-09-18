@@ -44,3 +44,5 @@ compiler-plugin-tests/bin/
 # Dependencies.toml of examples and load-tests
 examples/**/Dependencies.toml
 load-tests/**/Dependencies.toml
+
+compiler-plugin-tests/**/target

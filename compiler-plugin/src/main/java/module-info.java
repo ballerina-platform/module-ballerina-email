@@ -22,4 +22,5 @@ module io.ballerina.stdlib.email.compiler {
     requires io.ballerina.tools.api;
     requires io.ballerina.stdlib.email;
     exports io.ballerina.stdlib.email.compiler;
+    requires io.ballerina.scan;
 }

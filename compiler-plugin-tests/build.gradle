@@ -22,19 +22,79 @@ plugins {
     id 'com.github.spotbugs'
 }
 
-description = 'Ballerina - Email Compiler Plugin Tests'
-
-def ballerinaDist = "${project.rootDir}/target/ballerina-runtime"
+description = 'Ballerina - email Compiler Plugin Tests'
 
 dependencies {
     checkstyle project(':checkstyle')
     checkstyle "com.puppycrawl.tools:checkstyle:${checkstylePluginVersion}"
 
+    implementation project(':email-compiler-plugin')
+
     testImplementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     testImplementation group: 'org.ballerinalang', name: 'ballerina-tools-api', version: "${ballerinaLangVersion}"
     testImplementation group: 'org.ballerinalang', name: 'ballerina-parser', version: "${ballerinaLangVersion}"
+    testImplementation group: 'io.ballerina.scan', name: 'scan-command', version: "${balScanVersion}"
+    testImplementation group: 'io.ballerina.scan', name: 'scan-command-test-utils', version: "${balScanVersion}"
+    testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonDatabindVersion}"
     testImplementation group: 'org.testng', name: 'testng', version: "${testngVersion}"
-    implementation project(":email-compiler-plugin")
+}
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+sourceCompatibility = JavaVersion.VERSION_21
+
+test {
+    systemProperty "ballerina.offline.flag", "true"
+    useTestNG() {
+        suites 'src/test/resources/testng.xml'
+    }
+    testLogging.showStandardStreams = true
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
+}
+
+spotbugsTest {
+    def classLoader = plugins["com.github.spotbugs"].class.classLoader
+    def SpotBugsConfidence = classLoader.findLoadedClass("com.github.spotbugs.snom.Confidence")
+    def SpotBugsEffort = classLoader.findLoadedClass("com.github.spotbugs.snom.Effort")
+    ignoreFailures = true
+    effort = SpotBugsEffort.MAX
+    reportLevel = SpotBugsConfidence.LOW
+    reportsDir = file("$project.buildDir/reports/spotbugs")
+    def excludeFile = file("${rootDir}/build-config/spotbugs-exclude.xml")
+    if (excludeFile.exists()) {
+        it.excludeFilter = excludeFile
+    }
+    reports {
+        text.enabled = true
+    }
+}
+
+spotbugsMain {
+    enabled false
+}
+
+task validateSpotbugs() {
+    doLast {
+        if (spotbugsMain.reports.size() > 0 &&
+                spotbugsMain.reports[0].destination.exists() &&
+                spotbugsMain.reports[0].destination.text.readLines().size() > 0) {
+            spotbugsMain.reports[0].destination?.eachLine {
+                println 'Failure: ' + it
+            }
+            throw new GradleException("Spotbugs rule violations were found.");
+        }
+    }
 }
 
 tasks.withType(Checkstyle) {
@@ -44,35 +104,15 @@ tasks.withType(Checkstyle) {
 checkstyle {
     toolVersion "${project.checkstylePluginVersion}"
     configFile rootProject.file("build-config/checkstyle/build/checkstyle.xml")
-    configProperties = ["suppressionFile" : file("${rootDir}/build-config/checkstyle/build/suppressions.xml")]
-}
-
-checkstyleTest.dependsOn(":checkstyle:downloadCheckstyleRuleFiles")
-
-spotbugsTest {
-    def classLoader = plugins["com.github.spotbugs"].class.classLoader
-    def SpotBugsConfidence = classLoader.findLoadedClass("com.github.spotbugs.snom.Confidence")
-    def SpotBugsEffort = classLoader.findLoadedClass("com.github.spotbugs.snom.Effort")
-    effort = SpotBugsEffort.MAX
-    reportLevel = SpotBugsConfidence.LOW
-    reportsDir = file("$project.buildDir/reports/spotbugs")
-    reports {
-        html.enabled true
-        text.enabled = true
-    }
-    def excludeFile = file("${rootDir}/spotbugs-exclude.xml")
-    if(excludeFile.exists()) {
-        excludeFilter = excludeFile
-    }
-}
-
-spotbugsMain {
-    enabled false
+    configProperties = ["suppressionFile": file("${rootDir}/build-config/checkstyle/build/suppressions.xml")]
 }
 
 checkstyleMain {
     enabled false
 }
+
+spotbugsTest.finalizedBy validateSpotbugs
+checkstyleTest.dependsOn ':checkstyle:downloadCheckstyleRuleFiles'
 
 compileJava {
     doFirst {
@@ -83,9 +123,5 @@ compileJava {
     }
 }
 
-test {
-    systemProperty "ballerina.offline.flag", "true"
-    useTestNG()
-}
-
 test.dependsOn ":email-ballerina:build"
+build.dependsOn ":email-ballerina:build"
