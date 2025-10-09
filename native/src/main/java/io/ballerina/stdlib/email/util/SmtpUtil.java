@@ -83,17 +83,19 @@ public final class SmtpUtil {
     /**
      * Generates the Properties object using the passed BMap.
      *
-     * @param smtpConfig BMap with the configuration values
-     * @param host Host address of the SMTP server
+     * @param smtpConfig             BMap with the configuration values
+     * @param host                   Host address of the SMTP server
+     * @param requiresAuthentication Whether the SMTP server requires authentication
      * @return Properties Set of properties required to connect to an SMTP server
      */
-    public static Properties getProperties(BMap<BString, Object> smtpConfig, String host)
+    public static Properties getProperties(BMap<BString, Object> smtpConfig, String host,
+                                           boolean requiresAuthentication)
             throws IOException, GeneralSecurityException {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_SMTP_HOST, host);
         properties.put(EmailConstants.PROPS_SMTP_PORT, Long.toString(
                 smtpConfig.getIntValue(EmailConstants.PROPS_PORT)));
-        properties.put(EmailConstants.PROPS_SMTP_AUTH, "true");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH, requiresAuthentication ? "true" : "false");
         BString security = smtpConfig.getStringValue(EmailConstants.PROPS_SECURITY);
         if (security != null) {
             String securityType = security.getValue();
@@ -146,7 +148,11 @@ public final class SmtpUtil {
         String bodyContentType = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE));
         String fromAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_FROM));
         if (fromAddress == null || fromAddress.isEmpty()) {
-            fromAddress = username;
+            if (username == null) {
+                throw new MessagingException("From address is required for sending email");
+            } else {
+                fromAddress = username;
+            }
         }
         String senderAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_SENDER));
         MimeMessage emailMessage = new MimeMessage(session);

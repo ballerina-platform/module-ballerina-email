@@ -60,26 +60,44 @@ public class SmtpClient {
      * @param config Properties required to configure the SMTP Session
      * @return If an error occurs in the SMTP client, error
      */
-    public static Object initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
-                                          BMap<BString, Object> config) {
-        if (config.size() == 0) {
+    public static Object initClientEndpoint(BObject clientEndpoint, BString host, Object username, Object password,
+                                            BMap<BString, Object> config) {
+        if (config.isEmpty()) {
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, "SmtpConfiguration should not be empty.");
         }
+
+        String usernameVal = username == null ? null : ((BString) username).getValue();
+        String passwordVal = password == null ? null : ((BString) password).getValue();
+        if ((usernameVal == null) != (passwordVal == null)) {
+            // Both username and password must be provided for authentication,
+            // or both must be null for a no auth SMTP client.
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Username and password must both be provided or both be ()");
+        }
+
+        boolean requiresAuthentication = usernameVal != null;
         Properties properties;
         try {
-            properties = SmtpUtil.getProperties(config, host.getValue());
+            properties = SmtpUtil.getProperties(config, host.getValue(), requiresAuthentication);
         } catch (IOException | GeneralSecurityException e) {
             log.debug("Error while initializing SMTP properties : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
-        Session session = Session.getInstance(properties,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username.getValue(), password.getValue());
-                    }
-                });
+
+        Session session;
+        if (requiresAuthentication) {
+            session = Session.getInstance(properties,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(usernameVal, passwordVal);
+                        }
+                    });
+        } else {
+            session = Session.getInstance(properties);
+        }
+
         clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
-        clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), usernameVal);
         return null;
     }
 
@@ -102,6 +120,10 @@ public class SmtpClient {
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                     "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
         } catch (MessagingException | IOException e) {
+            if (e.getMessage().contains("From address is required")) {
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "From address must be provided in the message for no-auth SMTP servers");
+            }
             log.debug("Error while sending the message to SMTP server : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }

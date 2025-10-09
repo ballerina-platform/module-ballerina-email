@@ -27,8 +27,8 @@ public isolated client class SmtpClient {
     # + password - Password of the SMTP Client
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
-    public isolated function init(string host, string username, string password, *SmtpConfiguration clientConfig)
-            returns Error? {
+    public isolated function init(string host, string? username = (), string? password = (),
+            *SmtpConfiguration clientConfig) returns Error? {
         return initSmtpClientEndpoint(self, host, username, password, clientConfig);
     }
 
@@ -121,7 +121,7 @@ public isolated client class SmtpClient {
 
 }
 
-isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
+isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string? username, string? password,
         SmtpConfiguration config) returns Error? = @java:Method {
     name : "initClientEndpoint",
     'class : "io.ballerina.stdlib.email.client.SmtpClient"
