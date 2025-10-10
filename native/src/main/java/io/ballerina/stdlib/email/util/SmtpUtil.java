@@ -89,11 +89,24 @@ public final class SmtpUtil {
      */
     public static Properties getProperties(BMap<BString, Object> smtpConfig, String host)
             throws IOException, GeneralSecurityException {
+        return getProperties(smtpConfig, host, true);
+    }
+
+    /**
+     * Generates the Properties object using the passed BMap.
+     *
+     * @param smtpConfig BMap with the configuration values
+     * @param host Host address of the SMTP server
+     * @param requireAuth Whether authentication is required
+     * @return Properties Set of properties required to connect to an SMTP server
+     */
+    public static Properties getProperties(BMap<BString, Object> smtpConfig, String host, boolean requireAuth)
+            throws IOException, GeneralSecurityException {
         Properties properties = new Properties();
         properties.put(EmailConstants.PROPS_SMTP_HOST, host);
         properties.put(EmailConstants.PROPS_SMTP_PORT, Long.toString(
                 smtpConfig.getIntValue(EmailConstants.PROPS_PORT)));
-        properties.put(EmailConstants.PROPS_SMTP_AUTH, "true");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH, requireAuth ? "true" : "false");
         BString security = smtpConfig.getStringValue(EmailConstants.PROPS_SECURITY);
         if (security != null) {
             String securityType = security.getValue();
@@ -146,6 +159,11 @@ public final class SmtpUtil {
         String bodyContentType = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE));
         String fromAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_FROM));
         if (fromAddress == null || fromAddress.isEmpty()) {
+            if (username == null || username.isEmpty()) {
+                throw CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "The 'from' field is mandatory when using SMTP client without authentication. " +
+                        "Please specify the 'from' address in the email message.");
+            }
             fromAddress = username;
         }
         String senderAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_SENDER));

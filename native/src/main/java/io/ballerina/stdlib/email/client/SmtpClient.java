@@ -18,6 +18,7 @@
 
 package io.ballerina.stdlib.email.client;
 
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -49,29 +50,22 @@ public class SmtpClient {
 
     private static final Logger log = LoggerFactory.getLogger(SmtpClient.class);
 
-    private SmtpClient() {}
+    private SmtpClient() {
+    }
 
     /**
      * Initializes the BObject object with the SMTP Properties.
+     *
      * @param clientEndpoint Represents the SMTP Client class
-     * @param host Represents the host address of the SMTP server
-     * @param username Represents the username of the SMTP server
-     * @param password Represents the password of the SMTP server
-     * @param config Properties required to configure the SMTP Session
+     * @param host           Represents the host address of the SMTP server
+     * @param username       Represents the username of the SMTP server
+     * @param password       Represents the password of the SMTP server
+     * @param config         Properties required to configure the SMTP Session
      * @return If an error occurs in the SMTP client, error
      */
     public static Object initClientEndpoint(BObject clientEndpoint, BString host, BString username, BString password,
-                                          BMap<BString, Object> config) {
-        if (config.size() == 0) {
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, "SmtpConfiguration should not be empty.");
-        }
-        Properties properties;
-        try {
-            properties = SmtpUtil.getProperties(config, host.getValue());
-        } catch (IOException | GeneralSecurityException e) {
-            log.debug("Error while initializing SMTP properties : ", e);
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
-        }
+                                            BMap<BString, Object> config) {
+        Properties properties = getPropertiesFromConfig(host.getValue(), config, true);
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
@@ -83,18 +77,29 @@ public class SmtpClient {
         return null;
     }
 
+    public static Object initNoAuthSmtpClientEndpoint(BObject clientEndpoint, BString host,
+                                                      BMap<BString, Object> config) {
+        Properties properties = getPropertiesFromConfig(host.getValue(), config, false);
+        Session session = Session.getInstance(properties);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
+        return null;
+    }
+
     /**
      * Sends an email to an SMTP server.
+     *
      * @param clientConnector Represents the SMTP Client class
-     * @param message Fields of an email
+     * @param message         Fields of an email
      * @return If an error occurs in the SMTP client, error
      */
     public static Object sendMessage(BObject clientConnector, BMap<BString, Object> message) {
         try {
-            Transport.send(SmtpUtil.generateMessage(
-                    (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION),
-                    (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue()), message));
+            Session session = (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION);
+            String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
+            Transport.send(SmtpUtil.generateMessage(session, username, message));
             return null;
+        } catch (BError e) {
+            return e;
         } catch (SendFailedException e) {
             String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
                     .map((Address::toString))
@@ -107,4 +112,15 @@ public class SmtpClient {
         }
     }
 
+    private static Properties getPropertiesFromConfig(String host, BMap<BString, Object> config, boolean requireAuth) {
+        if (config.isEmpty()) {
+            throw CommonUtil.getBallerinaError(EmailConstants.ERROR, "SmtpConfiguration should not be empty.");
+        }
+        try {
+            return SmtpUtil.getProperties(config, host, requireAuth);
+        } catch (IOException | GeneralSecurityException e) {
+            log.debug("Error while initializing SMTP properties : ", e);
+            throw CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+        }
+    }
 }

@@ -23,13 +23,19 @@ public isolated client class SmtpClient {
     # Gets invoked during the `email:SmtpClient` initialization.
     #
     # + host - Host of the SMTP Client
-    # + username - Username of the SMTP Client
-    # + password - Password of the SMTP Client
+    # + username - Username of the SMTP Client if authentication is required
+    # + password - Password of the SMTP Client if authentication is required
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
-    public isolated function init(string host, string username, string password, *SmtpConfiguration clientConfig)
-            returns Error? {
-        return initSmtpClientEndpoint(self, host, username, password, clientConfig);
+    public isolated function init(string host, string? username = (), string? password = (),
+            *SmtpConfiguration clientConfig) returns Error? {
+        if username is string && password is string {
+            return initSmtpClientEndpoint(self, host, username, password, clientConfig);
+        }
+        if username is () && password is () {
+            return initNoAuthSmtpClientEndpoint(self, host, clientConfig);
+        }
+        return error Error("Mismatched input: 'username' and 'password' must either both be set or both be ().");
     }
 
     # Sends an email message.
@@ -42,7 +48,7 @@ public isolated client class SmtpClient {
     remote isolated function sendMessage(Message email) returns Error? {
         if email.contentType is string && !self.containsType(email?.contentType, "text") {
             return error Error("Content type of the email should be text.");
-        } 
+        }
         self.putAttachmentToArray(email);
         return send(self, email);
     }
@@ -58,8 +64,7 @@ public isolated client class SmtpClient {
     # + from - From address
     # + body - Text body of the email
     # + options - Optional parameters of the email
-    # + return - An `email:Error` if failed to send the message to
-    #            the recipient or else `()`
+    # + return - An `email:Error` if failed to send the message to the recipient or else `()`
     remote isolated function send(string|string[] to, string subject, string 'from, string body, *Options options)
             returns Error? {
         Message email = {
@@ -123,13 +128,18 @@ public isolated client class SmtpClient {
 
 isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username, string password,
         SmtpConfiguration config) returns Error? = @java:Method {
-    name : "initClientEndpoint",
-    'class : "io.ballerina.stdlib.email.client.SmtpClient"
+    name: "initClientEndpoint",
+    'class: "io.ballerina.stdlib.email.client.SmtpClient"
+} external;
+
+isolated function initNoAuthSmtpClientEndpoint(SmtpClient clientEndpoint, string host, SmtpConfiguration config)
+returns Error? = @java:Method {
+    'class: "io.ballerina.stdlib.email.client.SmtpClient"
 } external;
 
 isolated function send(SmtpClient clientEndpoint, Message email) returns Error? = @java:Method {
-    name : "sendMessage",
-    'class : "io.ballerina.stdlib.email.client.SmtpClient"
+    name: "sendMessage",
+    'class: "io.ballerina.stdlib.email.client.SmtpClient"
 } external;
 
 # Configuration of the SMTP Endpoint.
