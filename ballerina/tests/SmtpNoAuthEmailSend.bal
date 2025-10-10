@@ -185,6 +185,74 @@ function testExplicitNullAuthParameters() returns error? {
     SmtpClient _ = check new (host, username = (), password = (), clientConfig = smtpConfig);
 }
 
+@test:Config {
+    groups: ["smtp", "no_auth"]
+}
+function testNoAuthWithMissingFromField() returns error? {
+    string host = "127.0.0.1";
+    string toAddress = "hascode@localhost";
+    string subject = "Test E-Mail Without From";
+    string body = "This email is missing the from field.";
+
+    SmtpConfiguration smtpConfig = {
+        port: 3026,
+        security: START_TLS_AUTO
+    };
+
+    SmtpClient smtpClient = check new (host, clientConfig = smtpConfig);
+
+    // Create message without 'from field
+    Message email = {
+        to: toAddress,
+        subject,
+        body
+        // 'from field is intentionally missing
+    };
+
+    // This should fail with a specific error message
+    Error? response = smtpClient->sendMessage(email);
+    if response is Error {
+        test:assertTrue(response.message().includes("'from' field is mandatory"),
+            msg = "Expected error message about mandatory 'from' field");
+    } else {
+        test:assertFail("Expected error when 'from' field is missing in no-auth mode");
+    }
+}
+
+@test:Config {
+    groups: ["smtp", "no_auth"]
+}
+function testNoAuthWithEmptyFromField() returns error? {
+    string host = "127.0.0.1";
+    string toAddress = "hascode@localhost";
+    string subject = "Test E-Mail With Empty From";
+    string body = "This email has an empty from field.";
+
+    SmtpConfiguration smtpConfig = {
+        port: 3026,
+        security: START_TLS_AUTO
+    };
+
+    SmtpClient smtpClient = check new (host, clientConfig = smtpConfig);
+
+    // Create message with empty 'from field
+    Message email = {
+        to: toAddress,
+        subject,
+        body,
+        'from: "" // Empty from field
+    };
+
+    // This should fail with a specific error message
+    Error? response = smtpClient->sendMessage(email);
+    if response is Error {
+        test:assertTrue(response.message().includes("'from' field is mandatory"),
+            msg = "Expected error message about mandatory 'from' field");
+    } else {
+        test:assertFail("Expected error when 'from' field is empty in no-auth mode");
+    }
+}
+
 public function startNoAuthSmtpServer() returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.email.testutils.SmtpNoAuthEmailSendTest"
 } external;

@@ -18,6 +18,7 @@
 
 package io.ballerina.stdlib.email.client;
 
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -97,6 +98,8 @@ public class SmtpClient {
             String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
             Transport.send(SmtpUtil.generateMessage(session, username, message));
             return null;
+        } catch (BError e) {
+            return e;
         } catch (SendFailedException e) {
             String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
                     .map((Address::toString))
