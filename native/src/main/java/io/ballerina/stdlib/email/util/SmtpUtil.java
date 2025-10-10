@@ -159,6 +159,11 @@ public final class SmtpUtil {
         String bodyContentType = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_BODY_CONTENT_TYPE));
         String fromAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_FROM));
         if (fromAddress == null || fromAddress.isEmpty()) {
+            if (username == null || username.isEmpty()) {
+                throw CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "The 'from' field is mandatory when using SMTP client without authentication. " +
+                        "Please specify the 'from' address in the email message.");
+            }
             fromAddress = username;
         }
         String senderAddress = getNullCheckedString(message.getStringValue(EmailConstants.MESSAGE_SENDER));

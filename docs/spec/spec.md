@@ -87,7 +87,9 @@ For SMTP servers that don't require authentication (e.g., internal relay servers
 email:SmtpClient smtpClient = check new ("smtp.email.com");
 ```
 
-> **Note:** Both `username` and `password` must either be provided together or both omitted. Providing only one will result in an error.
+> **Note:**
+> - Both `username` and `password` must either be provided together or both omitted. Providing only one will result in an error.
+> - When using the unauthenticated mode, the `from` field is **mandatory** in the email message, as there is no authenticated username to fall back on.
 
 #### 3.1.2 `sendMessage` function
 The `email:Message` record has to be defined first as follows.

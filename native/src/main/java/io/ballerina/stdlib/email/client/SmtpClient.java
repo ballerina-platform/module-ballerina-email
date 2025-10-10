@@ -93,9 +93,9 @@ public class SmtpClient {
      */
     public static Object sendMessage(BObject clientConnector, BMap<BString, Object> message) {
         try {
-            Transport.send(SmtpUtil.generateMessage(
-                    (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION),
-                    (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue()), message));
+            Session session = (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION);
+            String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
+            Transport.send(SmtpUtil.generateMessage(session, username, message));
             return null;
         } catch (SendFailedException e) {
             String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
