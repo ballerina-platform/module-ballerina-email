@@ -25,7 +25,7 @@
         </classes>
     </test>
 
-    <test name="Email Compiler Plugin Tests" parallel="false">
+    <test name="Email Compiler Plugin Tests">
         <classes>
             <class name="io.ballerina.stdlib.email.compiler.staticcodeanalyzer.StaticCodeAnalyzerTest"/>
         </classes>
