@@ -74,6 +74,12 @@ public class SmtpClient {
                 });
         clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
         clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        // Store configuration for enhanced error reporting
+        clientEndpoint.addNativeData(EmailConstants.PROPS_HOST.getValue(), host.getValue());
+        clientEndpoint.addNativeData(EmailConstants.PROPS_PORT.getValue(), config.getIntValue(EmailConstants.PROPS_PORT));
+        BString security = config.getStringValue(EmailConstants.PROPS_SECURITY);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_SECURITY.getValue(), 
+                security != null ? security.getValue() : null);
         return null;
     }
 
@@ -82,6 +88,12 @@ public class SmtpClient {
         Properties properties = getPropertiesFromConfig(host.getValue(), config, false);
         Session session = Session.getInstance(properties);
         clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
+        // Store configuration for enhanced error reporting
+        clientEndpoint.addNativeData(EmailConstants.PROPS_HOST.getValue(), host.getValue());
+        clientEndpoint.addNativeData(EmailConstants.PROPS_PORT.getValue(), config.getIntValue(EmailConstants.PROPS_PORT));
+        BString security = config.getStringValue(EmailConstants.PROPS_SECURITY);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_SECURITY.getValue(), 
+                security != null ? security.getValue() : null);
         return null;
     }
 
@@ -108,8 +120,49 @@ public class SmtpClient {
                     "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
         } catch (MessagingException | IOException e) {
             log.debug("Error while sending the message to SMTP server : ", e);
+            
+            // Enhance connection-related errors with specific diagnostic information
+            if (isConnectionError(e)) {
+                String host = (String) clientConnector.getNativeData(EmailConstants.PROPS_HOST.getValue());
+                Long portLong = (Long) clientConnector.getNativeData(EmailConstants.PROPS_PORT.getValue());
+                int port = portLong != null ? portLong.intValue() : 25;
+                String security = (String) clientConnector.getNativeData(EmailConstants.PROPS_SECURITY.getValue());
+                
+                String enhancedMessage = CommonUtil.createEnhancedSmtpErrorMessage(e, host, port, security);
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR, enhancedMessage);
+            }
+            
+            // For non-connection errors, preserve original message for compatibility
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
+    }
+    
+    /**
+     * Efficiently determines if the exception indicates an SMTP connection failure.
+     * Focuses on the most common connection error patterns.
+     *
+     * @param e The exception to analyze
+     * @return true if the exception indicates a connection problem
+     */
+    private static boolean isConnectionError(Exception e) {
+        String message = e.getMessage();
+        if (message == null) {
+            return false;
+        }
+        
+        String lowerMessage = message.toLowerCase();
+        // Check for most common connection error patterns first (performance optimization)
+        return lowerMessage.contains("could not connect") ||
+               lowerMessage.contains("connection refused") ||
+               lowerMessage.contains("connection timed out") ||
+               lowerMessage.contains("connect timed out") ||
+               lowerMessage.contains("timed out") ||
+               lowerMessage.contains("network is unreachable") ||
+               lowerMessage.contains("no route to host") ||
+               lowerMessage.contains("connection reset") ||
+               lowerMessage.contains("starttls") ||
+               lowerMessage.contains("ssl") ||
+               lowerMessage.contains("tls");
     }
 
     private static Properties getPropertiesFromConfig(String host, BMap<BString, Object> config, boolean requireAuth) {

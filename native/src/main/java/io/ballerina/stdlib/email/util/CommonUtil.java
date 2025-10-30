@@ -137,4 +137,103 @@ public class CommonUtil {
                 StringUtils.fromString(message), null, null);
     }
 
+    /**
+     * Enhances SMTP error messages with specific diagnostic information and actionable recommendations.
+     * Provides concise, targeted guidance based on the actual failure mode.
+     *
+     * @param originalException The original exception thrown
+     * @param host             SMTP host that failed to connect
+     * @param port             SMTP port that was attempted
+     * @param securityConfig   Security configuration used (if any)
+     * @return Enhanced error message with specific diagnostic information
+     */
+    public static String createEnhancedSmtpErrorMessage(Exception originalException, String host, int port, 
+                                                       String securityConfig) {
+        String originalMsg = originalException.getMessage();
+        String lowerMsg = originalMsg != null ? originalMsg.toLowerCase() : "";
+        
+        // Determine the specific failure type and provide targeted guidance
+        SmtpErrorType errorType = categorizeSmtpError(lowerMsg, port, securityConfig);
+        
+        return String.format("SMTP connection to %s:%d failed: %s. %s", 
+                           host, port, originalMsg, errorType.getGuidance());
+    }
+    
+    /**
+     * Categorizes SMTP errors into specific types for targeted troubleshooting.
+     */
+    private static SmtpErrorType categorizeSmtpError(String errorMessage, int port, String security) {
+        // Connection refused - server not running or port blocked
+        if (errorMessage.contains("connection refused")) {
+            if (port == 25) {
+                return SmtpErrorType.PORT_25_BLOCKED;
+            } else if (port == 465 || port == 587) {
+                return SmtpErrorType.CONNECTION_REFUSED;
+            }
+            return SmtpErrorType.CONNECTION_REFUSED;
+        }
+        
+        // Timeout errors - network or firewall issues
+        if (errorMessage.contains("timed out") || errorMessage.contains("timeout")) {
+            return SmtpErrorType.CONNECTION_TIMEOUT;
+        }
+        
+        // TLS/SSL related errors
+        if (errorMessage.contains("starttls") || errorMessage.contains("tls") || errorMessage.contains("ssl")) {
+            if (port == 587 && (security == null || security.equals("none"))) {
+                return SmtpErrorType.PORT_587_NEEDS_TLS;
+            } else if (port == 465 && (security == null || !security.contains("SSL"))) {
+                return SmtpErrorType.PORT_465_NEEDS_SSL;
+            }
+            return SmtpErrorType.TLS_SSL_ERROR;
+        }
+        
+        // Authentication errors
+        if (errorMessage.contains("authentication") || errorMessage.contains("login") || 
+            errorMessage.contains("password") || errorMessage.contains("unauthorized")) {
+            return SmtpErrorType.AUTHENTICATION_ERROR;
+        }
+        
+        // Network unreachable
+        if (errorMessage.contains("unreachable") || errorMessage.contains("no route")) {
+            return SmtpErrorType.NETWORK_UNREACHABLE;
+        }
+        
+        // Port-specific guidance for generic connection failures
+        if (port == 25) {
+            return SmtpErrorType.PORT_25_BLOCKED;
+        } else if (port == 587 && (security == null || security.equals("none"))) {
+            return SmtpErrorType.PORT_587_NEEDS_TLS;
+        } else if (port == 465 && (security == null || !security.contains("SSL"))) {
+            return SmtpErrorType.PORT_465_NEEDS_SSL;
+        }
+        
+        return SmtpErrorType.GENERIC_CONNECTION_FAILURE;
+    }
+    
+    /**
+     * Enumeration of SMTP error types with specific guidance.
+     */
+    private enum SmtpErrorType {
+        PORT_25_BLOCKED("Port 25 is commonly blocked by ISPs. Try port 587 with security: 'START_TLS_AUTO'"),
+        PORT_587_NEEDS_TLS("Port 587 requires TLS. Add security: 'START_TLS_AUTO' to your configuration"),
+        PORT_465_NEEDS_SSL("Port 465 requires SSL. Add security: 'SSL_TLS' to your configuration"),
+        CONNECTION_REFUSED("Server rejected the connection. Verify the hostname and port are correct"),
+        CONNECTION_TIMEOUT("Connection timed out. Check firewall settings and network connectivity"),
+        TLS_SSL_ERROR("TLS/SSL configuration error. Verify security settings match server requirements"),
+        AUTHENTICATION_ERROR("Authentication failed. Verify username, password, and account settings"),
+        NETWORK_UNREACHABLE("Network unreachable. Check your internet connection and DNS settings"),
+        GENERIC_CONNECTION_FAILURE("Connection failed. Verify server hostname, port, and security configuration");
+        
+        private final String guidance;
+        
+        SmtpErrorType(String guidance) {
+            this.guidance = guidance;
+        }
+        
+        public String getGuidance() {
+            return guidance;
+        }
+    }
+
 }
