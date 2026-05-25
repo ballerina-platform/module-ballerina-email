@@ -55,6 +55,12 @@ public final class SmtpSimpleSecureEmailSendTest {
     private static GreenMail mailServer;
 
     public static Object startSimpleSecureSmtpServer() {
+        try {
+            SslTestUtil.configureSsl();
+        } catch (IOException e) {
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                    "Failed to configure SSL for tests: " + e.getMessage());
+        }
         Security.setProperty(SSL_SOCKET_FACTORY_PROVIDER, DummySSLSocketFactory.class.getName());
         ServerSetup setup = new ServerSetup(PORT_NUMBER, null, ServerSetup.PROTOCOL_SMTPS);
         setup.setServerStartupTimeout(SERVER_TIMEOUT);

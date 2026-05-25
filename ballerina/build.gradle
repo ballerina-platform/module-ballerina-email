@@ -90,6 +90,7 @@ tasks.register('updateTomlFiles') {
         def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
         newBallerinaToml = newBallerinaToml.replace("@bouncycastle.version@", stdlibDependentBouncycastleVersion)
+        newBallerinaToml = newBallerinaToml.replace("@greenmail.version@", project.greenmailVersion)
         def newCompilerPluginToml = compilerPluginTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         ballerinaTomlFile.text = newBallerinaToml
         compilerPluginTomlFile.text = newCompilerPluginToml

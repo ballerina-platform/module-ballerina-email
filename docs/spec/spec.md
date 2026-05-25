@@ -26,6 +26,7 @@ The conforming implementation of the specification is released and included in t
        * 3.1.1. [`init` function](#311-init-function)
           * 3.1.1.1. [Authenticated Mode](#3111-authenticated-mode)
           * 3.1.1.2. [Unauthenticated Mode](#3112-unauthenticated-mode)
+          * 3.1.1.3. [OAuth2 Mode](#3113-oauth2-mode)
        * 3.1.2. [`sendMessage` function](#312-sendmessage-function)
        * 3.1.3. [`send` function](#313-send-function)
     * 3.2. [POP3 Client](#32-pop3-client)
@@ -45,6 +46,7 @@ The conforming implementation of the specification is released and included in t
         * 5.1.1. [SMTP Client](#511-smtp-client)
            * 5.1.1.1. [With Authentication](#5111-with-authentication)
            * 5.1.1.2. [Without Authentication](#5112-without-authentication)
+           * 5.1.1.3. [With OAuth2](#5113-with-oauth2)
         * 5.1.2. [POP3 Client](#512-pop3-client)
         * 5.1.3. [IMAP Client](#513-imap-client)
     * 5.2. [Services](#52-services)
@@ -90,6 +92,31 @@ email:SmtpClient smtpClient = check new ("smtp.email.com");
 > **Note:**
 > - Both `username` and `password` must either be provided together or both omitted. Providing only one will result in an error.
 > - When using the unauthenticated mode, the `from` field is **mandatory** in the email message, as there is no authenticated username to fall back on.
+
+##### 3.1.1.3 OAuth2 Mode
+
+For SMTP servers that support OAuth2 (XOAUTH2 SASL mechanism), provide the username and an `oauth2:GrantConfig` in the `auth` field of `SmtpConfiguration`. The password must be omitted.
+
+```ballerina
+import ballerina/oauth2;
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_ALWAYS,
+    auth: <oauth2:ClientCredentialsGrantConfig>{
+        tokenUrl: "https://oauth2.provider.com/token",
+        clientId: "client-id",
+        clientSecret: "client-secret",
+        scopes: ["https://mail.google.com/"]
+    }
+};
+
+email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+```
+
+The access token is obtained from the OAuth2 provider before each email send and is refreshed automatically when expired. All four grant types defined in `oauth2:GrantConfig` (`ClientCredentialsGrantConfig`, `PasswordGrantConfig`, `RefreshTokenGrantConfig`, `JwtBearerGrantConfig`) are supported.
+
+> **Note:** `username` is required when using OAuth2. The `password` parameter must not be provided alongside `auth`.
 
 #### 3.1.2 `sendMessage` function
 The `email:Message` record has to be defined first as follows.
@@ -256,6 +283,33 @@ public function main() returns error? {
         body: "This is a sample email.",
         'from: "author@email.com",
         replyTo: ["replyTo1@email.com", "replyTo2@email.com"]
+    };
+    check smtpClient->sendMessage(email);
+}
+```
+
+##### 5.1.1.3 With OAuth2
+```ballerina
+import ballerina/email;
+import ballerina/oauth2;
+
+public function main() returns error? {
+    email:SmtpConfiguration smtpConfig = {
+        port: 587,
+        security: email:START_TLS_ALWAYS,
+        auth: <oauth2:ClientCredentialsGrantConfig>{
+            tokenUrl: "https://oauth2.provider.com/token",
+            clientId: "client-id",
+            clientSecret: "client-secret",
+            scopes: ["https://mail.google.com/"]
+        }
+    };
+    email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+    email:Message email = {
+        to: ["receiver@email.com"],
+        subject: "Sample Email",
+        body: "This is a sample email sent via OAuth2.",
+        'from: "sender@gmail.com"
     };
     check smtpClient->sendMessage(email);
 }

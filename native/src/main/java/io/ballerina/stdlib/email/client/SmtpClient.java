@@ -40,6 +40,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Contains functionality of SMTP Client.
@@ -85,6 +86,20 @@ public class SmtpClient {
         return null;
     }
 
+    public static Object initOAuth2SmtpClientEndpoint(BObject clientEndpoint, BString host, BString username,
+                                                      BMap<BString, Object> config) {
+        Properties properties = getPropertiesFromConfig(host.getValue(), config, true);
+        properties.put(EmailConstants.PROPS_SMTP_SASL_ENABLE, "true");
+        properties.put(EmailConstants.PROPS_SMTP_SASL_MECHANISMS, "XOAUTH2");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH_MECHANISMS, "XOAUTH2");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH_LOGIN_DISABLE, "true");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH_PLAIN_DISABLE, "true");
+        Session session = Session.getInstance(properties);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        return null;
+    }
+
     /**
      * Sends an email to an SMTP server.
      *
@@ -108,6 +123,25 @@ public class SmtpClient {
                     "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
         } catch (MessagingException | IOException e) {
             log.debug("Error while sending the message to SMTP server : ", e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+        }
+    }
+
+    public static Object sendMessageWithOAuth2(BObject clientConnector, BMap<BString, Object> message,
+                                               BString accessToken) {
+        try {
+            Session session = (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION);
+            String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
+            MimeMessage mimeMessage = SmtpUtil.generateMessage(session, username, message);
+            Transport transport = session.getTransport();
+            transport.connect(null, username, accessToken.getValue());
+            transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+            transport.close();
+            return null;
+        } catch (BError e) {
+            return e;
+        } catch (MessagingException | IOException e) {
+            log.debug("Error while sending the message to SMTP server via OAuth2 : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }

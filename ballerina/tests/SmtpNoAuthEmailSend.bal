@@ -155,7 +155,7 @@ function testMismatchedUsernamePasswordError() returns error? {
         security: START_TLS_AUTO
     };
 
-    string expectedErrorMessage = "Mismatched input: 'username' and 'password' must either both be set or both be ().";
+    string expectedErrorMessage = "Invalid configuration: provide 'username'+'password' for basic auth, 'username'+'auth' config for OAuth2, or neither for unauthenticated mode.";
 
     // Test with only username provided
     SmtpClient|Error result1 = new (host, username = "user@localhost.com", clientConfig = smtpConfig);
