@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/oauth2;
 import ballerina/test;
 
 @test:Config {
@@ -27,11 +26,7 @@ function testSendEmailWithOAuth2() returns error? {
         SmtpConfiguration smtpConfig = {
             port: 3586,
             security: START_TLS_AUTO,
-            auth: <oauth2:ClientCredentialsGrantConfig>{
-                tokenUrl: "http://127.0.0.1:9099/token",
-                clientId: "test-client-id",
-                clientSecret: "test-client-secret"
-            }
+            auth: "smtp_oauth2_test_token_12345"
         };
         SmtpClient smtpClient = check new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
         check smtpClient->sendMessage({
@@ -50,44 +45,30 @@ function testSendEmailWithOAuth2() returns error? {
     groups: ["smtp", "oauth2"],
     dependsOn: [testSendEmailWithOAuth2]
 }
-function testSendEmailWithOAuth2WrongCredentials() returns error? {
+function testSendEmailWithInvalidToken() returns error? {
     SmtpConfiguration smtpConfig = {
         port: 3586,
         security: START_TLS_AUTO,
-        auth: <oauth2:ClientCredentialsGrantConfig>{
-            tokenUrl: "http://127.0.0.1:9099/token",
-            clientId: "wrong-client-id",
-            clientSecret: "wrong-client-secret"
-        }
+        auth: "invalid_token"
     };
-    // ClientOAuth2Provider.init panics on token fetch failure; trap converts that to an error.
-    SmtpClient|error clientResult = trap new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
-    if clientResult is error {
-        // Error during token acquisition at init time is also acceptable
-        check stopOAuth2SmtpServer();
-        return;
-    }
-    Error? sendResult = clientResult->sendMessage({
+    SmtpClient smtpClient = check new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
+    Error? sendResult = smtpClient->sendMessage({
         to: "hascode@localhost",
         subject: "Should fail",
         body: "This email should not be sent."
     });
     check stopOAuth2SmtpServer();
     if sendResult is () {
-        test:assertFail("Expected an error when using wrong OAuth2 credentials");
+        test:assertFail("Expected an error when using an invalid token");
     }
 }
 
 @test:Config {}
-function testOAuth2InitRequiresUsername() returns error? {
+function testOAuth2InitRequiresUsername() {
     SmtpConfiguration smtpConfig = {
         port: 3586,
         security: START_TLS_AUTO,
-        auth: <oauth2:ClientCredentialsGrantConfig>{
-            tokenUrl: "http://127.0.0.1:9099/token",
-            clientId: "test-client-id",
-            clientSecret: "test-client-secret"
-        }
+        auth: "smtp_oauth2_test_token_12345"
     };
     SmtpClient|Error result = new ("127.0.0.1", clientConfig = smtpConfig);
     if result is SmtpClient {
