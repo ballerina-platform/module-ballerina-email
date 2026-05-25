@@ -50,6 +50,7 @@ import javax.mail.internet.MimeMessage;
 public class SmtpClient {
 
     private static final Logger log = LoggerFactory.getLogger(SmtpClient.class);
+    private static final String SMTP_SEND_ERROR = "Error while sending the message to SMTP server : ";
 
     private SmtpClient() {
     }
@@ -121,9 +122,9 @@ public class SmtpClient {
                     .map(Address::toString)
                     .collect(Collectors.joining(","));
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
-                    "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
+                    SMTP_SEND_ERROR + e.getMessage() + " " + invalidAddresses);
         } catch (MessagingException | IOException e) {
-            log.debug("Error while sending the message to SMTP server : ", e);
+            log.debug(SMTP_SEND_ERROR, e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }
@@ -144,7 +145,7 @@ public class SmtpClient {
                         .map(Address::toString)
                         .collect(Collectors.joining(","));
                 return CommonUtil.getBallerinaError(EmailConstants.ERROR,
-                        "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
+                        SMTP_SEND_ERROR + e.getMessage() + " " + invalidAddresses);
             } finally {
                 transport.close();
             }

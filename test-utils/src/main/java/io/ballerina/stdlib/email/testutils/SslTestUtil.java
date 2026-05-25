@@ -62,8 +62,8 @@ final class SslTestUtil {
             resolvedIs.transferTo(fos);
         }
         System.setProperty("greenmail.tls.keystore.file", tmpKeystore.toAbsolutePath().toString());
-        System.setProperty("greenmail.tls.keystore.password", KEYSTORE_PASSWORD); // NOSONAR: test-only keystore password
-        System.setProperty("greenmail.tls.key.password", KEYSTORE_PASSWORD); // NOSONAR: test-only keystore password
+        System.setProperty("greenmail.tls.keystore.password", KEYSTORE_PASSWORD);
+        System.setProperty("greenmail.tls.key.password", KEYSTORE_PASSWORD);
         configured = true;
     }
 }
