@@ -15,9 +15,11 @@
  *
  */
 
-apply plugin: "java"
-apply plugin: "com.github.spotbugs"
-apply plugin: "checkstyle"
+plugins {
+    id 'java'
+    id 'checkstyle'
+    id 'com.github.spotbugs'
+}
 
 description = 'Ballerina - Email Java Utils'
 
