@@ -25,7 +25,6 @@ import com.icegreen.greenmail.util.ServerSetup;
 import io.ballerina.stdlib.email.util.CommonUtil;
 import io.ballerina.stdlib.email.util.EmailConstants;
 
-import java.io.IOException;
 import java.security.Security;
 
 import javax.mail.Message;
@@ -56,12 +55,7 @@ public final class PopSimpleSecureEmailReceiveTest {
     private static GreenMail mailServer;
 
     public static Object startSimpleSecurePopServer() {
-        try {
-            startServer();
-        } catch (IOException e) {
-            return CommonUtil.getBallerinaError(EmailConstants.ERROR,
-                    "Failed to start POP3S server: " + e.getMessage());
-        }
+        startServer();
         return null;
     }
 
@@ -80,7 +74,7 @@ public final class PopSimpleSecureEmailReceiveTest {
         return null;
     }
 
-    private static void startServer() throws IOException {
+    private static void startServer() {
         SslTestUtil.configureSsl();
         Security.setProperty(SSL_SOCKET_FACTORY_PROVIDER, DummySSLSocketFactory.class.getName());
         ServerSetup setup = new ServerSetup(PORT_NUMBER, null, ServerSetup.PROTOCOL_POP3S);

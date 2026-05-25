@@ -43,27 +43,31 @@ final class SslTestUtil {
      * Extracts the bundled test keystore to a temp file and points GreenMail at it.
      * Safe to call multiple times — only acts on the first call.
      */
-    static synchronized void configureSsl() throws IOException {
+    static synchronized void configureSsl() {
         if (configured) {
             return;
         }
-        // Try Module API first (works for named JPMS modules), fall back to ClassLoader for unnamed modules
-        InputStream is = SslTestUtil.class.getModule().getResourceAsStream(KEYSTORE_RESOURCE);
-        if (is == null) {
-            is = SslTestUtil.class.getClassLoader().getResourceAsStream(KEYSTORE_RESOURCE);
+        try {
+            // Try Module API first (works for named JPMS modules), fall back to ClassLoader for unnamed modules
+            InputStream is = SslTestUtil.class.getModule().getResourceAsStream(KEYSTORE_RESOURCE);
+            if (is == null) {
+                is = SslTestUtil.class.getClassLoader().getResourceAsStream(KEYSTORE_RESOURCE);
+            }
+            if (is == null) {
+                throw new IOException("Test keystore resource not found: " + KEYSTORE_RESOURCE);
+            }
+            final InputStream resolvedIs = is;
+            Path tmpKeystore = Files.createTempFile("greenmail_test", ".p12");
+            tmpKeystore.toFile().deleteOnExit();
+            try (resolvedIs; OutputStream fos = Files.newOutputStream(tmpKeystore)) {
+                resolvedIs.transferTo(fos);
+            }
+            System.setProperty("greenmail.tls.keystore.file", tmpKeystore.toAbsolutePath().toString());
+            System.setProperty("greenmail.tls.keystore.password", KEYSTORE_PASSWORD);
+            System.setProperty("greenmail.tls.key.password", KEYSTORE_PASSWORD);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to configure SSL for tests: " + e.getMessage(), e);
         }
-        if (is == null) {
-            throw new IOException("Test keystore resource not found: " + KEYSTORE_RESOURCE);
-        }
-        final InputStream resolvedIs = is;
-        Path tmpKeystore = Files.createTempFile("greenmail_test", ".p12");
-        tmpKeystore.toFile().deleteOnExit();
-        try (resolvedIs; OutputStream fos = Files.newOutputStream(tmpKeystore)) {
-            resolvedIs.transferTo(fos);
-        }
-        System.setProperty("greenmail.tls.keystore.file", tmpKeystore.toAbsolutePath().toString());
-        System.setProperty("greenmail.tls.keystore.password", KEYSTORE_PASSWORD);
-        System.setProperty("greenmail.tls.key.password", KEYSTORE_PASSWORD);
         configured = true;
     }
 }
