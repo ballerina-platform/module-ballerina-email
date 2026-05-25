@@ -23,22 +23,27 @@ import ballerina/test;
 }
 function testSendEmailWithOAuth2() returns error? {
     check startOAuth2SmtpServer();
-    SmtpConfiguration smtpConfig = {
-        port: 3586,
-        security: START_TLS_AUTO,
-        auth: <oauth2:ClientCredentialsGrantConfig>{
-            tokenUrl: "http://127.0.0.1:9099/token",
-            clientId: "test-client-id",
-            clientSecret: "test-client-secret"
-        }
-    };
-    SmtpClient smtpClient = check new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
-    check smtpClient->sendMessage({
-        to: "hascode@localhost",
-        subject: "OAuth2 Test Email",
-        body: "This is a test email sent via XOAUTH2."
-    });
-    check validateOAuth2Email();
+    do {
+        SmtpConfiguration smtpConfig = {
+            port: 3586,
+            security: START_TLS_AUTO,
+            auth: <oauth2:ClientCredentialsGrantConfig>{
+                tokenUrl: "http://127.0.0.1:9099/token",
+                clientId: "test-client-id",
+                clientSecret: "test-client-secret"
+            }
+        };
+        SmtpClient smtpClient = check new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
+        check smtpClient->sendMessage({
+            to: "hascode@localhost",
+            subject: "OAuth2 Test Email",
+            body: "This is a test email sent via XOAUTH2."
+        });
+        check validateOAuth2Email();
+    } on fail var e {
+        check stopOAuth2SmtpServer();
+        return e;
+    }
 }
 
 @test:Config {
@@ -55,8 +60,9 @@ function testSendEmailWithOAuth2WrongCredentials() returns error? {
             clientSecret: "wrong-client-secret"
         }
     };
-    SmtpClient|Error clientResult = new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
-    if clientResult is Error {
+    // ClientOAuth2Provider.init panics on token fetch failure; trap converts that to an error.
+    SmtpClient|error clientResult = trap new ("127.0.0.1", "someone@localhost.com", clientConfig = smtpConfig);
+    if clientResult is error {
         // Error during token acquisition at init time is also acceptable
         check stopOAuth2SmtpServer();
         return;

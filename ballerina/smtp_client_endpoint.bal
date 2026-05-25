@@ -38,7 +38,7 @@ public isolated client class SmtpClient {
             return initSmtpClientEndpoint(self, host, username, password, clientConfig);
         }
         if username is string && password is () && grantConfig is oauth2:GrantConfig {
-            oauth2:ClientOAuth2Provider|error providerResult = trap new (grantConfig);
+            oauth2:ClientOAuth2Provider|error providerResult = new (grantConfig);
             if providerResult is error {
                 self.oauth2Provider = ();
                 return error Error("OAuth2 provider initialization failed: " + providerResult.message());

@@ -134,9 +134,18 @@ public class SmtpClient {
             String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
             MimeMessage mimeMessage = SmtpUtil.generateMessage(session, username, message);
             Transport transport = session.getTransport();
-            transport.connect(null, username, accessToken.getValue());
-            transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-            transport.close();
+            try {
+                transport.connect(null, username, accessToken.getValue());
+                transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+            } catch (SendFailedException e) {
+                String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
+                        .map((Address::toString))
+                        .collect(Collectors.joining(","));
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
+            } finally {
+                transport.close();
+            }
             return null;
         } catch (BError e) {
             return e;

@@ -316,7 +316,7 @@ email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", c
 
 The OAuth2 access token is obtained automatically before each send and refreshed when it expires. The `username` (sender address) is still required; the `password` parameter must be omitted when `auth` is provided.
 
-### Message content and
+### Message content and structure
 
 An `email:Message` prepared to be sent can have the text body content, `body`, and/or HTML body content (`htmlBody`).
 When emails are received with POP3 or IMAP, the text email bodies and HTML bodies of the email are captured by the `body` and `htmlBody` fields of the `email:Message` respectively.

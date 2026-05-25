@@ -17,10 +17,11 @@
 
 package io.ballerina.stdlib.email.testutils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Utility for configuring GreenMail's SSL to use a fresh test keystore.
@@ -32,7 +33,7 @@ import java.io.InputStream;
 final class SslTestUtil {
 
     private static final String KEYSTORE_RESOURCE = "greenmail_test.p12";
-    private static final String KEYSTORE_PASSWORD = "changeit";
+    private static final String KEYSTORE_PASSWORD = "changeit"; // NOSONAR: test-only keystore password
 
     private SslTestUtil() {}
 
@@ -54,12 +55,13 @@ final class SslTestUtil {
         if (is == null) {
             throw new IOException("Test keystore resource not found: " + KEYSTORE_RESOURCE);
         }
-        File tmpKeystore = File.createTempFile("greenmail_test", ".p12");
-        tmpKeystore.deleteOnExit();
-        try (FileOutputStream fos = new FileOutputStream(tmpKeystore)) {
-            is.transferTo(fos);
+        final InputStream resolvedIs = is;
+        Path tmpKeystore = Files.createTempFile("greenmail_test", ".p12");
+        tmpKeystore.toFile().deleteOnExit();
+        try (resolvedIs; OutputStream fos = Files.newOutputStream(tmpKeystore)) {
+            resolvedIs.transferTo(fos);
         }
-        System.setProperty("greenmail.tls.keystore.file", tmpKeystore.getAbsolutePath());
+        System.setProperty("greenmail.tls.keystore.file", tmpKeystore.toAbsolutePath().toString());
         System.setProperty("greenmail.tls.keystore.password", KEYSTORE_PASSWORD);
         System.setProperty("greenmail.tls.key.password", KEYSTORE_PASSWORD);
         configured = true;

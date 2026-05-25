@@ -18,6 +18,7 @@
 
 module io.ballerina.stdlib.email.testutils {
     requires org.slf4j;
+    requires java.logging;
     requires greenmail;
     requires io.ballerina.stdlib.mime;
     requires java.mail;

@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Test class for email send using SMTP with OAuth2 (XOAUTH2 SASL mechanism).
@@ -41,6 +42,8 @@ import java.util.List;
 public final class SmtpOAuth2EmailSendTest {
 
     private SmtpOAuth2EmailSendTest() {}
+
+    private static final Logger logger = Logger.getLogger(SmtpOAuth2EmailSendTest.class.getName());
 
     static final int SMTP_PORT = 3586;
     static final int TOKEN_PORT = 9099;
@@ -53,6 +56,9 @@ public final class SmtpOAuth2EmailSendTest {
     static final String EMAIL_FROM = "someone@localhost.com";
     static final String EMAIL_TO = "hascode@localhost";
     static final String EMAIL_SUBJECT = "OAuth2 Test Email";
+
+    private static final String AUTH_XOAUTH2 = "AUTH XOAUTH2";
+    private static final String SMTP_RESPONSE_OK = "250 OK";
 
     private static ServerSocket smtpServerSocket;
     private static ServerSocket tokenServerSocket;
@@ -70,41 +76,53 @@ public final class SmtpOAuth2EmailSendTest {
         receivedEmails.clear();
         try {
             smtpServerSocket = new ServerSocket(SMTP_PORT);
-            smtpServerThread = new Thread(() -> {
-                while (!smtpServerSocket.isClosed()) {
-                    try {
-                        Socket client = smtpServerSocket.accept();
-                        new Thread(() -> handleSmtpSession(client)).start();
-                    } catch (IOException e) {
-                        if (!smtpServerSocket.isClosed()) {
-                            System.err.println("SMTP server error: " + e.getMessage());
-                        }
-                    }
-                }
-            });
+            smtpServerThread = new Thread(SmtpOAuth2EmailSendTest::runSmtpServer);
             smtpServerThread.setDaemon(true);
             smtpServerThread.start();
 
             tokenServerSocket = new ServerSocket(TOKEN_PORT);
-            tokenServerThread = new Thread(() -> {
-                while (!tokenServerSocket.isClosed()) {
-                    try {
-                        Socket client = tokenServerSocket.accept();
-                        handleTokenRequest(client);
-                    } catch (IOException e) {
-                        if (!tokenServerSocket.isClosed()) {
-                            System.err.println("Token server error: " + e.getMessage());
-                        }
-                    }
-                }
-            });
+            tokenServerThread = new Thread(SmtpOAuth2EmailSendTest::runTokenServer);
             tokenServerThread.setDaemon(true);
             tokenServerThread.start();
         } catch (IOException e) {
+            if (smtpServerThread != null) {
+                smtpServerThread.interrupt();
+            }
+            if (smtpServerSocket != null && !smtpServerSocket.isClosed()) {
+                try {
+                    smtpServerSocket.close();
+                } catch (IOException ignored) { }
+            }
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                     "Failed to start OAuth2 test servers: " + e.getMessage());
         }
         return null;
+    }
+
+    private static void runSmtpServer() {
+        while (!smtpServerSocket.isClosed()) {
+            try {
+                Socket client = smtpServerSocket.accept();
+                new Thread(() -> handleSmtpSession(client)).start();
+            } catch (IOException e) {
+                if (!smtpServerSocket.isClosed()) {
+                    logger.warning("SMTP server error: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private static void runTokenServer() {
+        while (!tokenServerSocket.isClosed()) {
+            try {
+                Socket client = tokenServerSocket.accept();
+                handleTokenRequest(client);
+            } catch (IOException e) {
+                if (!tokenServerSocket.isClosed()) {
+                    logger.warning("Token server error: " + e.getMessage());
+                }
+            }
+        }
     }
 
     private static void handleSmtpSession(Socket client) {
@@ -118,58 +136,72 @@ public final class SmtpOAuth2EmailSendTest {
             while ((line = reader.readLine()) != null) {
                 if (line.toUpperCase().startsWith("EHLO") || line.toUpperCase().startsWith("HELO")) {
                     writeLine(out, "250-localhost");
-                    writeLine(out, "250-AUTH XOAUTH2");
-                    writeLine(out, "250 OK");
-                } else if (line.toUpperCase().startsWith("AUTH XOAUTH2")) {
-                    String token = extractXoauth2Token(line, reader, out);
-                    if (ACCESS_TOKEN.equals(token)) {
-                        authenticated = true;
-                        writeLine(out, "235 2.7.0 Authentication successful");
-                    } else {
-                        writeLine(out, "535 5.7.8 Authentication failed");
-                    }
+                    writeLine(out, "250-" + AUTH_XOAUTH2);
+                    writeLine(out, SMTP_RESPONSE_OK);
+                } else if (line.toUpperCase().startsWith(AUTH_XOAUTH2)) {
+                    authenticated = handleAuth(line, reader, out);
                 } else if (line.toUpperCase().startsWith("MAIL FROM:")) {
-                    if (!authenticated) {
-                        writeLine(out, "530 5.7.0 Authentication required");
-                    } else {
-                        email.from = line.substring(10).trim().replaceAll("[<>]", "");
-                        writeLine(out, "250 OK");
-                    }
+                    handleMailFrom(line, authenticated, out, email);
                 } else if (line.toUpperCase().startsWith("RCPT TO:")) {
                     email.to = line.substring(8).trim().replaceAll("[<>]", "");
-                    writeLine(out, "250 OK");
-                } else if (line.toUpperCase().equals("DATA")) {
+                    writeLine(out, SMTP_RESPONSE_OK);
+                } else if (line.equalsIgnoreCase("DATA")) {
                     writeLine(out, "354 Start input; end with <CRLF>.<CRLF>");
-                    StringBuilder data = new StringBuilder();
-                    while ((line = reader.readLine()) != null && !line.equals(".")) {
-                        data.append(line).append("\n");
-                    }
-                    email.data = data.toString();
+                    email.data = readEmailData(reader);
                     synchronized (receivedEmails) {
                         receivedEmails.add(email);
                     }
-                    writeLine(out, "250 OK");
-                } else if (line.toUpperCase().equals("QUIT")) {
+                    writeLine(out, SMTP_RESPONSE_OK);
+                } else if (line.equalsIgnoreCase("QUIT")) {
                     writeLine(out, "221 Bye");
                     break;
-                } else if (line.toUpperCase().equals("RSET")) {
+                } else if (line.equalsIgnoreCase("RSET")) {
                     email = new ReceivedEmail();
                     authenticated = false;
-                    writeLine(out, "250 OK");
+                    writeLine(out, SMTP_RESPONSE_OK);
                 } else if (!line.isEmpty()) {
                     writeLine(out, "500 Unknown command");
                 }
             }
         } catch (IOException e) {
-            System.err.println("SMTP session error: " + e.getMessage());
+            logger.warning("SMTP session error: " + e.getMessage());
         }
+    }
+
+    private static boolean handleAuth(String line, BufferedReader reader, OutputStream out) throws IOException {
+        String token = extractXoauth2Token(line, reader, out);
+        if (ACCESS_TOKEN.equals(token)) {
+            writeLine(out, "235 2.7.0 Authentication successful");
+            return true;
+        }
+        writeLine(out, "535 5.7.8 Authentication failed");
+        return false;
+    }
+
+    private static void handleMailFrom(String line, boolean authenticated, OutputStream out, ReceivedEmail email)
+            throws IOException {
+        if (!authenticated) {
+            writeLine(out, "530 5.7.0 Authentication required");
+        } else {
+            email.from = line.substring(10).trim().replaceAll("[<>]", "");
+            writeLine(out, SMTP_RESPONSE_OK);
+        }
+    }
+
+    private static String readEmailData(BufferedReader reader) throws IOException {
+        StringBuilder data = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null && !line.equals(".")) {
+            data.append(line).append("\n");
+        }
+        return data.toString();
     }
 
     private static String extractXoauth2Token(String authLine, BufferedReader reader, OutputStream out)
             throws IOException {
         String encoded;
-        if (authLine.length() > "AUTH XOAUTH2".length()) {
-            encoded = authLine.substring("AUTH XOAUTH2".length()).trim();
+        if (authLine.length() > AUTH_XOAUTH2.length()) {
+            encoded = authLine.substring(AUTH_XOAUTH2.length()).trim();
         } else {
             writeLine(out, "334 ");
             encoded = reader.readLine();
@@ -180,12 +212,16 @@ public final class SmtpOAuth2EmailSendTest {
         if (encoded.isEmpty()) {
             return null;
         }
-        String decoded = new String(Base64.getDecoder().decode(encoded), StandardCharsets.UTF_8);
-        // Format: "user=<email>\x01auth=Bearer <token>\x01\x01"
-        for (String part : decoded.split("")) {
-            if (part.startsWith("auth=Bearer ")) {
-                return part.substring("auth=Bearer ".length());
+        try {
+            String decoded = new String(Base64.getDecoder().decode(encoded), StandardCharsets.UTF_8);
+            // XOAUTH2 format: "user=<email>\x01auth=Bearer <token>\x01\x01"
+            for (String part : decoded.split("\u0001")) {
+                if (part.startsWith("auth=Bearer ")) {
+                    return part.substring("auth=Bearer ".length());
+                }
             }
+        } catch (IllegalArgumentException e) {
+            return null;
         }
         return null;
     }
@@ -224,7 +260,7 @@ public final class SmtpOAuth2EmailSendTest {
             out.write(responseBytes);
             out.flush();
         } catch (IOException e) {
-            System.err.println("Token request error: " + e.getMessage());
+            logger.warning("Token request error: " + e.getMessage());
         }
     }
 
@@ -239,7 +275,7 @@ public final class SmtpOAuth2EmailSendTest {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    System.err.println("Error stopping server: " + e.getMessage());
+                    logger.warning("Error stopping server: " + e.getMessage());
                 }
             }
         }
