@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
@@ -47,10 +48,10 @@ public final class SmtpOAuth2EmailSendTest {
 
     static final int SMTP_PORT = 3586;
     static final int TOKEN_PORT = 9099;
-    static final String ACCESS_TOKEN = "smtp_oauth2_test_token_12345";
-    static final String CLIENT_ID = "test-client-id";
-    static final String CLIENT_SECRET = "test-client-secret";
-    private static final String VALID_AUTH_HEADER =
+    static final String ACCESS_TOKEN = "smtp_oauth2_test_token_12345"; // NOSONAR: test-only token
+    static final String CLIENT_ID = "test-client-id"; // NOSONAR: test-only credential
+    static final String CLIENT_SECRET = "test-client-secret"; // NOSONAR: test-only credential
+    private static final String VALID_AUTH_HEADER = // NOSONAR: test-only
             "Basic " + Base64.getEncoder().encodeToString(
                     (CLIENT_ID + ":" + CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
     static final String EMAIL_FROM = "someone@localhost.com";
@@ -99,30 +100,27 @@ public final class SmtpOAuth2EmailSendTest {
         return null;
     }
 
-    private static void runSmtpServer() {
-        while (!smtpServerSocket.isClosed()) {
+    private static void runServer(ServerSocket serverSocket, String serverName,
+                                   Consumer<Socket> connectionHandler) {
+        while (!serverSocket.isClosed()) {
             try {
-                Socket client = smtpServerSocket.accept();
-                new Thread(() -> handleSmtpSession(client)).start();
+                Socket client = serverSocket.accept();
+                connectionHandler.accept(client);
             } catch (IOException e) {
-                if (!smtpServerSocket.isClosed()) {
-                    logger.warning("SMTP server error: " + e.getMessage());
+                if (!serverSocket.isClosed()) {
+                    logger.warning(serverName + " error: " + e.getMessage());
                 }
             }
         }
     }
 
+    private static void runSmtpServer() {
+        runServer(smtpServerSocket, "SMTP server",
+                client -> new Thread(() -> handleSmtpSession(client)).start());
+    }
+
     private static void runTokenServer() {
-        while (!tokenServerSocket.isClosed()) {
-            try {
-                Socket client = tokenServerSocket.accept();
-                handleTokenRequest(client);
-            } catch (IOException e) {
-                if (!tokenServerSocket.isClosed()) {
-                    logger.warning("Token server error: " + e.getMessage());
-                }
-            }
-        }
+        runServer(tokenServerSocket, "Token server", SmtpOAuth2EmailSendTest::handleTokenRequest);
     }
 
     private static void handleSmtpSession(Socket client) {

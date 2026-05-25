@@ -116,8 +116,9 @@ public class SmtpClient {
         } catch (BError e) {
             return e;
         } catch (SendFailedException e) {
-            String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
-                    .map((Address::toString))
+            Address[] invalid = e.getInvalidAddresses();
+            String invalidAddresses = invalid == null ? "" : Arrays.stream(invalid)
+                    .map(Address::toString)
                     .collect(Collectors.joining(","));
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                     "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
@@ -138,8 +139,9 @@ public class SmtpClient {
                 transport.connect(null, username, accessToken.getValue());
                 transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
             } catch (SendFailedException e) {
-                String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
-                        .map((Address::toString))
+                Address[] invalid = e.getInvalidAddresses();
+                String invalidAddresses = invalid == null ? "" : Arrays.stream(invalid)
+                        .map(Address::toString)
                         .collect(Collectors.joining(","));
                 return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                         "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
