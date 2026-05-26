@@ -95,26 +95,66 @@ email:SmtpClient smtpClient = check new ("smtp.email.com");
 
 ##### 3.1.1.3 OAuth2 Mode
 
-For SMTP servers that support OAuth2 (XOAUTH2 SASL mechanism), provide the username and an `oauth2:GrantConfig` in the `auth` field of `SmtpConfiguration`. The password must be omitted.
+For SMTP servers that support OAuth2 (XOAUTH2 SASL mechanism), the `auth` field of `SmtpConfiguration` accepts either:
 
+- A **direct access token** (`string`): use a pre-obtained token.
+- An **`email:OAuth2GrantConfig`**: let the library fetch the token from an authorization server.
+
+The password parameter must be omitted in all OAuth2 modes.
+
+**Direct token:**
 ```ballerina
-import ballerina/oauth2;
-
 email:SmtpConfiguration smtpConfig = {
     port: 587,
     security: email:START_TLS_ALWAYS,
-    auth: <oauth2:ClientCredentialsGrantConfig>{
-        tokenUrl: "https://oauth2.provider.com/token",
-        clientId: "client-id",
-        clientSecret: "client-secret",
-        scopes: ["https://mail.google.com/"]
-    }
+    auth: "ya29.access-token-value"
 };
 
 email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
 ```
 
-The access token is obtained from the OAuth2 provider before each email send and is refreshed automatically when expired. All four grant types defined in `oauth2:GrantConfig` (`ClientCredentialsGrantConfig`, `PasswordGrantConfig`, `RefreshTokenGrantConfig`, `JwtBearerGrantConfig`) are supported.
+**Client Credentials Grant:**
+```ballerina
+import ballerina/oauth2;
+
+oauth2:ClientCredentialsGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.provider.com/token",
+    clientId: "client-id",
+    clientSecret: "client-secret",
+    scopes: ["https://mail.google.com/"]
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_ALWAYS,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+```
+
+**Resource Owner Password Credentials Grant:**
+```ballerina
+import ballerina/oauth2;
+
+oauth2:PasswordGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.provider.com/token",
+    username: "resource-owner@example.com",
+    password: "resource-owner-password",
+    clientId: "client-id",
+    clientSecret: "client-secret"
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_ALWAYS,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com", clientConfig = smtpConfig);
+```
+
+Token fetching, caching, and refresh are handled by the `ballerina/oauth2` module. For direct tokens, the caller is responsible for token lifecycle management.
 
 > **Note:** `username` is required when using OAuth2. The `password` parameter must not be provided alongside `auth`.
 
@@ -288,30 +328,52 @@ public function main() returns error? {
 }
 ```
 
-##### 5.1.1.3 With OAuth2
+##### 5.1.1.3 With OAuth2 (Client Credentials Grant)
 ```ballerina
 import ballerina/email;
 import ballerina/oauth2;
 
 public function main() returns error? {
+    oauth2:ClientCredentialsGrantConfig grantConfig = {
+        tokenUrl: "https://oauth2.provider.com/token",
+        clientId: "client-id",
+        clientSecret: "client-secret",
+        scopes: ["https://mail.google.com/"]
+    };
     email:SmtpConfiguration smtpConfig = {
         port: 587,
         security: email:START_TLS_ALWAYS,
-        auth: <oauth2:ClientCredentialsGrantConfig>{
-            tokenUrl: "https://oauth2.provider.com/token",
-            clientId: "client-id",
-            clientSecret: "client-secret",
-            scopes: ["https://mail.google.com/"]
-        }
+        auth: grantConfig
     };
     email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
-    email:Message email = {
+    email:Message emailMsg = {
         to: ["receiver@email.com"],
         subject: "Sample Email",
         body: "This is a sample email sent via OAuth2.",
         'from: "sender@gmail.com"
     };
-    check smtpClient->sendMessage(email);
+    check smtpClient->sendMessage(emailMsg);
+}
+```
+
+##### 5.1.1.4 With OAuth2 (Direct Token)
+```ballerina
+import ballerina/email;
+
+public function main() returns error? {
+    email:SmtpConfiguration smtpConfig = {
+        port: 587,
+        security: email:START_TLS_ALWAYS,
+        auth: "ya29.access-token-value"
+    };
+    email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+    email:Message emailMsg = {
+        to: ["receiver@email.com"],
+        subject: "Sample Email",
+        body: "This is a sample email sent via OAuth2 with a direct token.",
+        'from: "sender@gmail.com"
+    };
+    check smtpClient->sendMessage(emailMsg);
 }
 ```
 

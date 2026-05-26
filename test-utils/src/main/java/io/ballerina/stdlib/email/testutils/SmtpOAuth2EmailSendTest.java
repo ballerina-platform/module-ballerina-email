@@ -230,9 +230,34 @@ public final class SmtpOAuth2EmailSendTest {
              OutputStream out = client.getOutputStream()) {
             String authHeader = null;
             String line;
+            int contentLength = 0;
+
+            // Read request line and headers
+            boolean firstLine = true;
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
                 if (line.toLowerCase().startsWith("authorization:")) {
                     authHeader = line.substring("authorization:".length()).trim();
+                } else if (line.toLowerCase().startsWith("content-length:")) {
+                    try {
+                        contentLength = Integer.parseInt(line.substring("content-length:".length()).trim());
+                    } catch (NumberFormatException ignored) { }
+                }
+            }
+
+            // Consume the request body so the HTTP client doesn't get a broken pipe
+            if (contentLength > 0) {
+                char[] body = new char[contentLength];
+                int totalRead = 0;
+                while (totalRead < contentLength) {
+                    int read = reader.read(body, totalRead, contentLength - totalRead);
+                    if (read < 0) {
+                        break;
+                    }
+                    totalRead += read;
                 }
             }
 
@@ -298,6 +323,17 @@ public final class SmtpOAuth2EmailSendTest {
             if (!email.data.contains(EMAIL_SUBJECT)) {
                 return CommonUtil.getBallerinaError(EmailConstants.ERROR,
                         "Email data does not contain expected subject: " + EMAIL_SUBJECT);
+            }
+        }
+        return null;
+    }
+
+    public static Object validateOAuth2EmailCount(long expectedCount) {
+        synchronized (receivedEmails) {
+            int actual = receivedEmails.size();
+            if (actual < expectedCount) {
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        "Expected at least " + expectedCount + " emails, but received " + actual);
             }
         }
         return null;

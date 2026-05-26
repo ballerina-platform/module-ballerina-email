@@ -35,6 +35,64 @@ email:SmtpConfiguration smtpConfig = {
 email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
 ```
 
+##### OAuth2 authentication
+
+The SMTP client supports OAuth2 authentication (XOAUTH2 SASL mechanism) via the `auth` field in `SmtpConfiguration`. Tokens are managed by the `ballerina/oauth2` module, which handles caching and refresh automatically.
+
+**Direct access token**: Pass a pre-obtained token as a `string`. You are responsible for its lifecycle.
+
+```ballerina
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_AUTO,
+    auth: "ya29.access-token-value"
+};
+
+email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+```
+
+**Client Credentials Grant**: The library fetches and refreshes the token automatically.
+
+```ballerina
+import ballerina/oauth2;
+
+oauth2:ClientCredentialsGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.example.com/token",
+    clientId: "my-client-id",
+    clientSecret: "my-client-secret"
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_AUTO,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com", clientConfig = smtpConfig);
+```
+
+**Resource Owner Password Credentials Grant**:
+
+```ballerina
+import ballerina/oauth2;
+
+oauth2:PasswordGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.example.com/token",
+    username: "resource-owner@example.com",
+    password: "resource-owner-password",
+    clientId: "my-client-id",
+    clientSecret: "my-client-secret"
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_AUTO,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com", clientConfig = smtpConfig);
+```
+
 ##### Send an email
 
 Once the `email:SmtpClient` is created, an email can be sent using the SMTP protocol through that client.

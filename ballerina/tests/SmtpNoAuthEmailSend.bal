@@ -155,7 +155,7 @@ function testMismatchedUsernamePasswordError() returns error? {
         security: START_TLS_AUTO
     };
 
-    string expectedErrorMessage = "Invalid configuration: provide 'username'+'password' for basic auth, 'username'+'auth' token for OAuth2, or neither for unauthenticated mode.";
+    string expectedErrorMessage = "Invalid configuration: provide 'username'+'password' for basic auth, 'username'+'auth' for OAuth2, or neither for unauthenticated mode.";
 
     // Test with only username provided
     SmtpClient|Error result1 = new (host, username = "user@localhost.com", clientConfig = smtpConfig);

@@ -90,15 +90,19 @@ public class SmtpClient {
     public static Object initOAuth2SmtpClientEndpoint(BObject clientEndpoint, BString host, BString username,
                                                       BMap<BString, Object> config) {
         Properties properties = getPropertiesFromConfig(host.getValue(), config, true);
+        setXoauth2Properties(properties);
+        Session session = Session.getInstance(properties);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        return null;
+    }
+
+    private static void setXoauth2Properties(Properties properties) {
         properties.put(EmailConstants.PROPS_SMTP_SASL_ENABLE, "true");
         properties.put(EmailConstants.PROPS_SMTP_SASL_MECHANISMS, "XOAUTH2");
         properties.put(EmailConstants.PROPS_SMTP_AUTH_MECHANISMS, "XOAUTH2");
         properties.put(EmailConstants.PROPS_SMTP_AUTH_LOGIN_DISABLE, "true");
         properties.put(EmailConstants.PROPS_SMTP_AUTH_PLAIN_DISABLE, "true");
-        Session session = Session.getInstance(properties);
-        clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
-        clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
-        return null;
     }
 
     /**
