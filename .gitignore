@@ -47,3 +47,6 @@ examples/**/Dependencies.toml
 load-tests/**/Dependencies.toml
 
 compiler-plugin-tests/**/target
+
+# Test keystores (override global gitignore which excludes *.p12)
+!test-utils/src/main/resources/greenmail_test.p12
