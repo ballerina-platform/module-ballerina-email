@@ -372,7 +372,7 @@ email:SmtpConfiguration smtpConfig = {
 email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
 ```
 
-The OAuth2 access token is obtained automatically before each send and refreshed when it expires. The `username` (sender address) is still required; the `password` parameter must be omitted when `auth` is provided.
+With `OAuth2GrantConfig`, the initial token is fetched at `SmtpClient` initialization — if the token endpoint is unreachable or rejects the credentials, the `check new (...)` call will fail immediately. The token is then cached and refreshed automatically on expiry for subsequent sends. For direct `string` tokens, the caller is fully responsible for token lifecycle. The `username` (sender address) is still required; the `password` parameter must be omitted when `auth` is provided.
 
 ### Message content and structure
 

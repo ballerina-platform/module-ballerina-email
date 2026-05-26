@@ -9,10 +9,18 @@ The figure below illustrates a high-level design diagram of the complete use cas
 
 The below are the detailed explanations of each of the steps.
 
-### Step 1 - Enable Less Secure Apps in Gmail Account
+### Step 1 - Set Up Gmail SMTP Access
 
-By-default Gmail has a setting, which disables `Less Secure Apps` that prevents its SMTP API from being active. In order to send
-emails using SMTP, that setting has to be enabled with [this link](https://myaccount.google.com/lesssecureapps).
+> **Note:** Google removed the "Less Secure Apps" setting in May 2022. Username and password authentication no longer works for
+> personal Gmail accounts. To send emails via Gmail SMTP, use one of the following approaches:
+>
+> - **Google Workspace / personal accounts with App Passwords**: Generate an App Password in your Google Account security
+>   settings (requires 2-Step Verification to be enabled) and use it as the password.
+> - **OAuth2 (recommended)**: Use the XOAUTH2 SASL mechanism with a valid OAuth2 access token. See the
+>   [`smtp-oauth2-client`](../smtp-oauth2-client) example for a complete walkthrough.
+
+This example uses an App Password. Generate one at <https://myaccount.google.com/apppasswords> and use it in place of
+`senderPassword` in the configuration below.
 
 ### Step 2 - Initialize the Email Client with Credentials
 

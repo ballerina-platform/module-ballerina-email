@@ -46,7 +46,8 @@ The conforming implementation of the specification is released and included in t
         * 5.1.1. [SMTP Client](#511-smtp-client)
            * 5.1.1.1. [With Authentication](#5111-with-authentication)
            * 5.1.1.2. [Without Authentication](#5112-without-authentication)
-           * 5.1.1.3. [With OAuth2](#5113-with-oauth2)
+           * 5.1.1.3. [With OAuth2 (Client Credentials Grant)](#5113-with-oauth2-client-credentials-grant)
+           * 5.1.1.4. [With OAuth2 (Direct Token)](#5114-with-oauth2-direct-token)
         * 5.1.2. [POP3 Client](#512-pop3-client)
         * 5.1.3. [IMAP Client](#513-imap-client)
     * 5.2. [Services](#52-services)
@@ -154,7 +155,7 @@ email:SmtpConfiguration smtpConfig = {
 email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com", clientConfig = smtpConfig);
 ```
 
-Token fetching, caching, and refresh are handled by the `ballerina/oauth2` module. For direct tokens, the caller is responsible for token lifecycle management.
+With `OAuth2GrantConfig`, the token is fetched at `SmtpClient` initialization. If the token endpoint is unreachable or rejects the credentials, `init` fails immediately (fail-fast). Subsequent sends use the cached token, which the `ballerina/oauth2` module refreshes automatically on expiry. For direct `string` tokens, the caller is fully responsible for token lifecycle management.
 
 > **Note:** `username` is required when using OAuth2. The `password` parameter must not be provided alongside `auth`.
 
