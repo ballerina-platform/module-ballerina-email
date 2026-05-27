@@ -1,0 +1,7 @@
+[package]
+org = "smtp"
+name = "smtp_oauth2_sender"
+version = "1.0.0"
+
+[build-options]
+observabilityIncluded = true

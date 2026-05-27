@@ -88,6 +88,7 @@ public final class ListenerPopReceiveTest {
     }
 
     private static void startServer() {
+        SslTestUtil.configureSsl();
         Security.setProperty(SSL_SOCKET_FACTORY_PROVIDER, DummySSLSocketFactory.class.getName());
         ServerSetup setup = new ServerSetup(PORT_NUMBER, null, ServerSetup.PROTOCOL_POP3S);
         setup.setServerStartupTimeout(SERVER_TIMEOUT);

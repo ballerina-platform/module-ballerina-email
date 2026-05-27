@@ -40,6 +40,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Contains functionality of SMTP Client.
@@ -49,6 +50,7 @@ import javax.mail.Transport;
 public class SmtpClient {
 
     private static final Logger log = LoggerFactory.getLogger(SmtpClient.class);
+    private static final String SMTP_SEND_ERROR = "Error while sending the message to SMTP server : ";
 
     private SmtpClient() {
     }
@@ -85,6 +87,24 @@ public class SmtpClient {
         return null;
     }
 
+    public static Object initOAuth2SmtpClientEndpoint(BObject clientEndpoint, BString host, BString username,
+                                                      BMap<BString, Object> config) {
+        Properties properties = getPropertiesFromConfig(host.getValue(), config, true);
+        setXoauth2Properties(properties);
+        Session session = Session.getInstance(properties);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_SESSION, session);
+        clientEndpoint.addNativeData(EmailConstants.PROPS_USERNAME.getValue(), username.getValue());
+        return null;
+    }
+
+    private static void setXoauth2Properties(Properties properties) {
+        properties.put(EmailConstants.PROPS_SMTP_SASL_ENABLE, "true");
+        properties.put(EmailConstants.PROPS_SMTP_SASL_MECHANISMS, "XOAUTH2");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH_MECHANISMS, "XOAUTH2");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH_LOGIN_DISABLE, "true");
+        properties.put(EmailConstants.PROPS_SMTP_AUTH_PLAIN_DISABLE, "true");
+    }
+
     /**
      * Sends an email to an SMTP server.
      *
@@ -101,13 +121,43 @@ public class SmtpClient {
         } catch (BError e) {
             return e;
         } catch (SendFailedException e) {
-            String invalidAddresses = Arrays.stream(e.getInvalidAddresses())
-                    .map((Address::toString))
+            Address[] invalid = e.getInvalidAddresses();
+            String invalidAddresses = invalid == null ? "" : Arrays.stream(invalid)
+                    .map(Address::toString)
                     .collect(Collectors.joining(","));
             return CommonUtil.getBallerinaError(EmailConstants.ERROR,
-                    "Error while sending the message to SMTP server : " + e.getMessage() + " " + invalidAddresses);
+                    SMTP_SEND_ERROR + e.getMessage() + " " + invalidAddresses);
         } catch (MessagingException | IOException e) {
-            log.debug("Error while sending the message to SMTP server : ", e);
+            log.debug(SMTP_SEND_ERROR, e);
+            return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
+        }
+    }
+
+    public static Object sendMessageWithOAuth2(BObject clientConnector, BMap<BString, Object> message,
+                                               BString accessToken) {
+        try {
+            Session session = (Session) clientConnector.getNativeData(EmailConstants.PROPS_SESSION);
+            String username = (String) clientConnector.getNativeData(EmailConstants.PROPS_USERNAME.getValue());
+            MimeMessage mimeMessage = SmtpUtil.generateMessage(session, username, message);
+            Transport transport = session.getTransport();
+            try {
+                transport.connect(null, username, accessToken.getValue());
+                transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+            } catch (SendFailedException e) {
+                Address[] invalid = e.getInvalidAddresses();
+                String invalidAddresses = invalid == null ? "" : Arrays.stream(invalid)
+                        .map(Address::toString)
+                        .collect(Collectors.joining(","));
+                return CommonUtil.getBallerinaError(EmailConstants.ERROR,
+                        SMTP_SEND_ERROR + e.getMessage() + " " + invalidAddresses);
+            } finally {
+                transport.close();
+            }
+            return null;
+        } catch (BError e) {
+            return e;
+        } catch (MessagingException | IOException e) {
+            log.debug("Error while sending the message to SMTP server via OAuth2 : ", e);
             return CommonUtil.getBallerinaError(EmailConstants.ERROR, e.getMessage());
         }
     }

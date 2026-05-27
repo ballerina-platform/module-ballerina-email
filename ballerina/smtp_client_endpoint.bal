@@ -16,26 +16,48 @@
 
 import ballerina/jballerina.java;
 import ballerina/mime;
+import ballerina/oauth2;
 
 # Represents an SMTP Client, which interacts with an SMTP Server.
 public isolated client class SmtpClient {
+
+    private final string? accessToken;
+    private final oauth2:ClientOAuth2Provider? oauth2Provider;
 
     # Gets invoked during the `email:SmtpClient` initialization.
     #
     # + host - Host of the SMTP Client
     # + username - Username of the SMTP Client if authentication is required
-    # + password - Password of the SMTP Client if authentication is required
+    # + password - Password of the SMTP Client if basic authentication is used
     # + clientConfig - Configurations for SMTP Client
     # + return - An `email:Error` if failed to initialize or else `()`
     public isolated function init(string host, string? username = (), string? password = (),
             *SmtpConfiguration clientConfig) returns Error? {
-        if username is string && password is string {
+        OAuth2GrantConfig|string|() auth = clientConfig.auth;
+        if username is string && password is string && auth is () {
+            self.accessToken = ();
+            self.oauth2Provider = ();
             return initSmtpClientEndpoint(self, host, username, password, clientConfig);
         }
-        if username is () && password is () {
+        if username is string && password is () && auth is string {
+            self.accessToken = auth;
+            self.oauth2Provider = ();
+            return initOAuth2SmtpClientEndpoint(self, host, username, clientConfig);
+        }
+        if username is string && password is () && auth is OAuth2GrantConfig {
+            self.accessToken = ();
+            self.oauth2Provider = new oauth2:ClientOAuth2Provider(auth);
+            return initOAuth2SmtpClientEndpoint(self, host, username, clientConfig);
+        }
+        if username is () && password is () && auth is () {
+            self.accessToken = ();
+            self.oauth2Provider = ();
             return initNoAuthSmtpClientEndpoint(self, host, clientConfig);
         }
-        return error Error("Mismatched input: 'username' and 'password' must either both be set or both be ().");
+        self.accessToken = ();
+        self.oauth2Provider = ();
+        return error Error("Invalid configuration: provide 'username'+'password' for basic auth, " +
+                           "'username'+'auth' for OAuth2, or neither for unauthenticated mode.");
     }
 
     # Sends an email message.
@@ -50,7 +72,7 @@ public isolated client class SmtpClient {
             return error Error("Content type of the email should be text.");
         }
         self.putAttachmentToArray(email);
-        return send(self, email);
+        return self.dispatchSend(email);
     }
 
     # Sends an email message with optional parameters.
@@ -105,6 +127,22 @@ public isolated client class SmtpClient {
         if (!(attachments is ())) {
             email.attachments = <mime:Entity|Attachment|(mime:Entity|Attachment)[]>attachments;
         }
+        return self.dispatchSend(email);
+    }
+
+    private isolated function dispatchSend(Message email) returns Error? {
+        string? token = self.accessToken;
+        if token is string {
+            return sendWithOAuth2(self, email, token);
+        }
+        oauth2:ClientOAuth2Provider? provider = self.oauth2Provider;
+        if provider is oauth2:ClientOAuth2Provider {
+            string|oauth2:Error generatedToken = provider.generateToken();
+            if generatedToken is error {
+                return error Error("Failed to generate OAuth2 token: " + generatedToken.message());
+            }
+            return sendWithOAuth2(self, email, generatedToken);
+        }
         return send(self, email);
     }
 
@@ -132,6 +170,11 @@ isolated function initSmtpClientEndpoint(SmtpClient clientEndpoint, string host,
     'class: "io.ballerina.stdlib.email.client.SmtpClient"
 } external;
 
+isolated function initOAuth2SmtpClientEndpoint(SmtpClient clientEndpoint, string host, string username,
+        SmtpConfiguration config) returns Error? = @java:Method {
+    'class: "io.ballerina.stdlib.email.client.SmtpClient"
+} external;
+
 isolated function initNoAuthSmtpClientEndpoint(SmtpClient clientEndpoint, string host, SmtpConfiguration config)
 returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.email.client.SmtpClient"
@@ -142,13 +185,22 @@ isolated function send(SmtpClient clientEndpoint, Message email) returns Error? 
     'class: "io.ballerina.stdlib.email.client.SmtpClient"
 } external;
 
+isolated function sendWithOAuth2(SmtpClient clientEndpoint, Message email, string accessToken) returns Error? =
+    @java:Method {
+    name: "sendMessageWithOAuth2",
+    'class: "io.ballerina.stdlib.email.client.SmtpClient"
+} external;
+
 # Configuration of the SMTP Endpoint.
 #
 # + port - Port number of the SMTP server
 # + security - Type of security channel
 # + secureSocket - Secure socket configuration
+# + auth - Authentication configuration: a direct access token (`string`) for XOAUTH2, or an
+#           `OAuth2GrantConfig` to fetch a token from an authorization server
 public type SmtpConfiguration record {|
     int port = 465;
     Security security = SSL;
     SecureSocket secureSocket?;
+    OAuth2GrantConfig|string auth?;
 |};

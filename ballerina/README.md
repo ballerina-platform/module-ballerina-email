@@ -15,14 +15,16 @@ This module supports the following three client types.
 #### SMTP client
 
 To send an email using the SMTP protocol, you must first create an `email:SmtpClient` object. The code for creating an `email:SmtpClient` can be found
- below.
+below.
 
 ##### Create a client
 
 The following code creates an SMTP client, which connects to the default port (i.e. 465) and enables SSL.
+
 ```ballerina
 email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123");
 ```
+
 The port number of the server can be configured by passing the following configurations.
 
 ```ballerina
@@ -31,6 +33,64 @@ email:SmtpConfiguration smtpConfig = {
 };
 
 email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
+```
+
+##### OAuth2 authentication
+
+The SMTP client supports OAuth2 authentication (XOAUTH2 SASL mechanism) via the `auth` field in `SmtpConfiguration`. Tokens are managed by the `ballerina/oauth2` module, which handles caching and refresh automatically.
+
+**Direct access token**: Pass a pre-obtained token as a `string`. You are responsible for its lifecycle.
+
+```ballerina
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_AUTO,
+    auth: "ya29.access-token-value"
+};
+
+email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+```
+
+**Client Credentials Grant**: The library fetches and refreshes the token automatically.
+
+```ballerina
+import ballerina/oauth2;
+
+oauth2:ClientCredentialsGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.example.com/token",
+    clientId: "my-client-id",
+    clientSecret: "my-client-secret"
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_AUTO,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com", clientConfig = smtpConfig);
+```
+
+**Resource Owner Password Credentials Grant**:
+
+```ballerina
+import ballerina/oauth2;
+
+oauth2:PasswordGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.example.com/token",
+    username: "resource-owner@example.com",
+    password: "resource-owner-password",
+    clientId: "my-client-id",
+    clientSecret: "my-client-secret"
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_AUTO,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com", clientConfig = smtpConfig);
 ```
 
 ##### Send an email
@@ -72,16 +132,18 @@ email:Error? response = smtpClient->send(
 #### POP3 client
 
 To receive an email using the POP3 protocol, you must first create an `email:PopClient` object. The code for creating an
- `email:PopClient` can be found below.
+`email:PopClient` can be found below.
 
 ##### Create a client
 
 The following code creates a POP3 client, which connects to the default port (i.e. 995) and enables SSL.
+
 ```ballerina
 email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server can be configured by passing the following configurations.
+
 ```ballerina
 email:PopConfiguration popConfig = {
     port: 995
@@ -91,6 +153,7 @@ email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pas
 ```
 
 ##### Receive an email
+
 Once the `email:PopClient` is created, emails can be received using the POP3 protocol through that client.
 Samples for this operation can be found below.
 
@@ -101,16 +164,18 @@ email:Message? emailResponse = check popClient->receiveMessage();
 #### IMAP4 client
 
 To receive an email using the IMAP4 protocol, you must first create an `email:ImapClient` object. The code for creating an
- `email:ImapClient` can be found below.
+`email:ImapClient` can be found below.
 
 ##### Create a client
 
 The following code creates an IMAP4 client, which connects to the default port (i.e. 993) and enables SSL.
+
 ```ballerina
 email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server can be configured by passing the following configuration.
+
 ```ballerina
 email:ImapConfiguration imapConfig = {
     port: 993
@@ -120,6 +185,7 @@ email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "
 ```
 
 ##### Receive an email
+
 Once the `email:ImapClient` is created, emails can be received using the IMAP4 protocol through that client.
 Samples for this operation can be found below.
 
@@ -274,16 +340,41 @@ Similarly, other client/listener configuration types can also be defined with th
 Standard port numbers used for each of the protocol for each type of transport security are as given below.
 
 | Protocol/Security | SSL | STARTTLS | Unsecure |
-|-------------------|-----|----------|----------|
+| ----------------- | --- | -------- | -------- |
 | **SMTP**          | 465 | 587      | 25, 587  |
 | **POP3**          | 995 | 995      | 110      |
 | **IMAP4**         | 993 | 143, 993 | 143      |
 
-All the authentications are based on the username/password credentials.
+All the username/password authentications are based on the credentials passed to the `email:SmtpClient` initializer.
 
->**Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
+> **Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
 
-### Message content and 
+#### OAuth2 authentication for SMTP
+
+In addition to username/password credentials, the SMTP client supports OAuth2 authentication via the XOAUTH2 SASL mechanism. Pass any `oauth2:GrantConfig` through the `auth` field of `SmtpConfiguration`:
+
+```ballerina
+import ballerina/oauth2;
+
+oauth2:ClientCredentialsGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.provider.com/token",
+    clientId: "your-client-id",
+    clientSecret: "your-client-secret",
+    scopes: ["https://mail.google.com/"]
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_ALWAYS,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+```
+
+With `OAuth2GrantConfig`, the initial token is fetched at `SmtpClient` initialization — if the token endpoint is unreachable or rejects the credentials, the `check new (...)` call will fail immediately. The token is then cached and refreshed automatically on expiry for subsequent sends. For direct `string` tokens, the caller is fully responsible for token lifecycle. The `username` (sender address) is still required; the `password` parameter must be omitted when `auth` is provided.
+
+### Message content and structure
 
 An `email:Message` prepared to be sent can have the text body content, `body`, and/or HTML body content (`htmlBody`).
 When emails are received with POP3 or IMAP, the text email bodies and HTML bodies of the email are captured by the `body` and `htmlBody` fields of the `email:Message` respectively.

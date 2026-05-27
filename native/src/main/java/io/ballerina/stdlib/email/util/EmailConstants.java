@@ -147,6 +147,11 @@ public class EmailConstants {
     public static final String PROPS_SMTP_AUTH = "mail.smtp.auth";
     public static final String PROPS_SMTP_STARTTLS = "mail.smtp.starttls.enable";
     public static final String PROPS_SMTP_STARTTLS_REQUIRED = "mail.smtp.starttls.required";
+    public static final String PROPS_SMTP_SASL_ENABLE = "mail.smtp.sasl.enable";
+    public static final String PROPS_SMTP_SASL_MECHANISMS = "mail.smtp.sasl.mechanisms";
+    public static final String PROPS_SMTP_AUTH_MECHANISMS = "mail.smtp.auth.mechanisms";
+    public static final String PROPS_SMTP_AUTH_LOGIN_DISABLE = "mail.smtp.auth.login.disable";
+    public static final String PROPS_SMTP_AUTH_PLAIN_DISABLE = "mail.smtp.auth.plain.disable";
 
     public static final String EMAIL_MESSAGE = "Message";
     public static final String ERROR = "Error";
