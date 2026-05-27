@@ -7,42 +7,42 @@ keywords = ["email", "SMTP", "POP", "POP3", "IMAP", "mail"]
 repository = "https://github.com/ballerina-platform/module-ballerina-email"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.12.0"
+distribution = "2201.14.0-20260527-050400-74f7e6bf"
 
-[platform.java21]
+[platform.java25]
 graalvmCompatible = true
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "com.sun.mail"
 artifactId = "javax.mail"
 version = "1.6.2"
 path = "./lib/javax.mail-1.6.2.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "com.icegreen"
 artifactId = "greenmail"
 version = "1.5.11"
 path = "./lib/greenmail-1.5.11.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "org.jvnet.mimepull"
 artifactId = "mimepull"
 version = "1.9.11"
 path = "./lib/mimepull-1.9.11.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "javax.activation"
 artifactId = "activation"
 version = "1.1.1"
 path = "./lib/activation-1.1.1.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-native"
 version = "@toml.version@"
 path = "../native/build/libs/email-native-@project.version@.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "email-test-utils"
 version = "@toml.version@"
