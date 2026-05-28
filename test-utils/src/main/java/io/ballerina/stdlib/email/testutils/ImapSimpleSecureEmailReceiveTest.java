@@ -75,6 +75,7 @@ public final class ImapSimpleSecureEmailReceiveTest {
     }
 
     private static void startServer() {
+        SslTestUtil.configureSsl();
         Security.setProperty(SSL_SOCKET_FACTORY_PROVIDER, DummySSLSocketFactory.class.getName());
         ServerSetup setup = new ServerSetup(PORT_NUMBER, null, ServerSetup.PROTOCOL_IMAPS);
         setup.setServerStartupTimeout(SERVER_TIMEOUT);

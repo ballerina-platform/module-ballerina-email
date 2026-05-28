@@ -21,8 +21,8 @@ path = "./lib/javax.mail-1.6.2.jar"
 [[platform.java25.dependency]]
 groupId = "com.icegreen"
 artifactId = "greenmail"
-version = "1.5.11"
-path = "./lib/greenmail-1.5.11.jar"
+version = "@greenmail.version@"
+path = "./lib/greenmail-@greenmail.version@.jar"
 
 [[platform.java25.dependency]]
 groupId = "org.jvnet.mimepull"

@@ -1,12 +1,11 @@
-Ballerina Email Library
-=======================
+# Ballerina Email Library
 
-  [![Build](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml)
-  [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-email/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-email)
-  [![Trivy](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/trivy-scan.yml)
-  [![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-with-bal-test-graalvm.yml)
-  [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-email.svg)](https://github.com/ballerina-platform/module-ballerina-email/commits/master)
-  [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/email.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Femail)
+[![Build](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-timestamped-master.yml)
+[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-email/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-email)
+[![Trivy](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/trivy-scan.yml)
+[![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-email/actions/workflows/build-with-bal-test-graalvm.yml)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-email.svg)](https://github.com/ballerina-platform/module-ballerina-email/commits/master)
+[![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/email.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Femail)
 
 This library provides APIs to perform email operations such as sending and reading emails using the SMTP, POP3, and IMAP4 protocols.
 
@@ -23,14 +22,16 @@ This library supports the following three client types.
 #### SMTP client
 
 To send an email using the SMTP protocol, you must first create an `email:SmtpClient` object. The code for creating an `email:SmtpClient` can be found
- below.
+below.
 
 ##### Create a client
 
 The following code creates an SMTP client, which connects to the default port (i.e. 465) and enables SSL.
+
 ```ballerina
 email:SmtpClient smtpClient = check new ("smtp.email.com", "sender@email.com", "pass123");
 ```
+
 The port number of the server can be configured by passing the following configurations.
 
 ```ballerina
@@ -80,16 +81,18 @@ email:Error? response = smtpClient->send(
 #### POP3 client
 
 To receive an email using the POP3 protocol, you must first create an `email:PopClient` object. The code for creating an
- `email:PopClient` can be found below.
+`email:PopClient` can be found below.
 
 ##### Create a client
 
 The following code creates a POP3 client, which connects to the default port (i.e. 995) and enables SSL.
+
 ```ballerina
 email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server can be configured by passing the following configurations.
+
 ```ballerina
 email:PopConfiguration popConfig = {
     port: 995
@@ -99,6 +102,7 @@ email:PopClient popClient = check new ("pop.email.com", "reader@email.com", "pas
 ```
 
 ##### Receive an email
+
 Once the `email:PopClient` is created, emails can be received using the POP3 protocol through that client.
 Samples for this operation can be found below.
 
@@ -109,16 +113,18 @@ email:Message? emailResponse = check popClient->receiveMessage();
 #### IMAP4 client
 
 To receive an email using the IMAP4 protocol, you must first create an `email:ImapClient` object. The code for creating an
- `email:ImapClient` can be found below.
+`email:ImapClient` can be found below.
 
 ##### Create a client
 
 The following code creates an IMAP4 client, which connects to the default port (i.e. 993) and enables SSL.
+
 ```ballerina
 email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "pass456");
 ```
 
 The port number of the server can be configured by passing the following configuration.
+
 ```ballerina
 email:ImapConfiguration imapConfig = {
     port: 993
@@ -128,6 +134,7 @@ email:ImapClient imapClient = check new ("imap.email.com", "reader@email.com", "
 ```
 
 ##### Receive an email
+
 Once the `email:ImapClient` is created, emails can be received using the IMAP4 protocol through that client.
 Samples for this operation can be found below.
 
@@ -282,14 +289,39 @@ Similarly, other client/listener configuration types can also be defined with th
 Standard port numbers used for each of the protocol for each type of transport security are as given below.
 
 | Protocol/Security | SSL | STARTTLS | Unsecure |
-|-------------------|-----|----------|----------|
+| ----------------- | --- | -------- | -------- |
 | **SMTP**          | 465 | 587      | 25, 587  |
 | **POP3**          | 995 | 995      | 110      |
 | **IMAP4**         | 993 | 143, 993 | 143      |
 
 All the authentications are based on the username/password credentials.
 
->**Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
+> **Note:** When the `'from` field is not provided in an `email:Message`, the `username` field of the initialization argument of the `email:SmtpClient` is set as the `from` address of an email to be sent with SMTP.
+
+#### OAuth2 authentication for SMTP
+
+In addition to username/password credentials, the SMTP client supports OAuth2 authentication via the XOAUTH2 SASL mechanism. Pass any `oauth2:GrantConfig` through the `auth` field of `SmtpConfiguration`:
+
+```ballerina
+import ballerina/oauth2;
+
+oauth2:ClientCredentialsGrantConfig grantConfig = {
+    tokenUrl: "https://oauth2.provider.com/token",
+    clientId: "your-client-id",
+    clientSecret: "your-client-secret",
+    scopes: ["https://mail.google.com/"]
+};
+
+email:SmtpConfiguration smtpConfig = {
+    port: 587,
+    security: email:START_TLS_ALWAYS,
+    auth: grantConfig
+};
+
+email:SmtpClient smtpClient = check new ("smtp.gmail.com", "sender@gmail.com", clientConfig = smtpConfig);
+```
+
+The OAuth2 access token is obtained automatically before each send and refreshed when it expires. The `username` (sender address) is still required; the `password` parameter must be omitted when `auth` is provided.
 
 ### Message content and attachments
 
@@ -335,9 +367,9 @@ email:Message email = {
 };
 ```
 
-## Issues and projects 
+## Issues and projects
 
-Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit the Ballerina library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library). 
+Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit the Ballerina library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library).
 
 This repository only contains the source code for the package.
 
@@ -346,62 +378,66 @@ This repository only contains the source code for the package.
 ### Set up the prerequisites
 
 1. Download and install Java SE Development Kit (JDK) version 21 (from one of the following locations).
+   - [Oracle](https://www.oracle.com/java/technologies/downloads/)
 
-   * [Oracle](https://www.oracle.com/java/technologies/downloads/)
+   - [OpenJDK](https://adoptium.net/)
 
-   * [OpenJDK](https://adoptium.net/)
+     > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-        > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
-     
 ### Build the source
 
 Execute the commands below to build from source.
 
 1. To build the package:
 
-    ```shell script
-        ./gradlew clean build
-    ```
+   ```shell script
+       ./gradlew clean build
+   ```
 
 2. To run the tests:
 
-    ```shell script
-        ./gradlew clean test
-    ```
+   ```shell script
+       ./gradlew clean test
+   ```
 
 3. To run a group of tests
-    ```
-    ./gradlew clean test -Pgroups=<test_group_names>
-    ```
+
+   ```shell
+   ./gradlew clean test -Pgroups=<test_group_names>
+   ```
 
 4. To build the without the tests:
-    ```
-    ./gradlew clean build -x test
-    ```
+
+   ```shell
+   ./gradlew clean build -x test
+   ```
 
 5. To debug package implementation:
-    ```
-    ./gradlew clean build -Pdebug=<port>
-    ```
+
+   ```shell
+   ./gradlew clean build -Pdebug=<port>
+   ```
 
 6. To debug with Ballerina language:
-    ```
-    ./gradlew clean build -PbalJavaDebug=<port>
-    ```
+
+   ```shell
+   ./gradlew clean build -PbalJavaDebug=<port>
+   ```
 
 7. Publish the generated artifacts to the local Ballerina central repository:
-    ```
-    ./gradlew clean build -PpublishToLocalCentral=true
-    ```
+
+   ```shell
+   ./gradlew clean build -PpublishToLocalCentral=true
+   ```
 
 8. Publish the generated artifacts to the Ballerina central repository:
-    ```
-    ./gradlew clean build -PpublishToCentral=true
-    ```
+   ```shell
+   ./gradlew clean build -PpublishToCentral=true
+   ```
 
 ## Contribute to Ballerina
 
-As an open source project, Ballerina welcomes contributions from the community. 
+As an open-source project, Ballerina welcomes contributions from the community.
 
 For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md).
 
@@ -411,7 +447,7 @@ All contributors are encouraged to read the [Ballerina Code of Conduct](https://
 
 ## Useful links
 
-* For more information, go to the [`email` package](https://lib.ballerina.io/ballerina/email/latest).
-* Chat live with us via our [Discord server](https://discord.gg/ballerinalang).
-* Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
-* For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).
+- For more information, go to the [`email` package](https://lib.ballerina.io/ballerina/email/latest).
+- Chat live with us via our [Discord server](https://discord.gg/ballerinalang).
+- Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
+- For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).

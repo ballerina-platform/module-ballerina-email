@@ -1,0 +1,6 @@
+[smtp_oauth2_sender]
+senderAddress = "sender@example.com"
+receiverAddress = "receiver@example.com"
+tokenUrl = "https://oauth2.provider.com/token"
+clientId = "your-client-id"
+clientSecret = "your-client-secret"

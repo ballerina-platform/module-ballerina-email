@@ -62,20 +62,8 @@ abstract class PatchBallerinaScriptsTask extends DefaultTask {
     }
 }
 
-buildscript {
-    repositories {
-        mavenLocal()
-        maven {
-            url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
-            credentials {
-                username System.getenv("packageUser")
-                password System.getenv("packagePAT")
-            }
-        }
-    }
-    dependencies {
-        classpath "io.ballerina:plugin-gradle:${project.ballerinaGradlePluginVersion}"
-    }
+plugins {
+    id 'io.ballerina.plugin'
 }
 
 description = 'Ballerina - Ballerina Email Connector'
@@ -101,8 +89,6 @@ def stripBallerinaExtensionVersion(String extVersion) {
         return extVersion.replace("${project.ext.snapshotVersion}", "")
     }
 }
-
-apply plugin: 'io.ballerina.plugin'
 
 ballerina {
     packageOrganization = packageOrg
@@ -136,6 +122,7 @@ tasks.register('updateTomlFiles') {
         def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
         newBallerinaToml = newBallerinaToml.replace("@bouncycastle.version@", stdlibDependentBouncycastleVersion)
+        newBallerinaToml = newBallerinaToml.replace("@greenmail.version@", project.greenmailVersion)
         def newCompilerPluginToml = compilerPluginTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         ballerinaTomlFile.text = newBallerinaToml
         compilerPluginTomlFile.text = newCompilerPluginToml

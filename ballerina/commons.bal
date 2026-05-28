@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/mime;
+import ballerina/oauth2;
 
 # Email message properties.
 #
@@ -108,6 +109,18 @@ public enum Security {
 public enum Protocol {
    TLS
 }
+
+# OAuth2 Client Credentials Grant configuration for SMTP authentication.
+# Alias for `oauth2:ClientCredentialsGrantConfig`.
+public type OAuth2ClientCredentialsGrantConfig oauth2:ClientCredentialsGrantConfig;
+
+# OAuth2 Resource Owner Password Credentials Grant configuration for SMTP authentication.
+# Alias for `oauth2:PasswordGrantConfig`.
+public type OAuth2PasswordGrantConfig oauth2:PasswordGrantConfig;
+
+# OAuth2 grant configuration for SMTP authentication.
+# Can be either `OAuth2ClientCredentialsGrantConfig` or `OAuth2PasswordGrantConfig`.
+public type OAuth2GrantConfig OAuth2ClientCredentialsGrantConfig|OAuth2PasswordGrantConfig;
 
 # Default folder to read emails.
 public const DEFAULT_FOLDER = "INBOX";
