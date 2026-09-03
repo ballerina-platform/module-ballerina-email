@@ -3,5 +3,20 @@
     "id": 1,
     "kind": "VULNERABILITY",
     "description": "Avoid unverified server hostnames during SSL/TLS connections"
+  },
+  {
+    "id": 2,
+    "kind": "VULNERABILITY",
+    "description": "Avoid connecting to mail servers without TLS"
+  },
+  {
+    "id": 3,
+    "kind": "VULNERABILITY",
+    "description": "Avoid falling back to cleartext when TLS is unavailable"
+  },
+  {
+    "id": 4,
+    "kind": "VULNERABILITY",
+    "description": "Avoid using weak TLS protocol versions"
   }
 ]

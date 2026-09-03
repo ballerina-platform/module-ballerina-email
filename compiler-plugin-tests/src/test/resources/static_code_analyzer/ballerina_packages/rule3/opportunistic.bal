@@ -16,17 +16,26 @@
 
 import ballerina/email;
 
-public function test2() returns error? {
+// Upgrades only if the server offers STARTTLS, so stripping the offer downgrades the connection
+public function autoStartTls() returns error? {
     email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
-        port: 465,
-        secureSocket: {
-            cert: "path/to/certfile.crt",
-            protocol: {
-                name: email:TLS,
-                versions: ["TLSv1.2", "TLSv1.1"]
-            },
-            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-            verifyHostName: false
-        }
+        port: 587,
+        security: email:START_TLS_AUTO
+    });
+}
+
+// The same on an IMAP client
+public function autoStartTlsImap() returns error? {
+    email:ImapClient _ = check new ("imap.email.com", "reader@email.com", "pass123", clientConfig = {
+        port: 143,
+        security: email:START_TLS_AUTO
+    });
+}
+
+// Negative case - TLS required, failing rather than downgrading
+public function alwaysStartTls() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
+        port: 587,
+        security: email:START_TLS_ALWAYS
     });
 }
