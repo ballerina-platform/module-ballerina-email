@@ -492,6 +492,13 @@ The following static code rules are applied to the Email module.
 
 Disabling host name verification keeps the encryption but removes the check that the certificate belongs to the server being contacted.
 
+| Property              | Description |
+|-----------------------|-------------|
+| **Rule ID**           | ballerina/email:1 |
+| **Rule Kind**         | Vulnerability |
+| **CWE**               | [CWE-297](https://cwe.mitre.org/data/definitions/297.html), [CWE-295](https://cwe.mitre.org/data/definitions/295.html) |
+| **OWASP Top 10:2025** | [A07 Authentication Failures](https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/) |
+
 #### 6.1.1. Why this is an issue?
 
 A TLS certificate proves two things: that it was issued by a trusted authority, and that it was issued for the host the client is talking to. Setting `verifyHostName` to `false` keeps the first check and drops the second, so any party holding a certificate the client trusts, for any host at all, can terminate the connection.
@@ -535,6 +542,13 @@ email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com
 
 `START_TLS_NEVER` keeps the connection in plaintext for its whole life.
 
+| Property              | Description |
+|-----------------------|-------------|
+| **Rule ID**           | ballerina/email:2 |
+| **Rule Kind**         | Vulnerability |
+| **CWE**               | [CWE-319](https://cwe.mitre.org/data/definitions/319.html) |
+| **OWASP Top 10:2025** | [A04 Cryptographic Failures](https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/) |
+
 #### 6.2.1. Why this is an issue?
 
 The `security` field decides whether the connection is protected at all. `START_TLS_NEVER` disables the upgrade entirely, so the session, including the mailbox credentials sent during authentication, crosses the network in the clear. The field defaults to `SSL`, so plaintext is only ever reached by asking for it.
@@ -573,6 +587,13 @@ email:SmtpClient smtpClient = check new ("smtp.example.com", "sender@example.com
 ### 6.3. Avoid falling back to cleartext when TLS is unavailable
 
 `START_TLS_AUTO` lets the server decide whether the connection is encrypted.
+
+| Property              | Description |
+|-----------------------|-------------|
+| **Rule ID**           | ballerina/email:3 |
+| **Rule Kind**         | Vulnerability |
+| **CWE**               | [CWE-319](https://cwe.mitre.org/data/definitions/319.html), [CWE-757](https://cwe.mitre.org/data/definitions/757.html) |
+| **OWASP Top 10:2025** | [A04 Cryptographic Failures](https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/) |
 
 #### 6.3.1. Why this is an issue?
 
@@ -613,6 +634,13 @@ email:ImapClient imapClient = check new ("imap.example.com", "reader@example.com
 ### 6.4. Avoid using weak TLS protocol versions
 
 TLS 1.0, TLS 1.1 and the SSL family are withdrawn and should not be named.
+
+| Property              | Description |
+|-----------------------|-------------|
+| **Rule ID**           | ballerina/email:4 |
+| **Rule Kind**         | Vulnerability |
+| **CWE**               | [CWE-326](https://cwe.mitre.org/data/definitions/326.html), [CWE-327](https://cwe.mitre.org/data/definitions/327.html) |
+| **OWASP Top 10:2025** | [A04 Cryptographic Failures](https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/) |
 
 #### 6.4.1. Why this is an issue?
 
