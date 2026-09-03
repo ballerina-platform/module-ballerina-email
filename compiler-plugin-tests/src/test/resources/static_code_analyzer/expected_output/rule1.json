@@ -447,7 +447,7 @@
       "startColumn": 40,
       "endColumn": 1,
       "startOffset": 708,
-      "length": 423
+      "length": 424
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -466,7 +466,7 @@
       "endLine": 25,
       "startColumn": 38,
       "endColumn": 47,
-      "startOffset": 991,
+      "startOffset": 992,
       "length": 9
     },
     "rule": {
@@ -487,7 +487,7 @@
       "startColumn": 40,
       "endColumn": 1,
       "startOffset": 708,
-      "length": 408
+      "length": 409
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -506,7 +506,7 @@
       "endLine": 25,
       "startColumn": 38,
       "endColumn": 47,
-      "startOffset": 976,
+      "startOffset": 977,
       "length": 9
     },
     "rule": {

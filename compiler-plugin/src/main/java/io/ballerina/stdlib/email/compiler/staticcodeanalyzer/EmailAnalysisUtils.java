@@ -41,6 +41,7 @@ import io.ballerina.compiler.syntax.tree.ModulePartNode;
 import io.ballerina.compiler.syntax.tree.ModuleVariableDeclarationNode;
 import io.ballerina.compiler.syntax.tree.NewExpressionNode;
 import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.ParenthesizedArgList;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
@@ -54,6 +55,7 @@ import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * Shared helpers for the email static code analysis rules.
@@ -158,29 +160,43 @@ public final class EmailAnalysisUtils {
         String variableName = effective.toSourceCode().trim();
         Node current = effective.parent();
         while (current != null) {
-            if (current instanceof FunctionBodyBlockNode body) {
-                for (StatementNode statement : body.statements()) {
-                    if (statement instanceof VariableDeclarationNode declaration) {
-                        Optional<MappingConstructorExpressionNode> match = matchDeclaration(
-                                declaration.typedBindingPattern(), declaration.initializer(), variableName);
-                        if (match.isPresent()) {
-                            return match;
-                        }
-                    }
-                }
-            }
-            if (current instanceof ModulePartNode modulePart) {
-                for (ModuleMemberDeclarationNode member : modulePart.members()) {
-                    if (member instanceof ModuleVariableDeclarationNode declaration) {
-                        Optional<MappingConstructorExpressionNode> match = matchDeclaration(
-                                declaration.typedBindingPattern(), declaration.initializer(), variableName);
-                        if (match.isPresent()) {
-                            return match;
-                        }
-                    }
-                }
+            Optional<MappingConstructorExpressionNode> resolved = switch (current) {
+                case FunctionBodyBlockNode body -> findInStatements(body.statements(), variableName);
+                case ModulePartNode modulePart -> findInModuleMembers(modulePart.members(), variableName);
+                default -> Optional.empty();
+            };
+            if (resolved.isPresent()) {
+                return resolved;
             }
             current = current.parent();
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<MappingConstructorExpressionNode> findInStatements(NodeList<StatementNode> statements,
+                                                                              String variableName) {
+        for (StatementNode statement : statements) {
+            if (statement instanceof VariableDeclarationNode declaration) {
+                Optional<MappingConstructorExpressionNode> match = matchDeclaration(
+                        declaration.typedBindingPattern(), declaration.initializer(), variableName);
+                if (match.isPresent()) {
+                    return match;
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<MappingConstructorExpressionNode> findInModuleMembers(
+            NodeList<ModuleMemberDeclarationNode> members, String variableName) {
+        for (ModuleMemberDeclarationNode member : members) {
+            if (member instanceof ModuleVariableDeclarationNode declaration) {
+                Optional<MappingConstructorExpressionNode> match = matchDeclaration(
+                        declaration.typedBindingPattern(), declaration.initializer(), variableName);
+                if (match.isPresent()) {
+                    return match;
+                }
+            }
         }
         return Optional.empty();
     }
@@ -279,9 +295,47 @@ public final class EmailAnalysisUtils {
     public static Optional<String> getStringLiteralValue(ExpressionNode expression) {
         String source = expression.toSourceCode().trim();
         if (source.length() >= 2 && source.startsWith("\"") && source.endsWith("\"")) {
-            return Optional.of(source.substring(1, source.length() - 1));
+            return Optional.of(decodeEscapes(source.substring(1, source.length() - 1)));
         }
         return Optional.empty();
+    }
+
+    /**
+     * Decode the escapes a Ballerina string literal may contain, so a rule compares the value the literal denotes
+     * rather than the characters used to write it. Without this, a version written with its final digit as a
+     * unicode escape reads as a different string from the same version written plainly, and slips past a value
+     * comparison.
+     */
+    private static String decodeEscapes(String literal) {
+        StringBuilder decoded = new StringBuilder(literal.length());
+        for (int i = 0; i < literal.length(); i++) {
+            char current = literal.charAt(i);
+            if (current != '\\' || i + 1 >= literal.length()) {
+                decoded.append(current);
+                continue;
+            }
+            char next = literal.charAt(i + 1);
+            if (next == 'u' && i + 2 < literal.length() && literal.charAt(i + 2) == '{') {
+                int close = literal.indexOf('}', i + 3);
+                if (close > 0) {
+                    try {
+                        decoded.appendCodePoint(Integer.parseInt(literal.substring(i + 3, close), 16));
+                        i = close;
+                        continue;
+                    } catch (IllegalArgumentException e) {
+                        // Not a code point this analyzer can read; keep the text as written
+                    }
+                }
+            }
+            decoded.append(switch (next) {
+                case 'n' -> '\n';
+                case 't' -> '\t';
+                case 'r' -> '\r';
+                default -> next;
+            });
+            i++;
+        }
+        return decoded.toString();
     }
 
     /**

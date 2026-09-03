@@ -199,13 +199,15 @@ public class StaticCodeAnalyzerTest {
                 break;
             case AVOID_WEAK_TLS_PROTOCOLS:
                 index = 0;
-                Assert.assertEquals(issues.size(), 3);
+                Assert.assertEquals(issues.size(), 4);
                 Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
                         26, 26, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
                         26, 26, Source.BUILT_IN);
-                Assertions.assertIssue(issues, index, "ballerina/email:4", "weak_protocols.bal",
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
                         40, 40, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/email:4", "weak_protocols.bal",
+                        69, 69, Source.BUILT_IN);
                 break;
             default:
                 Assert.fail("Unhandled rule in validateIssues: " + rule);

@@ -42,7 +42,6 @@ The conforming implementation of the specification is released and included in t
     * 4.2. [IMAP Listener](#42-imap-listener)
     * 4.3. [POP3/IMAP Service](#43-pop3imap-service)
 5. [Samples](#5-samples)
-6. [Static Code Rules](#6-static-code-rules)
     * 5.1. [Clients](#51-clients)
         * 5.1.1. [SMTP Client](#511-smtp-client)
            * 5.1.1.1. [With Authentication](#5111-with-authentication)
@@ -52,6 +51,11 @@ The conforming implementation of the specification is released and included in t
         * 5.1.2. [POP3 Client](#512-pop3-client)
         * 5.1.3. [IMAP Client](#513-imap-client)
     * 5.2. [Services](#52-services)
+6. [Static Code Rules](#6-static-code-rules)
+    * 6.1. [Avoid unverified server hostnames during SSL/TLS connections](#61-avoid-unverified-server-hostnames-during-ssltls-connections)
+    * 6.2. [Avoid connecting to mail servers without TLS](#62-avoid-connecting-to-mail-servers-without-tls)
+    * 6.3. [Avoid falling back to cleartext when TLS is unavailable](#63-avoid-falling-back-to-cleartext-when-tls-is-unavailable)
+    * 6.4. [Avoid using weak TLS protocol versions](#64-avoid-using-weak-tls-protocol-versions)
         * 5.2.1. [POP3 Service](#521-pop3-service)
         * 5.2.2. [IMAP Service](#522-imap-service)
 
@@ -644,7 +648,7 @@ TLS 1.0, TLS 1.1 and the SSL family are withdrawn and should not be named.
 
 #### 6.4.1. Why this is an issue?
 
-TLS 1.0 and TLS 1.1 rely on MD5 and SHA-1 in the handshake and lack the modern cipher suites, which leaves them open to downgrade and padding-oracle attacks. The SSL family is broken outright. Naming any of them in `protocol.versions` pins the connection to a version a current server should refuse.
+TLS 1.0 and TLS 1.1 depend on MD5 and SHA-1 in the handshake and support no AEAD cipher suites, and RFC 8996 deprecates both for those reasons. Whether a particular connection is also open to a padding-oracle attack depends on the CBC construction negotiated and on the implementation, so that is a risk these versions leave available rather than one they guarantee. The SSL family is broken outright. Naming any of them in `protocol.versions` pins the connection to a version a current server should refuse.
 
 #### 6.4.2. What is the potential impact?
 

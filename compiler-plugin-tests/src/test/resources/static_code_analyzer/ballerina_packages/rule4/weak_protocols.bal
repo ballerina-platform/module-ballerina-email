@@ -57,3 +57,18 @@ public function currentTlsVersions() returns error? {
         }
     });
 }
+
+// A withdrawn version written with its final digit as a unicode escape denotes
+// the same string, so comparing the raw source text would miss it
+public function escapedWeakVersion() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
+        port: 465,
+        secureSocket: {
+            cert: "path/to/certfile.crt",
+            protocol: {
+                name: email:TLS,
+                versions: ["TLSv1.\u{31}"]
+            }
+        }
+    });
+}
