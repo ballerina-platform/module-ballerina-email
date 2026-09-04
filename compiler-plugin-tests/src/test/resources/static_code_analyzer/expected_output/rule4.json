@@ -82,6 +82,26 @@
   {
     "location": {
       "filePath": "weak_protocols.bal",
+      "startLine": 89,
+      "endLine": 89,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 2912,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule4/weak_protocols.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule4/weak_protocols.bal"
+  },
+  {
+    "location": {
+      "filePath": "weak_protocols.bal",
       "startLine": 26,
       "endLine": 26,
       "startColumn": 38,

@@ -32,6 +32,7 @@ import io.ballerina.compiler.syntax.tree.ExplicitNewExpressionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionArgumentNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
+import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
 import io.ballerina.compiler.syntax.tree.IdentifierToken;
 import io.ballerina.compiler.syntax.tree.ImplicitNewExpressionNode;
 import io.ballerina.compiler.syntax.tree.ListConstructorExpressionNode;
@@ -43,6 +44,7 @@ import io.ballerina.compiler.syntax.tree.NewExpressionNode;
 import io.ballerina.compiler.syntax.tree.Node;
 import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.ParenthesizedArgList;
+import io.ballerina.compiler.syntax.tree.RequiredParameterNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
 import io.ballerina.compiler.syntax.tree.StatementNode;
@@ -160,6 +162,13 @@ public final class EmailAnalysisUtils {
         String variableName = effective.toSourceCode().trim();
         Node current = effective.parent();
         while (current != null) {
+            // A parameter shadows anything declared outside the function, and its value is supplied by the
+            // caller. Resolving past it would read a same-named module variable and analyze a configuration the
+            // call never uses.
+            if (current instanceof FunctionDefinitionNode function
+                    && declaresParameter(function, variableName)) {
+                return Optional.empty();
+            }
             Optional<MappingConstructorExpressionNode> resolved = switch (current) {
                 case FunctionBodyBlockNode body -> findInStatements(body.statements(), variableName);
                 case ModulePartNode modulePart -> findInModuleMembers(modulePart.members(), variableName);
@@ -171,6 +180,15 @@ public final class EmailAnalysisUtils {
             current = current.parent();
         }
         return Optional.empty();
+    }
+
+    private static boolean declaresParameter(FunctionDefinitionNode function, String variableName) {
+        return function.functionSignature().parameters().stream()
+                .filter(RequiredParameterNode.class::isInstance)
+                .map(RequiredParameterNode.class::cast)
+                .anyMatch(parameter -> parameter.paramName()
+                        .map(name -> variableName.equals(name.text()))
+                        .orElse(false));
     }
 
     private static Optional<MappingConstructorExpressionNode> findInStatements(NodeList<StatementNode> statements,

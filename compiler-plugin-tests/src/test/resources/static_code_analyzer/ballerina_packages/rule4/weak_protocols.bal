@@ -72,3 +72,22 @@ public function escapedWeakVersion() returns error? {
         }
     });
 }
+
+// A module variable shares the parameter's name. The configuration reaching the
+// client is the caller's, whose contents are unknown, so nothing is reported
+// here even though the module variable names a withdrawn version.
+email:SmtpConfiguration shadowedConfig = {
+    port: 465,
+    secureSocket: {
+        cert: "path/to/certfile.crt",
+        protocol: {
+            name: email:TLS,
+            versions: ["TLSv1.1"]
+        }
+    }
+};
+
+public function callerSuppliedConfig(email:SmtpConfiguration shadowedConfig) returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
+            clientConfig = shadowedConfig);
+}
