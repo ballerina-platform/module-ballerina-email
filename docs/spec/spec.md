@@ -51,13 +51,13 @@ The conforming implementation of the specification is released and included in t
         * 5.1.2. [POP3 Client](#512-pop3-client)
         * 5.1.3. [IMAP Client](#513-imap-client)
     * 5.2. [Services](#52-services)
+        * 5.2.1. [POP3 Service](#521-pop3-service)
+        * 5.2.2. [IMAP Service](#522-imap-service)
 6. [Static Code Rules](#6-static-code-rules)
     * 6.1. [Avoid unverified server hostnames during SSL/TLS connections](#61-avoid-unverified-server-hostnames-during-ssltls-connections)
     * 6.2. [Avoid connecting to mail servers without TLS](#62-avoid-connecting-to-mail-servers-without-tls)
     * 6.3. [Avoid falling back to cleartext when TLS is unavailable](#63-avoid-falling-back-to-cleartext-when-tls-is-unavailable)
     * 6.4. [Avoid using weak TLS protocol versions](#64-avoid-using-weak-tls-protocol-versions)
-        * 5.2.1. [POP3 Service](#521-pop3-service)
-        * 5.2.2. [IMAP Service](#522-imap-service)
 
 ## 1. Overview
 This specification elaborates on Basic SMTP, POP3, IMAP4 clients and services/listeners.
