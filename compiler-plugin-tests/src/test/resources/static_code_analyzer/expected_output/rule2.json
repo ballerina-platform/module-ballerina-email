@@ -1,0 +1,242 @@
+[
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 19,
+      "endLine": 19,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 763,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 32,
+      "endLine": 32,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1155,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 38,
+      "endLine": 38,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1373,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 46,
+      "endLine": 46,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1643,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 54,
+      "endLine": 54,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1958,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 60,
+      "endLine": 60,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 2234,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 67,
+      "endLine": 67,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 2595,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 22,
+      "endLine": 22,
+      "startColumn": 8,
+      "endColumn": 39,
+      "startOffset": 940,
+      "length": 31
+    },
+    "rule": {
+      "id": "ballerina/email:2",
+      "numericId": 2,
+      "description": "Avoid connecting to mail servers without TLS",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 29,
+      "endLine": 29,
+      "startColumn": 4,
+      "endColumn": 35,
+      "startOffset": 1119,
+      "length": 31
+    },
+    "rule": {
+      "id": "ballerina/email:2",
+      "numericId": 2,
+      "description": "Avoid connecting to mail servers without TLS",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 56,
+      "endLine": 56,
+      "startColumn": 12,
+      "endColumn": 44,
+      "startOffset": 2113,
+      "length": 32
+    },
+    "rule": {
+      "id": "ballerina/email:2",
+      "numericId": 2,
+      "description": "Avoid connecting to mail servers without TLS",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 61,
+      "endLine": 61,
+      "startColumn": 36,
+      "endColumn": 68,
+      "startOffset": 2328,
+      "length": 32
+    },
+    "rule": {
+      "id": "ballerina/email:2",
+      "numericId": 2,
+      "description": "Avoid connecting to mail servers without TLS",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  },
+  {
+    "location": {
+      "filePath": "cleartext.bal",
+      "startLine": 70,
+      "endLine": 70,
+      "startColumn": 8,
+      "endColumn": 35,
+      "startOffset": 2780,
+      "length": 27
+    },
+    "rule": {
+      "id": "ballerina/email:2",
+      "numericId": 2,
+      "description": "Avoid connecting to mail servers without TLS",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/cleartext.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/cleartext.bal"
+  }
+]

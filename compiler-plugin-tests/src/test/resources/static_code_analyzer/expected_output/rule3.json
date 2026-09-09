@@ -1,0 +1,182 @@
+[
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 19,
+      "endLine": 19,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 765,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1014,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 35,
+      "endLine": 35,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1302,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 44,
+      "endLine": 44,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1658,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 51,
+      "endLine": 51,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1988,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 22,
+      "endLine": 22,
+      "startColumn": 8,
+      "endColumn": 38,
+      "startOffset": 942,
+      "length": 30
+    },
+    "rule": {
+      "id": "ballerina/email:3",
+      "numericId": 3,
+      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 30,
+      "endLine": 30,
+      "startColumn": 8,
+      "endColumn": 38,
+      "startOffset": 1195,
+      "length": 30
+    },
+    "rule": {
+      "id": "ballerina/email:3",
+      "numericId": 3,
+      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 46,
+      "endLine": 46,
+      "startColumn": 12,
+      "endColumn": 43,
+      "startOffset": 1812,
+      "length": 31
+    },
+    "rule": {
+      "id": "ballerina/email:3",
+      "numericId": 3,
+      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  },
+  {
+    "location": {
+      "filePath": "opportunistic.bal",
+      "startLine": 52,
+      "endLine": 52,
+      "startColumn": 36,
+      "endColumn": 63,
+      "startOffset": 2080,
+      "length": 27
+    },
+    "rule": {
+      "id": "ballerina/email:3",
+      "numericId": 3,
+      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/opportunistic.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/opportunistic.bal"
+  }
+]

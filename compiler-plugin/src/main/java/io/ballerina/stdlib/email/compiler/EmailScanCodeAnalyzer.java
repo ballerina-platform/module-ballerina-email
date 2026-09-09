@@ -22,7 +22,9 @@ import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.CodeAnalysisContext;
 import io.ballerina.projects.plugins.CodeAnalyzer;
 import io.ballerina.scan.Reporter;
-import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailSmtpClientAnalyzer;
+import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailClientConfigAnalyzer;
+
+import java.util.List;
 
 /**
  * Email compiler plugin.
@@ -38,7 +40,7 @@ public class EmailScanCodeAnalyzer extends CodeAnalyzer {
 
     @Override
     public void init(CodeAnalysisContext codeAnalysisContext) {
-        codeAnalysisContext.addSyntaxNodeAnalysisTask(new EmailSmtpClientAnalyzer(reporter),
-                SyntaxKind.FUNCTION_BODY_BLOCK);
+        codeAnalysisContext.addSyntaxNodeAnalysisTask(new EmailClientConfigAnalyzer(reporter),
+                List.of(SyntaxKind.IMPLICIT_NEW_EXPRESSION, SyntaxKind.EXPLICIT_NEW_EXPRESSION));
     }
 }

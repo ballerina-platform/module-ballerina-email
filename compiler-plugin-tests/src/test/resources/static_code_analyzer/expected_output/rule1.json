@@ -1,12 +1,12 @@
 [
   {
     "location": {
-      "filePath": "imap_fun_named_arg.bal",
+      "filePath": "imap_flattened_secure_socket_arg.bal",
       "startLine": 18,
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -16,8 +16,28 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_fun_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_named_arg.bal"
+    "fileName": "rule1/imap_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_flattened_secure_socket_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_fun_named_arg.bal",
+      "startLine": 18,
+      "endLine": 18,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 668,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_named_arg.bal"
   },
   {
     "location": {
@@ -26,7 +46,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -36,8 +56,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_fun_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_pos_arg.bal"
+    "fileName": "rule1/imap_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_pos_arg.bal"
   },
   {
     "location": {
@@ -46,7 +66,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -56,8 +76,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_inline_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_named_arg.bal"
+    "fileName": "rule1/imap_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_named_arg.bal"
   },
   {
     "location": {
@@ -66,7 +86,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -76,8 +96,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_inline_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_pos_arg.bal"
+    "fileName": "rule1/imap_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_pos_arg.bal"
   },
   {
     "location": {
@@ -86,7 +106,7 @@
       "endLine": 31,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 1018,
+      "startOffset": 987,
       "length": 6
     },
     "rule": {
@@ -96,8 +116,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_mod_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_named_arg.bal"
+    "fileName": "rule1/imap_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_named_arg.bal"
   },
   {
     "location": {
@@ -106,7 +126,7 @@
       "endLine": 31,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 1016,
+      "startOffset": 985,
       "length": 6
     },
     "rule": {
@@ -116,8 +136,68 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_mod_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_pos_arg.bal"
+    "fileName": "rule1/imap_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_reordered_client_config_arg.bal",
+      "startLine": 18,
+      "endLine": 18,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 668,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_returned_directly.bal",
+      "startLine": 19,
+      "endLine": 19,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 746,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_flattened_secure_socket_arg.bal",
+      "startLine": 18,
+      "endLine": 18,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 668,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_flattened_secure_socket_arg.bal"
   },
   {
     "location": {
@@ -126,7 +206,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -136,8 +216,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_fun_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_named_arg.bal"
+    "fileName": "rule1/pop_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_named_arg.bal"
   },
   {
     "location": {
@@ -146,7 +226,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -156,8 +236,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_fun_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_pos_arg.bal"
+    "fileName": "rule1/pop_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_pos_arg.bal"
   },
   {
     "location": {
@@ -166,7 +246,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -176,8 +256,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_inline_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_named_arg.bal"
+    "fileName": "rule1/pop_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_named_arg.bal"
   },
   {
     "location": {
@@ -186,7 +266,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -196,8 +276,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_inline_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_pos_arg.bal"
+    "fileName": "rule1/pop_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_pos_arg.bal"
   },
   {
     "location": {
@@ -206,7 +286,7 @@
       "endLine": 31,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 1016,
+      "startOffset": 985,
       "length": 6
     },
     "rule": {
@@ -216,8 +296,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_mod_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_named_arg.bal"
+    "fileName": "rule1/pop_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_named_arg.bal"
   },
   {
     "location": {
@@ -226,7 +306,7 @@
       "endLine": 31,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 1014,
+      "startOffset": 983,
       "length": 6
     },
     "rule": {
@@ -236,8 +316,88 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_mod_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_pos_arg.bal"
+    "fileName": "rule1/pop_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_reordered_client_config_arg.bal",
+      "startLine": 18,
+      "endLine": 18,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 668,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_returned_directly.bal",
+      "startLine": 19,
+      "endLine": 19,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 746,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_cast_verify_host_name.bal",
+      "startLine": 20,
+      "endLine": 20,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 786,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_cast_verify_host_name.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_cast_verify_host_name.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_flattened_secure_socket_arg.bal",
+      "startLine": 18,
+      "endLine": 18,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 668,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_flattened_secure_socket_arg.bal"
   },
   {
     "location": {
@@ -246,7 +406,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -256,8 +416,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_fun_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_named_arg.bal"
+    "fileName": "rule1/smtp_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_named_arg.bal"
   },
   {
     "location": {
@@ -266,7 +426,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -276,8 +436,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_fun_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_pos_arg.bal"
+    "fileName": "rule1/smtp_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_pos_arg.bal"
   },
   {
     "location": {
@@ -286,7 +446,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -296,8 +456,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_inline_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_named_arg.bal"
+    "fileName": "rule1/smtp_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_named_arg.bal"
   },
   {
     "location": {
@@ -306,7 +466,7 @@
       "endLine": 18,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 686,
+      "startOffset": 668,
       "length": 6
     },
     "rule": {
@@ -316,8 +476,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_inline_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_pos_arg.bal"
+    "fileName": "rule1/smtp_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_pos_arg.bal"
   },
   {
     "location": {
@@ -326,7 +486,7 @@
       "endLine": 31,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 1018,
+      "startOffset": 987,
       "length": 6
     },
     "rule": {
@@ -336,8 +496,8 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_mod_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_named_arg.bal"
+    "fileName": "rule1/smtp_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_named_arg.bal"
   },
   {
     "location": {
@@ -346,7 +506,7 @@
       "endLine": 31,
       "startColumn": 0,
       "endColumn": 6,
-      "startOffset": 1016,
+      "startOffset": 985,
       "length": 6
     },
     "rule": {
@@ -356,18 +516,98 @@
       "ruleKind": "CODE_SMELL"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_mod_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_pos_arg.bal"
+    "fileName": "rule1/smtp_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_reordered_client_config_arg.bal",
+      "startLine": 18,
+      "endLine": 18,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 668,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_returned_directly.bal",
+      "startLine": 19,
+      "endLine": 19,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 746,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_flattened_secure_socket_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1079,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_flattened_secure_socket_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_flattened_secure_socket_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 980,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_flattened_secure_socket_arg.bal"
   },
   {
     "location": {
       "filePath": "imap_fun_named_arg.bal",
-      "startLine": 18,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 726,
-      "length": 493
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1032,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -376,18 +616,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_fun_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_named_arg.bal"
+    "fileName": "rule1/imap_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_fun_named_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 933,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_named_arg.bal"
   },
   {
     "location": {
       "filePath": "imap_fun_pos_arg.bal",
-      "startLine": 18,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 726,
-      "length": 478
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1032,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -396,18 +656,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_fun_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_pos_arg.bal"
+    "fileName": "rule1/imap_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_fun_pos_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 933,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_fun_pos_arg.bal"
   },
   {
     "location": {
       "filePath": "imap_inline_named_arg.bal",
-      "startLine": 18,
-      "endLine": 31,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 726,
-      "length": 436
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1091,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -416,18 +696,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_inline_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_named_arg.bal"
+    "fileName": "rule1/imap_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_inline_named_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 992,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_named_arg.bal"
   },
   {
     "location": {
       "filePath": "imap_inline_pos_arg.bal",
-      "startLine": 18,
-      "endLine": 31,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 726,
-      "length": 421
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1076,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -436,18 +736,118 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_inline_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_pos_arg.bal"
+    "fileName": "rule1/imap_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_inline_pos_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 977,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_mod_inline_named_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 1029,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_mod_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_mod_inline_named_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 942,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_mod_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_mod_inline_pos_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 1012,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_mod_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_mod_inline_pos_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 925,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_mod_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_inline_pos_arg.bal"
   },
   {
     "location": {
       "filePath": "imap_mod_named_arg.bal",
-      "startLine": 31,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 1058,
-      "length": 123
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 955,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -456,18 +856,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_mod_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_named_arg.bal"
+    "fileName": "rule1/imap_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_mod_named_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 868,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_named_arg.bal"
   },
   {
     "location": {
       "filePath": "imap_mod_pos_arg.bal",
-      "startLine": 31,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 1056,
-      "length": 106
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 953,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -476,18 +896,158 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/imap_mod_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_pos_arg.bal"
+    "fileName": "rule1/imap_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_mod_pos_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 866,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_reordered_client_config_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1046,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_reordered_client_config_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 947,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_returned_directly.bal",
+      "startLine": 29,
+      "endLine": 29,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1189,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "imap_returned_directly.bal",
+      "startLine": 26,
+      "endLine": 26,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 1090,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/imap_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/imap_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_flattened_secure_socket_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1077,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_flattened_secure_socket_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_flattened_secure_socket_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 978,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_flattened_secure_socket_arg.bal"
   },
   {
     "location": {
       "filePath": "pop_fun_named_arg.bal",
-      "startLine": 18,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 726,
-      "length": 489
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1030,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -496,18 +1056,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_fun_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_named_arg.bal"
+    "fileName": "rule1/pop_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_fun_named_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 931,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_named_arg.bal"
   },
   {
     "location": {
       "filePath": "pop_fun_pos_arg.bal",
-      "startLine": 18,
-      "endLine": 33,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 474
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1029,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -516,18 +1096,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_fun_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_pos_arg.bal"
+    "fileName": "rule1/pop_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_fun_pos_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 930,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_fun_pos_arg.bal"
   },
   {
     "location": {
       "filePath": "pop_inline_named_arg.bal",
-      "startLine": 18,
-      "endLine": 31,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 436
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1089,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -536,18 +1136,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_inline_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_named_arg.bal"
+    "fileName": "rule1/pop_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_inline_named_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 990,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_named_arg.bal"
   },
   {
     "location": {
       "filePath": "pop_inline_pos_arg.bal",
-      "startLine": 18,
-      "endLine": 31,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 421
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1074,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -556,18 +1176,118 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_inline_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_pos_arg.bal"
+    "fileName": "rule1/pop_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_inline_pos_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 975,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_mod_inline_named_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 1027,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_mod_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_mod_inline_named_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 940,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_mod_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_mod_inline_pos_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 1010,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_mod_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_mod_inline_pos_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 923,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_mod_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_inline_pos_arg.bal"
   },
   {
     "location": {
       "filePath": "pop_mod_named_arg.bal",
-      "startLine": 31,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 1056,
-      "length": 121
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 953,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -576,18 +1296,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_mod_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_named_arg.bal"
+    "fileName": "rule1/pop_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_mod_named_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 866,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_named_arg.bal"
   },
   {
     "location": {
       "filePath": "pop_mod_pos_arg.bal",
-      "startLine": 31,
-      "endLine": 33,
-      "startColumn": 40,
-      "endColumn": 1,
-      "startOffset": 1054,
-      "length": 104
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 951,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -596,18 +1336,198 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/pop_mod_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_pos_arg.bal"
+    "fileName": "rule1/pop_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_mod_pos_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 864,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_reordered_client_config_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1044,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_reordered_client_config_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 945,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_returned_directly.bal",
+      "startLine": 29,
+      "endLine": 29,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1187,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "pop_returned_directly.bal",
+      "startLine": 26,
+      "endLine": 26,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 1088,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pop_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_cast_verify_host_name.bal",
+      "startLine": 30,
+      "endLine": 30,
+      "startColumn": 12,
+      "endColumn": 42,
+      "startOffset": 1225,
+      "length": 30
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_cast_verify_host_name.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_cast_verify_host_name.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_cast_verify_host_name.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 1126,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_cast_verify_host_name.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_cast_verify_host_name.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_flattened_secure_socket_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1079,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_flattened_secure_socket_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_flattened_secure_socket_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 980,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_flattened_secure_socket_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_flattened_secure_socket_arg.bal"
   },
   {
     "location": {
       "filePath": "smtp_fun_named_arg.bal",
-      "startLine": 18,
-      "endLine": 33,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 493
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1031,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -616,18 +1536,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_fun_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_named_arg.bal"
+    "fileName": "rule1/smtp_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_fun_named_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 932,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_fun_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_named_arg.bal"
   },
   {
     "location": {
       "filePath": "smtp_fun_pos_arg.bal",
-      "startLine": 18,
-      "endLine": 33,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 478
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1031,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -636,18 +1576,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_fun_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_pos_arg.bal"
+    "fileName": "rule1/smtp_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_fun_pos_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 932,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_fun_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_fun_pos_arg.bal"
   },
   {
     "location": {
       "filePath": "smtp_inline_named_arg.bal",
-      "startLine": 18,
-      "endLine": 31,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 437
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1090,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -656,18 +1616,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_inline_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_named_arg.bal"
+    "fileName": "rule1/smtp_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_inline_named_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 991,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_named_arg.bal"
   },
   {
     "location": {
       "filePath": "smtp_inline_pos_arg.bal",
-      "startLine": 18,
-      "endLine": 31,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 725,
-      "length": 422
+      "startLine": 28,
+      "endLine": 28,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1075,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -676,18 +1656,118 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_inline_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_pos_arg.bal"
+    "fileName": "rule1/smtp_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_inline_pos_arg.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 976,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_mod_inline_named_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 1029,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_mod_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_mod_inline_named_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 942,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_mod_inline_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_inline_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_mod_inline_pos_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 1012,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_mod_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_inline_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_mod_inline_pos_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 925,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_mod_inline_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_inline_pos_arg.bal"
   },
   {
     "location": {
       "filePath": "smtp_mod_named_arg.bal",
-      "startLine": 31,
-      "endLine": 33,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 1057,
-      "length": 123
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 955,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -696,18 +1776,38 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_mod_named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_named_arg.bal"
+    "fileName": "rule1/smtp_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_named_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_mod_named_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 868,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_mod_named_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_named_arg.bal"
   },
   {
     "location": {
       "filePath": "smtp_mod_pos_arg.bal",
-      "startLine": 31,
-      "endLine": 33,
-      "startColumn": 39,
-      "endColumn": 1,
-      "startOffset": 1055,
-      "length": 106
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 8,
+      "endColumn": 29,
+      "startOffset": 953,
+      "length": 21
     },
     "rule": {
       "id": "ballerina/email:1",
@@ -716,7 +1816,107 @@
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
-    "fileName": "Test/smtp_mod_pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_pos_arg.bal"
+    "fileName": "rule1/smtp_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_mod_pos_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 34,
+      "endColumn": 43,
+      "startOffset": 866,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_mod_pos_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_mod_pos_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_reordered_client_config_arg.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1046,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_reordered_client_config_arg.bal",
+      "startLine": 24,
+      "endLine": 24,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 947,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_reordered_client_config_arg.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_reordered_client_config_arg.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_returned_directly.bal",
+      "startLine": 29,
+      "endLine": 29,
+      "startColumn": 12,
+      "endColumn": 33,
+      "startOffset": 1189,
+      "length": 21
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_returned_directly.bal",
+      "startLine": 26,
+      "endLine": 26,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 1090,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_returned_directly.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_returned_directly.bal"
   }
 ]

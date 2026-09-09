@@ -1,0 +1,55 @@
+// Copyright (c) 2025 WSO2 LLC. (http://www.wso2.org)
+//
+// WSO2 LLC. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+import ballerina/email;
+
+// Upgrades only if the server offers STARTTLS, so stripping the offer downgrades the connection
+public function autoStartTls() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
+        port: 587,
+        security: email:START_TLS_AUTO
+    });
+}
+
+// The same on an IMAP client
+public function autoStartTlsImap() returns error? {
+    email:ImapClient _ = check new ("imap.email.com", "reader@email.com", "pass123", clientConfig = {
+        port: 143,
+        security: email:START_TLS_AUTO
+    });
+}
+
+// Negative case - TLS required, failing rather than downgrading
+public function alwaysStartTls() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
+        port: 587,
+        security: email:START_TLS_ALWAYS
+    });
+}
+
+// The configuration record's fields may be flattened into named arguments of
+// their own, since it is an included record parameter
+public function autoStartTlsFlattened() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
+            security = email:START_TLS_AUTO);
+}
+
+// An enum member declared without a value is the string singleton of its own
+// name, so the member may equally be written as that string
+public function autoStartTlsAsString() returns error? {
+    email:ImapClient _ = check new (security = "START_TLS_AUTO", host = "imap.email.com",
+            username = "reader@email.com", password = "pass123");
+}
