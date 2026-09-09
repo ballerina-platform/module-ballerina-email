@@ -93,16 +93,18 @@ public class EmailClientConfigContext {
             SeparatedNodeList<FunctionArgumentNode> arguments) {
         int positionalIndex = 0;
         for (FunctionArgumentNode argument : arguments) {
+            int currentPositionalIndex = positionalIndex;
+            if (argument instanceof PositionalArgumentNode) {
+                positionalIndex++;
+            }
             switch (argument) {
-                case NamedArgumentNode namedArgument -> {
-                    if (CLIENT_CONFIG_PARAM.equals(namedArgument.argumentName().name().text())) {
-                        return resolveConfigRecord(namedArgument.expression()).orElse(null);
-                    }
+                case NamedArgumentNode namedArgument
+                        when CLIENT_CONFIG_PARAM.equals(namedArgument.argumentName().name().text()) -> {
+                    return resolveConfigRecord(namedArgument.expression()).orElse(null);
                 }
-                case PositionalArgumentNode positionalArgument -> {
-                    if (positionalIndex++ == CLIENT_CONFIG_POSITION) {
-                        return resolveConfigRecord(positionalArgument.expression()).orElse(null);
-                    }
+                case PositionalArgumentNode positionalArgument
+                        when currentPositionalIndex == CLIENT_CONFIG_POSITION -> {
+                    return resolveConfigRecord(positionalArgument.expression()).orElse(null);
                 }
                 default -> {
                     // A rest argument spreads a value that cannot be resolved without data-flow analysis
@@ -190,7 +192,7 @@ public class EmailClientConfigContext {
                 .flatMap(EmailAnalysisUtils::resolveConfigRecord);
         for (int index = 1; index < fieldNames.length; index++) {
             String fieldName = fieldNames[index];
-            current = current.flatMap(record -> findField(record, fieldName))
+            current = current.flatMap(mapping -> findField(mapping, fieldName))
                     .flatMap(SpecificFieldNode::valueExpr)
                     .flatMap(EmailAnalysisUtils::resolveConfigRecord);
         }

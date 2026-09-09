@@ -249,12 +249,12 @@ public final class EmailAnalysisUtils {
      * Find a field by name within a record. Computed and spread fields cannot be resolved statically and are
      * skipped.
      *
-     * @param record    the record to search
+     * @param mapping   the record to search
      * @param fieldName the field name to look for
      * @return the matching field if present, empty otherwise
      */
-    public static Optional<SpecificFieldNode> findField(MappingConstructorExpressionNode record, String fieldName) {
-        return record.fields().stream()
+    public static Optional<SpecificFieldNode> findField(MappingConstructorExpressionNode mapping, String fieldName) {
+        return mapping.fields().stream()
                 .filter(field -> field.kind() == SyntaxKind.SPECIFIC_FIELD)
                 .map(field -> (SpecificFieldNode) field)
                 .filter(field -> matchesFieldName(field.fieldName(), fieldName))
@@ -310,34 +310,43 @@ public final class EmailAnalysisUtils {
      */
     private static String decodeEscapes(String literal) {
         StringBuilder decoded = new StringBuilder(literal.length());
-        for (int i = 0; i < literal.length(); i++) {
-            char current = literal.charAt(i);
-            if (current != '\\' || i + 1 >= literal.length()) {
+        int index = 0;
+        while (index < literal.length()) {
+            char current = literal.charAt(index);
+            if (current == '\\' && index + 1 < literal.length()) {
+                index += appendEscape(decoded, literal, index);
+            } else {
                 decoded.append(current);
-                continue;
+                index++;
             }
-            char next = literal.charAt(i + 1);
-            if (next == 'u' && i + 2 < literal.length() && literal.charAt(i + 2) == '{') {
-                int close = literal.indexOf('}', i + 3);
-                if (close > 0) {
-                    try {
-                        decoded.appendCodePoint(Integer.parseInt(literal.substring(i + 3, close), 16));
-                        i = close;
-                        continue;
-                    } catch (IllegalArgumentException e) {
-                        // Not a code point this analyzer can read; keep the text as written
-                    }
-                }
-            }
-            decoded.append(switch (next) {
-                case 'n' -> '\n';
-                case 't' -> '\t';
-                case 'r' -> '\r';
-                default -> next;
-            });
-            i++;
         }
         return decoded.toString();
+    }
+
+    /**
+     * Append the character an escape sequence starting at {@code index} denotes, and report how many characters of
+     * the literal that escape consumed.
+     */
+    private static int appendEscape(StringBuilder decoded, String literal, int index) {
+        char next = literal.charAt(index + 1);
+        if (next == 'u' && index + 2 < literal.length() && literal.charAt(index + 2) == '{') {
+            int close = literal.indexOf('}', index + 3);
+            if (close > 0) {
+                try {
+                    decoded.appendCodePoint(Integer.parseInt(literal.substring(index + 3, close), 16));
+                    return close - index + 1;
+                } catch (IllegalArgumentException e) {
+                    // Not a code point this analyzer can read; keep the text as written
+                }
+            }
+        }
+        decoded.append(switch (next) {
+            case 'n' -> '\n';
+            case 't' -> '\t';
+            case 'r' -> '\r';
+            default -> next;
+        });
+        return 2;
     }
 
     /**
