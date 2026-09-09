@@ -20,6 +20,7 @@ package io.ballerina.stdlib.email.compiler.staticcodeanalyzer;
 
 import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.emailrules.AvoidCleartextMailTransportRule;
 import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.emailrules.AvoidOpportunisticMailTransportRule;
+import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.emailrules.AvoidUnverifiedHostnamesRule;
 import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.emailrules.AvoidWeakTlsProtocolsRule;
 import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.emailrules.EmailClientConfigRule;
 
@@ -53,6 +54,7 @@ public class EmailClientConfigRulesEngine {
     }
 
     private void initializeDefaultRules() {
+        addRule(new AvoidUnverifiedHostnamesRule());
         addRule(new AvoidCleartextMailTransportRule());
         addRule(new AvoidOpportunisticMailTransportRule());
         addRule(new AvoidWeakTlsProtocolsRule());

@@ -91,3 +91,15 @@ public function callerSuppliedConfig(email:SmtpConfiguration shadowedConfig) ret
     email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
             clientConfig = shadowedConfig);
 }
+
+// The secureSocket field flattened into a named argument of its own
+public function weakVersionFlattened() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
+            secureSocket = {
+                cert: "path/to/certfile.crt",
+                protocol: {
+                    name: email:TLS,
+                    versions: ["TLSv1.1"]
+                }
+            });
+}

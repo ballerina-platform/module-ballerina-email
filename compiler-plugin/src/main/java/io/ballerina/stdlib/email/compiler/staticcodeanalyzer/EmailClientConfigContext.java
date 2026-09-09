@@ -23,6 +23,7 @@ import io.ballerina.compiler.syntax.tree.FunctionArgumentNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.NamedArgumentNode;
 import io.ballerina.compiler.syntax.tree.NewExpressionNode;
+import io.ballerina.compiler.syntax.tree.Node;
 import io.ballerina.compiler.syntax.tree.PositionalArgumentNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
@@ -30,29 +31,40 @@ import io.ballerina.projects.Document;
 import io.ballerina.scan.Reporter;
 import io.ballerina.tools.diagnostics.Location;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailAnalysisUtils.findField;
 import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailAnalysisUtils.getArguments;
-import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailAnalysisUtils.getNestedRecord;
 import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailAnalysisUtils.resolveConfigRecord;
 
 /**
  * Represents the configuration of an email client being constructed.
  * <p>
- * The three client types take their configuration through the same shaped record, so the record is resolved once
- * here and every rule reads it the same way regardless of which client is being built.
+ * The three client types take their configuration through the same shaped record, so the configuration is resolved
+ * once here and every rule reads it the same way regardless of which client is being built.
+ * <p>
+ * {@code clientConfig} is an included record parameter, so a caller may pass the record whole, positionally or by
+ * name, or flatten any of its fields into named arguments of their own. Named arguments may also appear in any
+ * order. Both forms describe the same configuration, so both are collected here and a rule asks for a field without
+ * having to know how it was written.
  */
 public class EmailClientConfigContext {
 
     private static final String CLIENT_CONFIG_PARAM = "clientConfig";
     private static final int CLIENT_CONFIG_POSITION = 3;
+    // The parameters declared ahead of the included record parameter. Every other named argument names one of the
+    // configuration record's own fields.
+    private static final Set<String> FIXED_PARAMS = Set.of("host", "username", "password", CLIENT_CONFIG_PARAM);
 
     private final Reporter reporter;
     private final Document document;
     private final String clientTypeName;
     private final Location constructionLocation;
     private final MappingConstructorExpressionNode clientConfig;
+    private final Map<String, NamedArgumentNode> flattenedFields;
 
     /**
      * Creates a context for the given email client construction.
@@ -68,16 +80,19 @@ public class EmailClientConfigContext {
         this.document = document;
         this.clientTypeName = clientTypeName;
         this.constructionLocation = newExpression.location();
-        this.clientConfig = resolveClientConfig(newExpression);
+        SeparatedNodeList<FunctionArgumentNode> arguments = getArguments(newExpression).orElse(null);
+        this.clientConfig = arguments == null ? null : resolveClientConfig(arguments);
+        this.flattenedFields = arguments == null ? Map.of() : resolveFlattenedFields(arguments);
     }
 
-    private static MappingConstructorExpressionNode resolveClientConfig(NewExpressionNode newExpression) {
-        Optional<SeparatedNodeList<FunctionArgumentNode>> arguments = getArguments(newExpression);
-        if (arguments.isEmpty()) {
-            return null;
-        }
+    /**
+     * Resolve the configuration record passed whole, either as the named {@code clientConfig} argument or in the
+     * position the parameter is declared at.
+     */
+    private static MappingConstructorExpressionNode resolveClientConfig(
+            SeparatedNodeList<FunctionArgumentNode> arguments) {
         int positionalIndex = 0;
-        for (FunctionArgumentNode argument : arguments.get()) {
+        for (FunctionArgumentNode argument : arguments) {
             switch (argument) {
                 case NamedArgumentNode namedArgument -> {
                     if (CLIENT_CONFIG_PARAM.equals(namedArgument.argumentName().name().text())) {
@@ -95,6 +110,24 @@ public class EmailClientConfigContext {
             }
         }
         return null;
+    }
+
+    /**
+     * Collect the configuration fields flattened into named arguments of their own. Anything named that is not one
+     * of the parameters declared ahead of the included record parameter is such a field.
+     */
+    private static Map<String, NamedArgumentNode> resolveFlattenedFields(
+            SeparatedNodeList<FunctionArgumentNode> arguments) {
+        Map<String, NamedArgumentNode> fields = new HashMap<>();
+        for (FunctionArgumentNode argument : arguments) {
+            if (argument instanceof NamedArgumentNode namedArgument) {
+                String argumentName = namedArgument.argumentName().name().text();
+                if (!FIXED_PARAMS.contains(argumentName)) {
+                    fields.put(argumentName, namedArgument);
+                }
+            }
+        }
+        return fields;
     }
 
     /**
@@ -116,46 +149,76 @@ public class EmailClientConfigContext {
     }
 
     /**
-     * Whether the client configuration record could be resolved.
+     * Whether any client configuration could be resolved, whether passed as a record or flattened into named
+     * arguments.
      *
-     * @return true if a configuration record is available
+     * @return true if a configuration is available
      */
     public boolean hasClientConfig() {
-        return this.clientConfig != null;
+        return this.clientConfig != null || !this.flattenedFields.isEmpty();
     }
 
     /**
-     * Get a field of the client configuration record.
+     * Find the node carrying a configuration field, which is a named argument when the field was flattened into one
+     * and a record field otherwise. A flattened field takes precedence, since a call carrying one cannot also pass
+     * the record whole.
      *
      * @param fieldName the field name to look for
-     * @return the field if the record was resolved and carries it, empty otherwise
+     * @return the node carrying the field if the configuration has it, empty otherwise
      */
-    public Optional<SpecificFieldNode> getConfigField(String fieldName) {
-        return this.clientConfig == null ? Optional.empty() : findField(this.clientConfig, fieldName);
+    private Optional<Node> findConfigFieldNode(String fieldName) {
+        NamedArgumentNode flattenedField = this.flattenedFields.get(fieldName);
+        if (flattenedField != null) {
+            return Optional.of(flattenedField);
+        }
+        return this.clientConfig == null ? Optional.empty()
+                : findField(this.clientConfig, fieldName).map(Node.class::cast);
     }
 
     /**
-     * Follow a chain of nested records within the client configuration.
+     * Follow a chain of nested records within the client configuration. Each step resolves a variable reference to
+     * its declaration, so a record held in a variable is followed like one written inline.
      *
      * @param fieldNames the field names to follow, outermost first
      * @return the innermost record if the whole chain is present, empty otherwise
      */
     public Optional<MappingConstructorExpressionNode> getNestedConfigRecord(String... fieldNames) {
-        Optional<MappingConstructorExpressionNode> current = Optional.ofNullable(this.clientConfig);
-        for (String fieldName : fieldNames) {
-            current = current.flatMap(record -> getNestedRecord(record, fieldName));
+        if (fieldNames.length == 0) {
+            return Optional.ofNullable(this.clientConfig);
+        }
+        Optional<MappingConstructorExpressionNode> current = getConfigFieldValue(fieldNames[0])
+                .flatMap(EmailAnalysisUtils::resolveConfigRecord);
+        for (int index = 1; index < fieldNames.length; index++) {
+            String fieldName = fieldNames[index];
+            current = current.flatMap(record -> findField(record, fieldName))
+                    .flatMap(SpecificFieldNode::valueExpr)
+                    .flatMap(EmailAnalysisUtils::resolveConfigRecord);
         }
         return current;
     }
 
     /**
-     * Get the value of a field of the client configuration record.
+     * Get the value of a field of the client configuration, however the field was written.
      *
      * @param fieldName the field name to look for
      * @return the field's value if present, empty otherwise
      */
     public Optional<ExpressionNode> getConfigFieldValue(String fieldName) {
-        return getConfigField(fieldName).flatMap(SpecificFieldNode::valueExpr);
+        return findConfigFieldNode(fieldName).flatMap(node -> switch (node) {
+            case NamedArgumentNode namedArgument -> Optional.of(namedArgument.expression());
+            case SpecificFieldNode field -> field.valueExpr();
+            default -> Optional.empty();
+        });
+    }
+
+    /**
+     * Report an issue against a field of the client configuration, at wherever that field was written.
+     *
+     * @param fieldName the field the issue is about
+     * @param ruleId    the rule reporting the issue
+     */
+    public void reportConfigFieldIssue(String fieldName, int ruleId) {
+        findConfigFieldNode(fieldName).ifPresent(node -> reportIssue(node.location(), ruleId));
     }
 
     /**

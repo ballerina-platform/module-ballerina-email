@@ -18,7 +18,7 @@
 
 package io.ballerina.stdlib.email.compiler.staticcodeanalyzer.emailrules;
 
-import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
+import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailClientConfigContext;
 
 import java.util.Optional;
@@ -40,12 +40,9 @@ public class AvoidCleartextMailTransportRule implements EmailClientConfigRule {
 
     @Override
     public void analyze(EmailClientConfigContext context) {
-        Optional<SpecificFieldNode> security = context.getConfigField(SECURITY_FIELD);
-        if (security.isEmpty() || security.get().valueExpr().isEmpty()) {
-            return;
-        }
-        if (namesEnumMember(security.get().valueExpr().get(), START_TLS_NEVER)) {
-            context.reportIssue(security.get().location(), getRuleId());
+        Optional<ExpressionNode> security = context.getConfigFieldValue(SECURITY_FIELD);
+        if (security.isPresent() && namesEnumMember(security.get(), START_TLS_NEVER)) {
+            context.reportConfigFieldIssue(SECURITY_FIELD, getRuleId());
         }
     }
 

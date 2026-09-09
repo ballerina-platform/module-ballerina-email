@@ -49,3 +49,25 @@ public function defaultSecurity() returns error? {
         port: 465
     });
 }
+
+// The configuration record's fields may be flattened into named arguments of
+// their own, since it is an included record parameter
+public function neverStartTlsFlattened() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
+            security = email:START_TLS_NEVER);
+}
+
+// Named arguments bind by name, so the configuration is not at any fixed position
+public function neverStartTlsReordered() returns error? {
+    email:SmtpClient _ = check new (security = email:START_TLS_NEVER, host = "smtp.email.com",
+            username = "sender@email.com", password = "pass123");
+}
+
+// An enum member declared without a value is the string singleton of its own
+// name, so the member may equally be written as that string
+public function neverStartTlsAsString() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
+        port: 25,
+        security: "START_TLS_NEVER"
+    });
+}

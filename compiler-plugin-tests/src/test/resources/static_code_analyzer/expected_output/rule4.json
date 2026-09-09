@@ -102,6 +102,26 @@
   {
     "location": {
       "filePath": "weak_protocols.bal",
+      "startLine": 95,
+      "endLine": 95,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 3207,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule4/weak_protocols.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule4/weak_protocols.bal"
+  },
+  {
+    "location": {
+      "filePath": "weak_protocols.bal",
       "startLine": 26,
       "endLine": 26,
       "startColumn": 38,
@@ -168,6 +188,26 @@
       "endColumn": 41,
       "startOffset": 2416,
       "length": 14
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule4/weak_protocols.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule4/weak_protocols.bal"
+  },
+  {
+    "location": {
+      "filePath": "weak_protocols.bal",
+      "startLine": 101,
+      "endLine": 101,
+      "startColumn": 31,
+      "endColumn": 40,
+      "startOffset": 3519,
+      "length": 9
     },
     "rule": {
       "id": "ballerina/email:4",

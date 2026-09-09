@@ -273,22 +273,6 @@ public final class EmailAnalysisUtils {
     }
 
     /**
-     * Get a field whose value is itself a record.
-     *
-     * @param record    the record to search
-     * @param fieldName the field name to look for
-     * @return the nested record if present, empty otherwise
-     */
-    public static Optional<MappingConstructorExpressionNode> getNestedRecord(MappingConstructorExpressionNode record,
-                                                                            String fieldName) {
-        return findField(record, fieldName)
-                .flatMap(SpecificFieldNode::valueExpr)
-                .map(EmailAnalysisUtils::getEffectiveExpression)
-                .filter(MappingConstructorExpressionNode.class::isInstance)
-                .map(MappingConstructorExpressionNode.class::cast);
-    }
-
-    /**
      * Get the element expressions of a list constructor.
      *
      * @param expression the expression to read
@@ -357,14 +341,24 @@ public final class EmailAnalysisUtils {
     }
 
     /**
-     * Check whether an expression names the given enum member, with or without a module prefix.
+     * Check whether an expression denotes the given enum member, written either as a reference to it, with or
+     * without a module prefix, or as the string it equals.
+     * <p>
+     * A member of these enums is declared without an explicit value, so it is the string singleton of its own name.
+     * Writing that string is therefore another way of naming the same member, and one a rule has to recognise or a
+     * configuration slips past by being spelled differently.
      *
      * @param expression the expression to read
      * @param memberName the enum member name
-     * @return true if the expression names that member
+     * @return true if the expression denotes that member
      */
     public static boolean namesEnumMember(ExpressionNode expression, String memberName) {
-        String source = expression.toSourceCode().trim();
+        ExpressionNode effective = getEffectiveExpression(expression);
+        Optional<String> literalValue = getStringLiteralValue(effective);
+        if (literalValue.isPresent()) {
+            return literalValue.get().equals(memberName);
+        }
+        String source = effective.toSourceCode().trim();
         return source.equals(memberName) || source.endsWith(":" + memberName);
     }
 }

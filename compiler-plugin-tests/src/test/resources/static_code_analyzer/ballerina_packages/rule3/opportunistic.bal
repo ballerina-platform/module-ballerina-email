@@ -39,3 +39,17 @@ public function alwaysStartTls() returns error? {
         security: email:START_TLS_ALWAYS
     });
 }
+
+// The configuration record's fields may be flattened into named arguments of
+// their own, since it is an included record parameter
+public function autoStartTlsFlattened() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
+            security = email:START_TLS_AUTO);
+}
+
+// An enum member declared without a value is the string singleton of its own
+// name, so the member may equally be written as that string
+public function autoStartTlsAsString() returns error? {
+    email:ImapClient _ = check new (security = "START_TLS_AUTO", host = "imap.email.com",
+            username = "reader@email.com", password = "pass123");
+}
