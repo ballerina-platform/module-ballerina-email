@@ -107,7 +107,7 @@ public class StaticCodeAnalyzerTest {
             case AVOID_UNVERIFIED_SERVER_HOSTNAMES:
                 // Every fixture also names TLSv1.1, which is what the weak protocol rule reports
                 index = 0;
-                Assert.assertEquals(issues.size(), 66);
+                Assert.assertEquals(issues.size(), 68);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_flattened_secure_socket_arg.bal",
                         27, 27, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_flattened_secure_socket_arg.bal",
@@ -196,6 +196,10 @@ public class StaticCodeAnalyzerTest {
                         29, 29, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_returned_directly.bal",
                         26, 26, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_cast_verify_host_name.bal",
+                        30, 30, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_cast_verify_host_name.bal",
+                        27, 27, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_flattened_secure_socket_arg.bal",
                         27, 27, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_flattened_secure_socket_arg.bal",

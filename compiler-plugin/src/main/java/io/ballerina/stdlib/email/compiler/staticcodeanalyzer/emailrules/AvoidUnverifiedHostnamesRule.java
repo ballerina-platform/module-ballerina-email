@@ -25,6 +25,7 @@ import io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailClientConfigCo
 import java.util.Optional;
 
 import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailAnalysisUtils.findField;
+import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailAnalysisUtils.getEffectiveExpression;
 import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailRule.AVOID_UNVERIFIED_SERVER_HOSTNAMES;
 
 /**
@@ -48,7 +49,8 @@ public class AvoidUnverifiedHostnamesRule implements EmailClientConfigRule {
             return;
         }
         Optional<ExpressionNode> value = verifyHostName.get().valueExpr();
-        if (value.isPresent() && FALSE_LITERAL.equals(value.get().toSourceCode().trim())) {
+        if (value.isPresent()
+                && FALSE_LITERAL.equals(getEffectiveExpression(value.get()).toSourceCode().trim())) {
             context.reportIssue(verifyHostName.get().location(), getRuleId());
         }
     }

@@ -361,6 +361,26 @@
   },
   {
     "location": {
+      "filePath": "smtp_cast_verify_host_name.bal",
+      "startLine": 20,
+      "endLine": 20,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 786,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_cast_verify_host_name.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_cast_verify_host_name.bal"
+  },
+  {
+    "location": {
       "filePath": "smtp_flattened_secure_socket_arg.bal",
       "startLine": 18,
       "endLine": 18,
@@ -1418,6 +1438,46 @@
     "source": "BUILT_IN",
     "fileName": "rule1/pop_returned_directly.bal",
     "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pop_returned_directly.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_cast_verify_host_name.bal",
+      "startLine": 30,
+      "endLine": 30,
+      "startColumn": 12,
+      "endColumn": 42,
+      "startOffset": 1225,
+      "length": 30
+    },
+    "rule": {
+      "id": "ballerina/email:1",
+      "numericId": 1,
+      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_cast_verify_host_name.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_cast_verify_host_name.bal"
+  },
+  {
+    "location": {
+      "filePath": "smtp_cast_verify_host_name.bal",
+      "startLine": 27,
+      "endLine": 27,
+      "startColumn": 38,
+      "endColumn": 47,
+      "startOffset": 1126,
+      "length": 9
+    },
+    "rule": {
+      "id": "ballerina/email:4",
+      "numericId": 4,
+      "description": "Avoid using weak TLS protocol versions",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/smtp_cast_verify_host_name.bal",
+    "filePath": "module-ballerina-email/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/smtp_cast_verify_host_name.bal"
   },
   {
     "location": {
