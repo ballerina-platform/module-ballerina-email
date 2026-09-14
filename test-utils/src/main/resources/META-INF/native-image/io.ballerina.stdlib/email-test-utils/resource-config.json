@@ -1,0 +1,9 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\Qgreenmail_test.p12\\E"
+      }
+    ]
+  }
+}
