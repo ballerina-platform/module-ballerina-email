@@ -2,21 +2,97 @@
   {
     "id": 1,
     "kind": "VULNERABILITY",
-    "description": "Avoid unverified server hostnames during SSL/TLS connections"
+    "name": "Avoid unverified server hostnames during SSL/TLS connections",
+    "severity": "HIGH",
+    "description": "An email client connects over TLS without verifying the server hostname.",
+    "fullDescription": "With hostname verification disabled the client accepts a certificate issued for any host, so an attacker positioned on the network can present their own valid certificate and read or alter the connection. Leave hostname verification enabled.",
+    "tags": [
+      "email",
+      "tls"
+    ],
+    "standards": {
+      "cwe": [
+        297,
+        295
+      ],
+      "owasp": [
+        {
+          "year": 2025,
+          "categories": [7]
+        }
+      ]
+    }
   },
   {
     "id": 2,
     "kind": "VULNERABILITY",
-    "description": "Avoid connecting to mail servers without TLS"
+    "name": "Avoid connecting to mail servers without TLS",
+    "severity": "HIGH",
+    "description": "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent in plaintext.",
+    "fullDescription": "Setting the client's security mode to never negotiate TLS keeps the connection in plaintext for its entire lifetime, so the mailbox credentials and every message sent over it are exposed to anyone positioned on the network path. Configure the client to require TLS instead of disabling it.",
+    "tags": [
+      "email",
+      "tls"
+    ],
+    "standards": {
+      "cwe": [
+        319,
+        523
+      ],
+      "owasp": [
+        {
+          "year": 2025,
+          "categories": [4]
+        }
+      ]
+    }
   },
   {
     "id": 3,
     "kind": "VULNERABILITY",
-    "description": "Avoid falling back to cleartext when TLS is unavailable"
+    "name": "Avoid falling back to cleartext when TLS is unavailable",
+    "severity": "MEDIUM",
+    "description": "An email client falls back to plaintext whenever the mail server does not advertise STARTTLS.",
+    "fullDescription": "Opportunistic TLS upgrades the connection only when the server advertises STARTTLS and continues in plaintext otherwise, so whether the credentials are encrypted is decided by the server's greeting. An attacker positioned on the network can strip that advertisement to force the client into plaintext with nothing to indicate a downgrade occurred. Require TLS instead of negotiating it opportunistically.",
+    "tags": [
+      "email",
+      "tls"
+    ],
+    "standards": {
+      "cwe": [
+        757,
+        319
+      ],
+      "owasp": [
+        {
+          "year": 2025,
+          "categories": [4]
+        }
+      ]
+    }
   },
   {
     "id": 4,
     "kind": "VULNERABILITY",
-    "description": "Avoid using weak TLS protocol versions"
+    "name": "Avoid using weak TLS protocol versions",
+    "severity": "MEDIUM",
+    "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
+    "fullDescription": "TLS 1.0 and TLS 1.1 rely on MD5 and SHA-1 in the handshake and lack modern cipher suites, leaving them open to downgrade and padding-oracle attacks, and SSL 3.0 is broken outright. Naming any of them pins the connection to a protocol version a current server should refuse. Restrict the allowed protocol versions to TLS 1.2 or later.",
+    "tags": [
+      "email",
+      "tls"
+    ],
+    "standards": {
+      "cwe": [
+        327,
+        326
+      ],
+      "owasp": [
+        {
+          "year": 2025,
+          "categories": [4]
+        }
+      ]
+    }
   }
 ]

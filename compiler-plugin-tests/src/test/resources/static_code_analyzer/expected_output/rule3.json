@@ -112,7 +112,7 @@
     "rule": {
       "id": "ballerina/email:3",
       "numericId": 3,
-      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "description": "An email client falls back to plaintext whenever the mail server does not advertise STARTTLS.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -132,7 +132,7 @@
     "rule": {
       "id": "ballerina/email:3",
       "numericId": 3,
-      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "description": "An email client falls back to plaintext whenever the mail server does not advertise STARTTLS.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -152,7 +152,7 @@
     "rule": {
       "id": "ballerina/email:3",
       "numericId": 3,
-      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "description": "An email client falls back to plaintext whenever the mail server does not advertise STARTTLS.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -172,7 +172,7 @@
     "rule": {
       "id": "ballerina/email:3",
       "numericId": 3,
-      "description": "Avoid falling back to cleartext when TLS is unavailable",
+      "description": "An email client falls back to plaintext whenever the mail server does not advertise STARTTLS.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
