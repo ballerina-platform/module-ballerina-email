@@ -152,7 +152,7 @@
     "rule": {
       "id": "ballerina/email:2",
       "numericId": 2,
-      "description": "Avoid connecting to mail servers without TLS",
+      "description": "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent in plaintext.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -172,7 +172,7 @@
     "rule": {
       "id": "ballerina/email:2",
       "numericId": 2,
-      "description": "Avoid connecting to mail servers without TLS",
+      "description": "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent in plaintext.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -192,7 +192,7 @@
     "rule": {
       "id": "ballerina/email:2",
       "numericId": 2,
-      "description": "Avoid connecting to mail servers without TLS",
+      "description": "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent in plaintext.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -212,7 +212,7 @@
     "rule": {
       "id": "ballerina/email:2",
       "numericId": 2,
-      "description": "Avoid connecting to mail servers without TLS",
+      "description": "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent in plaintext.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -232,7 +232,7 @@
     "rule": {
       "id": "ballerina/email:2",
       "numericId": 2,
-      "description": "Avoid connecting to mail servers without TLS",
+      "description": "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent in plaintext.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",

@@ -572,7 +572,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -592,7 +592,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -612,7 +612,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -632,7 +632,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -652,7 +652,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -672,7 +672,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -692,7 +692,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -712,7 +712,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -732,7 +732,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -752,7 +752,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -772,7 +772,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -792,7 +792,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -812,7 +812,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -832,7 +832,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -852,7 +852,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -872,7 +872,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -892,7 +892,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -912,7 +912,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -932,7 +932,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -952,7 +952,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -972,7 +972,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -992,7 +992,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1012,7 +1012,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1032,7 +1032,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1052,7 +1052,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1072,7 +1072,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1092,7 +1092,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1112,7 +1112,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1132,7 +1132,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1152,7 +1152,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1172,7 +1172,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1192,7 +1192,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1212,7 +1212,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1232,7 +1232,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1252,7 +1252,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1272,7 +1272,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1292,7 +1292,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1312,7 +1312,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1332,7 +1332,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1352,7 +1352,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1372,7 +1372,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1392,7 +1392,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1412,7 +1412,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1432,7 +1432,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1452,7 +1452,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1472,7 +1472,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1492,7 +1492,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1512,7 +1512,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1532,7 +1532,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1552,7 +1552,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1572,7 +1572,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1592,7 +1592,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1612,7 +1612,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1632,7 +1632,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1652,7 +1652,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1672,7 +1672,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1692,7 +1692,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1712,7 +1712,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1732,7 +1732,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1752,7 +1752,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1772,7 +1772,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1792,7 +1792,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1812,7 +1812,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1832,7 +1832,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1852,7 +1852,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1872,7 +1872,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1892,7 +1892,7 @@
     "rule": {
       "id": "ballerina/email:1",
       "numericId": 1,
-      "description": "Avoid unverified server hostnames during SSL/TLS connections",
+      "description": "An email client connects over TLS without verifying the server hostname.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -1912,7 +1912,7 @@
     "rule": {
       "id": "ballerina/email:4",
       "numericId": 4,
-      "description": "Avoid using weak TLS protocol versions",
+      "description": "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
