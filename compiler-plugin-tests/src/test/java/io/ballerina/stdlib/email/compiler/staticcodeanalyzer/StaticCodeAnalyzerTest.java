@@ -18,6 +18,8 @@
 
 package io.ballerina.stdlib.email.compiler.staticcodeanalyzer;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ballerina.projects.Project;
 import io.ballerina.projects.ProjectEnvironmentBuilder;
 import io.ballerina.projects.directory.BuildProject;
@@ -38,13 +40,10 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static io.ballerina.scan.RuleKind.VULNERABILITY;
-import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.EmailRule.AVOID_UNVERIFIED_SERVER_HOSTNAMES;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class StaticCodeAnalyzerTest {
@@ -59,10 +58,43 @@ public class StaticCodeAnalyzerTest {
 
     @Test
     public void validateRulesJson() throws IOException {
-        String expectedRules = "[" + Arrays.stream(EmailRule.values())
-                .map(EmailRule::toString).collect(Collectors.joining(",")) + "]";
-        String actualRules = Files.readString(JSON_RULES_FILE_PATH);
-        assertJsonEqual(actualRules, expectedRules);
+        JsonNode rulesArray = new ObjectMapper().readTree(Files.readString(JSON_RULES_FILE_PATH));
+        Assert.assertEquals(rulesArray.size(), EmailRule.values().length);
+        for (EmailRule rule : EmailRule.values()) {
+            JsonNode ruleNode = findRuleById(rulesArray, rule.getId());
+            Assert.assertNotNull(ruleNode, "Rule with id " + rule.getId() + " not found in rules.json");
+            Assert.assertEquals(ruleNode.get("kind").asText(), VULNERABILITY.toString());
+            Assert.assertEquals(ruleNode.get("description").asText(), rule.getDescription());
+            validateEnrichedRuleMetadata(ruleNode);
+        }
+    }
+
+    private void validateEnrichedRuleMetadata(JsonNode ruleNode) {
+        assertNonBlankText(ruleNode, "name");
+        assertNonBlankText(ruleNode, "severity");
+        assertNonBlankText(ruleNode, "fullDescription");
+
+        JsonNode tags = ruleNode.get("tags");
+        Assert.assertTrue(tags != null && tags.isArray() && !tags.isEmpty(), "tags should be a non-empty array");
+
+        JsonNode standards = ruleNode.get("standards");
+        Assert.assertTrue(standards != null && standards.isObject() && !standards.isEmpty(),
+                "standards should be a non-empty object");
+    }
+
+    private void assertNonBlankText(JsonNode ruleNode, String field) {
+        JsonNode fieldNode = ruleNode.get(field);
+        Assert.assertTrue(fieldNode != null && fieldNode.isTextual() && !fieldNode.asText().isBlank(),
+                field + " should be a non-blank string");
+    }
+
+    private JsonNode findRuleById(JsonNode rulesArray, int id) {
+        for (JsonNode ruleNode : rulesArray) {
+            if (ruleNode.get("id").asInt() == id) {
+                return ruleNode;
+            }
+        }
+        return null;
     }
 
     @Test
@@ -97,54 +129,194 @@ public class StaticCodeAnalyzerTest {
     }
 
     private void validateRules(List<Rule> rules) {
-        Assertions.assertRule(
-                rules,
-                "ballerina/email:1",
-                AVOID_UNVERIFIED_SERVER_HOSTNAMES.getDescription(),
-                VULNERABILITY);
+        for (EmailRule rule : EmailRule.values()) {
+            Assertions.assertRule(rules, "ballerina/email:" + rule.getId(), rule.getDescription(), VULNERABILITY);
+        }
     }
 
     private void validateIssues(EmailRule rule, List<Issue> issues) {
+        int index;
         switch (rule) {
             case AVOID_UNVERIFIED_SERVER_HOSTNAMES:
-                int index = 0;
-                Assert.assertEquals(issues.size(), 18);
+                // Every fixture also names TLSv1.1, which is what the weak protocol rule reports
+                index = 0;
+                Assert.assertEquals(issues.size(), 68);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_flattened_secure_socket_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_flattened_secure_socket_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_fun_named_arg.bal",
-                        18, 33, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_fun_named_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_fun_pos_arg.bal",
-                        18, 33, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_fun_pos_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_inline_named_arg.bal",
-                        18, 31, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_inline_named_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_inline_pos_arg.bal",
-                        18, 31, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_inline_pos_arg.bal",
+                        25, 25, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_mod_inline_named_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_mod_inline_named_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_mod_inline_pos_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_mod_inline_pos_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_mod_named_arg.bal",
-                        31, 33, Source.BUILT_IN);
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_mod_named_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_mod_pos_arg.bal",
-                        31, 33, Source.BUILT_IN);
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_mod_pos_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_reordered_client_config_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_reordered_client_config_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "imap_returned_directly.bal",
+                        29, 29, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "imap_returned_directly.bal",
+                        26, 26, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_flattened_secure_socket_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_flattened_secure_socket_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_fun_named_arg.bal",
-                        18, 33, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_fun_named_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_fun_pos_arg.bal",
-                        18, 33, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_fun_pos_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_inline_named_arg.bal",
-                        18, 31, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_inline_named_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_inline_pos_arg.bal",
-                        18, 31, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_inline_pos_arg.bal",
+                        25, 25, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_mod_inline_named_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_mod_inline_named_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_mod_inline_pos_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_mod_inline_pos_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_mod_named_arg.bal",
-                        31, 33, Source.BUILT_IN);
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_mod_named_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_mod_pos_arg.bal",
-                        31, 33, Source.BUILT_IN);
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_mod_pos_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_reordered_client_config_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_reordered_client_config_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "pop_returned_directly.bal",
+                        29, 29, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "pop_returned_directly.bal",
+                        26, 26, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_cast_verify_host_name.bal",
+                        30, 30, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_cast_verify_host_name.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_flattened_secure_socket_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_flattened_secure_socket_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_fun_named_arg.bal",
-                        18, 33, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_fun_named_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_fun_pos_arg.bal",
-                        18, 33, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_fun_pos_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_inline_named_arg.bal",
-                        18, 31, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_inline_named_arg.bal",
+                        25, 25, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_inline_pos_arg.bal",
-                        18, 31, Source.BUILT_IN);
+                        28, 28, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_inline_pos_arg.bal",
+                        25, 25, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_mod_inline_named_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_mod_inline_named_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_mod_inline_pos_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_mod_inline_pos_arg.bal",
+                        24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_mod_named_arg.bal",
-                        31, 33, Source.BUILT_IN);
-                Assertions.assertIssue(issues, index, "ballerina/email:1", "smtp_mod_pos_arg.bal",
-                        31, 33, Source.BUILT_IN);
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_mod_named_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_mod_pos_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_mod_pos_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_reordered_client_config_arg.bal",
+                        27, 27, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "smtp_reordered_client_config_arg.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:1", "smtp_returned_directly.bal",
+                        29, 29, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/email:4", "smtp_returned_directly.bal",
+                        26, 26, Source.BUILT_IN);
+                break;
+            case AVOID_CLEARTEXT_MAIL_TRANSPORT:
+                index = 0;
+                Assert.assertEquals(issues.size(), 5);
+                Assertions.assertIssue(issues, index++, "ballerina/email:2", "cleartext.bal",
+                        22, 22, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:2", "cleartext.bal",
+                        29, 29, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:2", "cleartext.bal",
+                        56, 56, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:2", "cleartext.bal",
+                        61, 61, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/email:2", "cleartext.bal",
+                        70, 70, Source.BUILT_IN);
+                break;
+            case AVOID_OPPORTUNISTIC_MAIL_TRANSPORT:
+                index = 0;
+                Assert.assertEquals(issues.size(), 4);
+                Assertions.assertIssue(issues, index++, "ballerina/email:3", "opportunistic.bal",
+                        22, 22, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:3", "opportunistic.bal",
+                        30, 30, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:3", "opportunistic.bal",
+                        46, 46, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/email:3", "opportunistic.bal",
+                        52, 52, Source.BUILT_IN);
+                break;
+            case AVOID_WEAK_TLS_PROTOCOLS:
+                index = 0;
+                Assert.assertEquals(issues.size(), 5);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
+                        26, 26, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
+                        26, 26, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
+                        40, 40, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/email:4", "weak_protocols.bal",
+                        69, 69, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/email:4", "weak_protocols.bal",
+                        101, 101, Source.BUILT_IN);
                 break;
             default:
                 Assert.fail("Unhandled rule in validateIssues: " + rule);
@@ -186,7 +358,7 @@ public class StaticCodeAnalyzerTest {
                 .replaceAll("\\s*\\[\\s*", "[")
                 .replaceAll("\\s*]\\s*", "]")
                 .replaceAll("\n", "")
-                .replaceAll(":\".*" + MODULE_BALLERINA_EMAIL, ":\"" + MODULE_BALLERINA_EMAIL);
+                .replaceAll(":\"[^\"]*" + MODULE_BALLERINA_EMAIL, ":\"" + MODULE_BALLERINA_EMAIL);
         return isWindows() ? normalizedJson.replaceAll("/", "\\\\\\\\") : normalizedJson;
     }
 

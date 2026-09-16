@@ -17,7 +17,7 @@
 import ballerina/email;
 
 public function test13() returns error? {
-    email:PopClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", {
+    email:ImapClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", {
         port: 465,
         secureSocket: {
             cert: "path/to/certfile.crt",

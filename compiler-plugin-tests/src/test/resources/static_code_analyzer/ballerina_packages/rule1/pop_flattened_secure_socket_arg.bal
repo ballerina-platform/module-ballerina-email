@@ -16,10 +16,9 @@
 
 import ballerina/email;
 
-public function test3() returns error? {
-    email:SmtpConfiguration smtpConfig = {
-        port: 465,
-        secureSocket: {
+public function testFlattenedSecureSocketPop() returns error? {
+    email:PopClient _ = check new ("smtp.email.com", "sender@email.com", "pass123",
+        secureSocket = {
             cert: "path/to/certfile.crt",
             protocol: {
                 name: email:TLS,
@@ -28,7 +27,5 @@ public function test3() returns error? {
             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
             verifyHostName: false
         }
-    };
-
-    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
+    );
 }

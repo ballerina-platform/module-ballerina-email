@@ -25,7 +25,16 @@ import static io.ballerina.stdlib.email.compiler.staticcodeanalyzer.RuleFactory.
 
 public enum EmailRule {
     AVOID_UNVERIFIED_SERVER_HOSTNAMES(createRule(1,
-            "Avoid unverified server hostnames during SSL/TLS connections", VULNERABILITY));
+            "An email client connects over TLS without verifying the server hostname.", VULNERABILITY)),
+    AVOID_CLEARTEXT_MAIL_TRANSPORT(createRule(2,
+            "An email client is configured to never negotiate TLS, so mailbox credentials and messages are sent " +
+                    "in plaintext.", VULNERABILITY)),
+    AVOID_OPPORTUNISTIC_MAIL_TRANSPORT(createRule(3,
+            "An email client falls back to plaintext whenever the mail server does not advertise STARTTLS.",
+            VULNERABILITY)),
+    AVOID_WEAK_TLS_PROTOCOLS(createRule(4,
+            "An email client names a withdrawn or broken TLS or SSL protocol version as an allowed protocol.",
+            VULNERABILITY));
 
     private final Rule rule;
 

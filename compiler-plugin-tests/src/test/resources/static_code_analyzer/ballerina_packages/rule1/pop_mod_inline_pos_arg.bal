@@ -16,19 +16,15 @@
 
 import ballerina/email;
 
-public function test3() returns error? {
-    email:SmtpConfiguration smtpConfig = {
-        port: 465,
-        secureSocket: {
-            cert: "path/to/certfile.crt",
-            protocol: {
-                name: email:TLS,
-                versions: ["TLSv1.2", "TLSv1.1"]
-            },
-            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-            verifyHostName: false
-        }
-    };
-
-    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
-}
+email:PopClient popModInlinePosArg = check new ("smtp.email.com", "sender@email.com", "pass123", {
+    port: 465,
+    secureSocket: {
+        cert: "path/to/certfile.crt",
+        protocol: {
+            name: email:TLS,
+            versions: ["TLSv1.2", "TLSv1.1"]
+        },
+        ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+        verifyHostName: false
+    }
+});

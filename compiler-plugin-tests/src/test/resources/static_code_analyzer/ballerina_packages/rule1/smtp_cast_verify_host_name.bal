@@ -16,8 +16,10 @@
 
 import ballerina/email;
 
-public function test3() returns error? {
-    email:SmtpConfiguration smtpConfig = {
+// A redundant type cast around the literal denotes the same value, so comparing
+// the raw source text would miss it
+public function testCastVerifyHostName() returns error? {
+    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
         port: 465,
         secureSocket: {
             cert: "path/to/certfile.crt",
@@ -26,9 +28,7 @@ public function test3() returns error? {
                 versions: ["TLSv1.2", "TLSv1.1"]
             },
             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-            verifyHostName: false
+            verifyHostName: <boolean>false
         }
-    };
-
-    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
+    });
 }
