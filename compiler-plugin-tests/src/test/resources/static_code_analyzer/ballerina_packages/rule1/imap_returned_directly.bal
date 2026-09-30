@@ -1,4 +1,4 @@
-// Copyright (c) 2025 WSO2 LLC. (http://www.wso2.org)
+// Copyright (c) 2026 WSO2 LLC. (http://www.wso2.org)
 //
 // WSO2 LLC. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -16,8 +16,9 @@
 
 import ballerina/email;
 
-public function test3() returns error? {
-    email:SmtpConfiguration smtpConfig = {
+// The client is constructed and returned directly, never bound to a variable
+public function testReturnedDirectlyImap() returns email:ImapClient|error {
+    return check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
         port: 465,
         secureSocket: {
             cert: "path/to/certfile.crt",
@@ -28,7 +29,5 @@ public function test3() returns error? {
             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
             verifyHostName: false
         }
-    };
-
-    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
+    });
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 WSO2 LLC. (http://www.wso2.org)
+// Copyright (c) 2026 WSO2 LLC. (http://www.wso2.org)
 //
 // WSO2 LLC. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -16,19 +16,15 @@
 
 import ballerina/email;
 
-public function test3() returns error? {
-    email:SmtpConfiguration smtpConfig = {
-        port: 465,
-        secureSocket: {
-            cert: "path/to/certfile.crt",
-            protocol: {
-                name: email:TLS,
-                versions: ["TLSv1.2", "TLSv1.1"]
-            },
-            ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
-            verifyHostName: false
-        }
-    };
-
-    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
-}
+email:PopClient popModInlineNamedArg = check new ("smtp.email.com", "sender@email.com", "pass123", clientConfig = {
+    port: 465,
+    secureSocket: {
+        cert: "path/to/certfile.crt",
+        protocol: {
+            name: email:TLS,
+            versions: ["TLSv1.2", "TLSv1.1"]
+        },
+        ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
+        verifyHostName: false
+    }
+});

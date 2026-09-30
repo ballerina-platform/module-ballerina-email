@@ -1,4 +1,4 @@
-// Copyright (c) 2025 WSO2 LLC. (http://www.wso2.org)
+// Copyright (c) 2026 WSO2 LLC. (http://www.wso2.org)
 //
 // WSO2 LLC. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -16,9 +16,8 @@
 
 import ballerina/email;
 
-public function test3() returns error? {
-    email:SmtpConfiguration smtpConfig = {
-        port: 465,
+public function testReorderedClientConfigSmtp() returns error? {
+    email:SmtpClient _ = check new (clientConfig = {
         secureSocket: {
             cert: "path/to/certfile.crt",
             protocol: {
@@ -28,7 +27,5 @@ public function test3() returns error? {
             ciphers: ["TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"],
             verifyHostName: false
         }
-    };
-
-    email:SmtpClient _ = check new ("smtp.email.com", "sender@email.com", "pass123", smtpConfig);
+    }, host = "smtp.email.com", username = "sender@email.com", password = "pass123");
 }
