@@ -6,9 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [2.14.1] - 2026-10-08
+
+### Added
+
+- Add three static code analysis rules for the email clients, covering plaintext mail transport, opportunistic TLS fallback and TLS hostname verification, and restructure the analyzer into one class per rule
+
 ### Changed
 
-[[#9132] Updated Keywords and Reformat README for Connector Store Discoverability](https://github.com/ballerina-platform/ballerina-library/issues/9132)
+- [[#9132] Updated Keywords and Reformat README for Connector Store Discoverability](https://github.com/ballerina-platform/ballerina-library/issues/9132)
+- Update Bouncy Castle to 1.84
+- Upgrade Gradle to 9.5.1 and the Ballerina Gradle plugin to 4.0.0
 
 ## [2.14.0] - 2026-05-27
 
