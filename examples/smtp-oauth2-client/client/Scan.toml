@@ -1,0 +1,3 @@
+# False positive: ballerina:14 matches the 'auth' field name of email:SmtpConfiguration; clientSecret etc. are configurable (= ?), nothing is hardcoded.
+[rule]
+exclude = ["ballerina:14"]

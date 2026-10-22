@@ -1,0 +1,4 @@
+# False positive: ballerina:14 matches identifiers like auth, token and keyPassword that are assigned runtime values (public API field names / values read from
+# the user's configuration); no secret is hardcoded.
+[rule]
+exclude = ["ballerina:14"]
