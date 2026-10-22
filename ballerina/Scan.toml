@@ -1,0 +1,7 @@
+# False positive: ballerina:14 matches identifiers like auth, token and keyPassword that are assigned runtime values (public API field names / values read from
+# the user's configuration); no secret is hardcoded.
+# TODO: replace this rule exclusion with a targeted scan suppression (with a reason) once `bal scan` supports it
+# (planned for v0.13.0), and fix the false positives on the scan tool side: a secret-named identifier should only be
+# reported when it is assigned a fixed value.
+[rule]
+exclude = ["ballerina:14"]
