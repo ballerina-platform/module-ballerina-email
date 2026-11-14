@@ -108,6 +108,9 @@ public final class SmtpUtil {
                 smtpConfig.getIntValue(EmailConstants.PROPS_PORT)));
         properties.put(EmailConstants.PROPS_SMTP_AUTH, requireAuth ? "true" : "false");
         BString security = smtpConfig.getStringValue(EmailConstants.PROPS_SECURITY);
+
+        addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
+
         if (security != null) {
             String securityType = security.getValue();
             switch (securityType) {
@@ -119,18 +122,15 @@ public final class SmtpUtil {
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "true");
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS_REQUIRED, "true");
                     properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
-                    addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
                     break;
                 case PROPS_START_TLS_NEVER:
                     properties.put(EmailConstants.PROPS_SMTP_STARTTLS, "false");
                     properties.put(EmailConstants.PROPS_SMTP_ENABLE_SSL, "false");
                     break;
                 default:
-                    addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
             }
-        } else {
-            addBasicTransportSecurityProperties(CommonUtil.createDefaultSSLSocketFactory(), properties);
         }
+
         addCertificate((BMap<BString, Object>) smtpConfig.getMapValue(EmailConstants.PROPS_SECURE_SOCKET),
                 properties);
         printDebugLogs(properties);
@@ -234,7 +234,10 @@ public final class SmtpUtil {
             certificatePath = secureSocket.getStringValue(PROPS_CERTIFICATE).getValue();
             SSLSocketFactory sslSocketFactory = CommonUtil.createSSLSocketFactory(new File(certificatePath),
                     protocolName);
-            addBasicTransportSecurityProperties(sslSocketFactory, properties);
+
+            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY, sslSocketFactory);
+            properties.put(EmailConstants.PROPS_SMTP_SOCKET_FACTORY_CLASS, sslSocketFactory.getClass());
+
             if (protocolVersions != null) {
                 properties.put(EmailConstants.PROPS_SMTP_PROTOCOLS, String.join(" ", protocolVersions));
             }
